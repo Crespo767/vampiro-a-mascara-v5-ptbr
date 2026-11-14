@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.1.1 — Companion
+- **Companion (Guia Suplementar):** conferência dos textos de Ravnos, Salubri, Tzimisce, dos 10 poderes e da Potência de Sangue contra o livro. O texto confere, com uma correção em Aliviando a Alma Bestial.
+- **Nomes oficiais do Companion** em 13 Vantagens e Defeitos do Guia do Jogador, por exemplo Táticas de Bando, A Todo Custo, Legados Vampíricos, Aura Imprópria e Maldição da Megaira. As regras e os pontos seguem o Guia do Jogador.
+
 ## 1.1.0 — Guia do Jogador
 - **Clãs:** Banu Haqim, Hecata, Lasombra, Ministério, Ravnos, Salubri e Tzimisce, com Perdição e Compulsão na ficha e na automação.
 - **Tipos de Predador:** Extorsionista, Ladrão de Túmulos, Ceifador, Montero, Perseguidor e Alçapão.
