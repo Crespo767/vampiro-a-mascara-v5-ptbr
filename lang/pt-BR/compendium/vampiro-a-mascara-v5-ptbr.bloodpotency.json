@@ -1,0 +1,38 @@
+{
+ "label": "Potência de Sangue",
+ "mapping": {
+  "description": "system.description",
+  "bane": "system.bane"
+ },
+ "folders": {},
+ "entries": {
+  "30rrUPOpyv2OeluD": {
+   "name": "Potência de Sangue 2",
+   "description": "<p>Um nível acima de lambedores menores, seu Sangue sustenta sua existência vampírica melhor do que o deles. Contudo, sangue de bolsas humanas que não seja fresco começa a perder seu poder, já tendo há muito perdido seu sabor.</p><ul><li>Ao Recuperar Dano, você pode remover dois pontos de dano Superficial por Checagem de Sangue.</li><li>Adicione um dado às suas paradas de dados quando usar ou resistir a poderes de Disciplinas.</li><li>Você precisa beber o dobro de sangue animal ou sangue ensacado para saciar 1 nível de Fome.</li><li>Você tem Gravidade da Perdição 2.</li></ul>"
+  },
+  "7XWp1JxbGtnuyiHP": {
+   "name": "Potência de Sangue 1",
+   "description": "<p>Você é um vampiro verdadeiro, embora por um fio, segundo alguns Anciões. Mesmo assim, seu Sangue vampírico é capaz de fazer coisas espetaculares quando inflamado.</p><ul><li>Adicione 2 dados de Atributo à sua parada de dados ao realizar um Surto de Sangue (pág. 218).</li><li>Ao Recuperar Dano, você pode remover 1 ponto de dano Superficial por Checagem de Sangue.</li><li>Role dois dados e fique com o maior ao rolar uma Checagem de Sangue para poderes de Disciplina nível 1. (Ou rerrole a Checagem de Sangue).</li><li>Você tem Gravidade da Perdição 2.</li></ul>"
+  },
+  "Dubn4u1xi7ZrC19q": {
+   "name": "Potência de Sangue 5",
+   "description": "<p>Quase um Ancião, você continua a um passo tentador daquilo que muitos considerariam um estado divino.</p><ul><li>Adicione 4 dados de Atributo à sua parada de dados ao realizar um Surto de Sangue.</li><li>Role dois dados e fique com o maior ao rolar uma Checagem de Sangue para poderes de Disciplinas de nível 3 e abaixo.</li><li>Apenas ao drenar e matar um mortal você consegue reduzir sua Fome abaixo de 2.</li><li>Você tem Gravidade da Perdição 4.</li></ul>"
+  },
+  "Q7ck8s4VF3c6eJw9": {
+   "name": "Potência de Sangue 6 e Acima",
+   "description": "<p>Conforme o Chamado despoja o mundo dos seus Anciões, estes níveis de Potência de Sangue tornam-se cada vez mais raros. Os Anciões remanescentes, reclusos e exaustos, se cercam de mitos e lendas, bem como de guardiões mais poderosos. Com Sangue mais potente do que humano, esses vampiros tornam-se figuras alienígenas, tanto em corpo quanto em mente. Os vampiros deste nível não são destinados a serem usados como personagens dos jogadores, constando na tabela de Potência de Sangue para uso exclusivo do Narrador.</p>"
+  },
+  "W4xJEGeafqxwhEUF": {
+   "name": "Potência de Sangue 4",
+   "description": "<p>Estando no meio do caminho, você ocupa uma posição pouco invejável, simultaneamente exercendo autoridade sobre os que estão abaixo e tido como um fracote por aqueles acima. Você precisa de quantidades cada vez maiores de sangue humano para saciar sua Fome, e sente sua Humanidade escorrendo dos seus dedos manchados de sangue.</p><ul><li>Ao Recuperar Dano, você pode remover três pontos de dano Superficial por Checagem de Sangue.</li><li>Adicione dois dados às suas paradas de dados ao usar ou resistir a poderes das Disciplinas.</li><li>Ao se alimentar de humanos, sacie 1 de Fome a menos por humano.</li><li>Você tem Gravidade da Perdição 3.</li></ul>"
+  },
+  "YqhcVuqAPXI5uOgu": {
+   "name": "Potência de Sangue 3",
+   "description": "<p>Para vampiros Anciões mais conservadores, seu Sangue engrossou o suficiente para torná-lo mais do que um mero lambedor, de fato um verdadeiro Cainita, digno de consideração e atenção. No entanto, ainda que seu Sangue lhe conceda grandes dons, ele também nutre a fraqueza do seu clã.</p><ul><li>Adicione 3 dados de Atributo à sua parada de dados ao realizar um Surto de Sangue.</li><li>Role dois dados e fique com o maior ao realizar uma Checagem de Sangue para poderes de Disciplina de nível 2 e abaixo.</li><li>Sangue animal ou ensacado não sacia mais sua Fome de modo nenhum.</li><li>Você tem Gravidade da Perdição 3.</li></ul>"
+  },
+  "oSaUNjeKe5Dl2CGk": {
+   "name": "Potência de Sangue 0 (zero): Sangue-Ralo",
+   "description": "<p>Você é um sangue-ralo, depreciado e desprezado pelos vampiros verdadeiros.</p><ul><li>Adicione 1 dado de Atributo à sua parada de dados ao realizar um Surto de Sangue (pág. 218).</li><li>Você sofre dano como os mortais. Ao Recuperar Dano (pág. 218), você pode remover um ponto de dano Superficial por Checagem de Sangue.</li><li>Você não pode criar Laços de Sangue (pág. 233), realizar o Abraço com certeza de sucesso ou criar carniçais (pág. 234).</li><li>Apenas meios sobrenaturais podem levá-lo a entrar em frenesi (pág. 219).</li><li>Você só sofre um ponto de dano Superficial por turno quando exposto à luz solar direta.</li></ul><p>Para mais detalhes sobre as restrições às habilidades de sangues-ralos, consulte a pág. 109.</p>"
+  }
+ }
+}

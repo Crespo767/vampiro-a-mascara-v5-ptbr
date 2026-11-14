@@ -1,0 +1,11 @@
+# Texto sempre com LF (o Foundry e os scripts esperam LF)
+* text=auto eol=lf
+
+# Compêndios LevelDB: nunca converter (CURRENT, MANIFEST, .log e .ldb são dados binários)
+packs/** -text -diff
+
+# Imagens
+*.png binary
+*.jpg binary
+*.webp binary
+*.svg text eol=lf

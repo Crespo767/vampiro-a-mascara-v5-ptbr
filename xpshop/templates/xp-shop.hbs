@@ -1,0 +1,237 @@
+<div class="vtm5e-xpshop">
+  <nav class="vtm5e-xpshop-categories">
+    {{#each categories}}
+      <button type="button" class="vtm5e-xpshop-cat-btn {{#if this.active}}active{{/if}}" data-action="switchCategory" data-category="{{this.id}}">
+        {{this.label}}
+      </button>
+    {{/each}}
+  </nav>
+
+  <div class="vtm5e-xpshop-body">
+
+    {{#if attributes}}
+    <section class="vtm5e-xpshop-section">
+      <h2>Atributos</h2>
+      <p class="vtm5e-xpshop-hint">Novo nível × 5 de Experiência. Clique em um ponto para aumentar até esse nível (todos os níveis intermediários são cobrados); clique novamente no último ponto pendente para reduzir.</p>
+      {{#each attributes}}
+        <div class="vtm5e-xpshop-group">
+          <h3>{{@key}}</h3>
+          {{#each this}}
+            <div class="vtm5e-xpshop-dot-row">
+              <span class="vtm5e-xpshop-dot-row-label">{{this.label}}</span>
+              {{#if this.pendingCost}}<span class="vtm5e-xpshop-pending-cost">+{{this.pendingCost}} XP</span>{{/if}}
+              <span class="vtm5e-xpshop-dots">
+                {{#each this.dots}}
+                  <span class="vtm5e-xpshop-dot {{#if this.owned}}owned{{/if}} {{#if this.pending}}pending{{/if}}" data-action="adjustAttribute" data-attribute="{{../id}}" data-n="{{this.n}}"></span>
+                {{/each}}
+              </span>
+            </div>
+          {{/each}}
+        </div>
+      {{/each}}
+    </section>
+    {{/if}}
+
+    {{#if skills}}
+    <section class="vtm5e-xpshop-section">
+      <h2>Habilidades</h2>
+      <p class="vtm5e-xpshop-hint">Novo nível × 3 de Experiência.</p>
+      <div class="vtm5e-xpshop-skill-columns">
+        {{#each skills}}
+          <div class="vtm5e-xpshop-group">
+            <h3>{{@key}}</h3>
+            {{#each this}}
+              <div class="vtm5e-xpshop-dot-row">
+                <span class="vtm5e-xpshop-dot-row-label">{{this.label}}</span>
+                {{#if this.pendingCost}}<span class="vtm5e-xpshop-pending-cost">+{{this.pendingCost}} XP</span>{{/if}}
+                <span class="vtm5e-xpshop-dots">
+                  {{#each this.dots}}
+                    <span class="vtm5e-xpshop-dot {{#if this.owned}}owned{{/if}} {{#if this.pending}}pending{{/if}}" data-action="adjustSkill" data-skill="{{../id}}" data-n="{{this.n}}"></span>
+                  {{/each}}
+                </span>
+              </div>
+            {{/each}}
+          </div>
+        {{/each}}
+      </div>
+    </section>
+    {{/if}}
+
+    {{#if specialties}}
+    <section class="vtm5e-xpshop-section">
+      <h2>Especializações</h2>
+      <p class="vtm5e-xpshop-hint">3 de Experiência cada. Concede bônus de +1 para um uso específico de uma Habilidade.</p>
+      <div class="vtm5e-xpshop-specialty-form">
+        <select name="specialtySkill">
+          {{#each specialties.skillOptions}}
+            <option value="{{this.id}}">{{this.label}}</option>
+          {{/each}}
+        </select>
+        <input type="text" name="specialtyText" placeholder="ex.: Interrogatório" />
+        <button type="button" data-action="addSpecialty">Adicionar ao Carrinho (3 XP)</button>
+      </div>
+      {{#if specialties.draftEntries.length}}
+      <div class="vtm5e-xpshop-specialty-drafts">
+        <h3>No Carrinho</h3>
+        <ul>
+          {{#each specialties.draftEntries}}
+            <li>{{this.label}}</li>
+          {{/each}}
+        </ul>
+      </div>
+      {{/if}}
+    </section>
+    {{/if}}
+
+    {{#if disciplines}}
+    <section class="vtm5e-xpshop-section">
+      <h2>Disciplinas</h2>
+      {{#if disciplines.thinBlooded}}
+        <p class="vtm5e-xpshop-hint">Personagens sangues-ralos não têm Disciplinas inerentes (livro básico, p. 136): não há nada para comprar aqui.</p>
+      {{else}}
+        <p class="vtm5e-xpshop-hint">Do clã: novo nível × 5. De fora do clã: novo nível × 7. Caitiff: novo nível × 6 para todas as Disciplinas. Cada ponto exige a escolha de um Poder desse nível. Clique em "+1 ponto" para ver as opções.</p>
+
+        {{#if disciplines.powerPicker}}
+        <div class="vtm5e-xpshop-power-picker">
+          <div class="vtm5e-xpshop-power-picker-header">
+            <h3>Escolha um Poder de {{disciplines.powerPicker.disciplineLabel}} de nível {{disciplines.powerPicker.level}}</h3>
+            <button type="button" data-action="cancelDisciplinePick">Cancelar</button>
+          </div>
+          {{#if disciplines.powerPicker.powers.length}}
+            <div class="vtm5e-xpshop-power-list">
+              {{#each disciplines.powerPicker.powers}}
+                <div class="vtm5e-xpshop-power-item {{#if this.expanded}}expanded{{/if}}">
+                  <div class="vtm5e-xpshop-power-item-header" data-action="toggleExpandPower" data-power-id="{{this.id}}">
+                    <span class="vtm5e-xpshop-power-name">{{this.name}}</span>
+                    <i class="fas fa-chevron-{{#if this.expanded}}up{{else}}down{{/if}} vtm5e-xpshop-power-expand-icon"></i>
+                  </div>
+                  <p class="vtm5e-xpshop-power-desc">{{this.description}}</p>
+                  <button type="button" class="vtm5e-xpshop-power-choose" data-action="pickDisciplinePower" data-power-id="{{this.id}}">Escolher este Poder</button>
+                </div>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="vtm5e-xpshop-hint">Nenhum Poder deste nível que você ainda não tenha foi encontrado no compêndio.</p>
+          {{/if}}
+        </div>
+        {{else}}
+          {{#each disciplines.rows}}
+            <div class="vtm5e-xpshop-disc-row">
+              <div class="vtm5e-xpshop-disc-row-main">
+                <span class="vtm5e-xpshop-disc-name">{{this.label}}</span>
+                <span class="vtm5e-xpshop-disc-multiplier">({{this.multiplierLabel}}, ×{{this.multiplier}})</span>
+                <span class="vtm5e-xpshop-dots">
+                  {{#each this.pips}}
+                    <span class="vtm5e-xpshop-dot {{#ifeq this.state "owned"}}owned{{/ifeq}} {{#ifeq this.state "pending"}}pending{{/ifeq}}" {{#if this.powerName}}title="{{this.powerName}}"{{/if}}></span>
+                  {{/each}}
+                </span>
+                {{#if this.maxed}}
+                  <span class="vtm5e-xpshop-disc-maxed">Máximo</span>
+                {{else}}
+                  <button type="button" class="vtm5e-xpshop-disc-add-btn" data-action="addDisciplineDot" data-discipline="{{this.id}}" data-level="{{this.nextLevel}}">
+                    +1 ponto ({{this.nextLevelCost}} XP)
+                  </button>
+                {{/if}}
+              </div>
+              {{#if this.cartEntries.length}}
+                <ul class="vtm5e-xpshop-disc-pending-list">
+                  {{#each this.cartEntries}}
+                    <li>{{this.targetLevel}}: {{this.powerName}} <i>({{this.cost}} XP, no carrinho)</i></li>
+                  {{/each}}
+                </ul>
+              {{/if}}
+            </div>
+          {{/each}}
+        {{/if}}
+      {{/if}}
+    </section>
+    {{/if}}
+
+    {{#if bloodPotency}}
+    <section class="vtm5e-xpshop-section">
+      <h2>Potência do Sangue</h2>
+      <p class="vtm5e-xpshop-hint">Novo nível × 10 de Experiência. O limite não é aplicado aqui; confira o máximo da sua Geração.</p>
+      <div class="vtm5e-xpshop-dot-row">
+        <span class="vtm5e-xpshop-dot-row-label">Potência do Sangue</span>
+        {{#if bloodPotency.pendingCost}}<span class="vtm5e-xpshop-pending-cost">+{{bloodPotency.pendingCost}} XP</span>{{/if}}
+        <span class="vtm5e-xpshop-dots">
+          {{#each bloodPotency.dots}}
+            <span class="vtm5e-xpshop-dot {{#if this.owned}}owned{{/if}} {{#if this.pending}}pending{{/if}}" data-action="adjustBloodPotency" data-n="{{this.n}}"></span>
+          {{/each}}
+        </span>
+      </div>
+    </section>
+    {{/if}}
+
+    {{#if advantages}}
+    <section class="vtm5e-xpshop-section">
+      <h2>Vantagens</h2>
+      <p class="vtm5e-xpshop-hint">3 de Experiência por ponto. Pelo livro básico, Defeitos não podem ser comprados com Experiência.</p>
+      <input type="text" id="vtm5e-xpshop-advantage-search" placeholder="Buscar Qualidades e Antecedentes..." value="{{advantages.search}}" />
+      {{#each advantages.groups}}
+        <h3 class="vtm5e-xpshop-adv-type-label">{{this.label}}</h3>
+        {{#each this.folders}}
+          <div class="vtm5e-xpshop-adv-folder {{#if this.open}}open{{/if}}">
+            <button type="button" class="vtm5e-xpshop-adv-folder-header" data-action="toggleAdvantageFolder" data-folder="{{this.name}}">
+              <i class="fas fa-caret-right"></i> {{this.name}} <span class="vtm5e-xpshop-adv-folder-count">({{this.items.length}})</span>
+            </button>
+            <div class="vtm5e-xpshop-adv-folder-body">
+              {{#each this.items}}
+                <div class="vtm5e-xpshop-adv-item {{#if this.unavailable}}unavailable{{/if}}">
+                  <div class="vtm5e-xpshop-adv-item-main" {{#if this.unavailable}}title="Indisponível: {{this.unavailableReason}}"{{/if}}>
+                    <span class="vtm5e-xpshop-adv-item-name">
+                      {{this.name}}
+                      {{#if this.unavailable}}<span class="vtm5e-xpshop-adv-unavailable-tag">indisponível</span>{{/if}}
+                    </span>
+                    {{#if this.pendingCost}}<span class="vtm5e-xpshop-pending-cost">+{{this.pendingCost}} XP</span>{{/if}}
+                    {{#if this.fixedCost}}
+                      <button type="button" class="vtm5e-xpshop-adv-fixed-btn {{#if this.owned}}taken{{/if}}" data-action="adjustAdvantage" data-mf-id="{{this.id}}" data-n="{{this.fixedCost}}" {{#if this.unavailable}}disabled{{/if}} title="{{#if this.unavailable}}Indisponível: {{this.unavailableReason}}{{else}}Custo em pontos: {{this.fixedCost}} ({{this.fixedCost}} × 3 XP){{/if}}">
+                        <span class="vtm5e-xpshop-adv-fixed-btn-dots">{{this.fixedCostDots}}</span>
+                      </button>
+                    {{else}}
+                      <span class="vtm5e-xpshop-dots">
+                        {{#each this.dots}}
+                          <span class="vtm5e-xpshop-dot {{#if this.owned}}owned{{/if}} {{#if this.pending}}pending{{/if}} {{#if this.capped}}capped{{/if}} {{#if ../unavailable}}unavailable{{/if}}" data-action="adjustAdvantage" data-mf-id="{{../id}}" data-n="{{this.n}}" title="{{#if this.capped}}Limite: {{this.capReason}}{{else if ../unavailable}}Indisponível: {{../unavailableReason}}{{/if}}"></span>
+                        {{/each}}
+                      </span>
+                    {{/if}}
+                  </div>
+                  <p class="vtm5e-xpshop-adv-item-desc">{{this.description}}</p>
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        {{/each}}
+      {{/each}}
+    </section>
+    {{/if}}
+
+  </div>
+
+  <aside class="vtm5e-xpshop-cart">
+    <h3>Carrinho</h3>
+    {{#if cartEmpty}}
+      <p class="vtm5e-xpshop-hint">O carrinho está vazio. Escolha uma categoria e clique em um ponto ou item para começar.</p>
+    {{else}}
+      <ul class="vtm5e-xpshop-cart-list">
+        {{#each cart}}
+          <li>
+            <span class="vtm5e-xpshop-cart-label">{{this.label}}</span>
+            <span class="vtm5e-xpshop-cart-cost">{{this.cost}} XP</span>
+            <button type="button" class="vtm5e-xpshop-cart-remove" data-action="removeCartLine" data-cart-id="{{this.id}}" title="Remover">×</button>
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+
+    <div class="vtm5e-xpshop-cart-totals">
+      <div class="vtm5e-xpshop-cart-total-row"><span>Total do carrinho</span><b>{{cartTotal}} XP</b></div>
+      <div class="vtm5e-xpshop-cart-total-row"><span>XP restante</span><b>{{remainingXP}}</b></div>
+      <div class="vtm5e-xpshop-cart-total-row {{#if overBudget}}over{{/if}}"><span>Após a compra</span><b>{{remainingAfterCart}}</b></div>
+    </div>
+
+    <button type="button" class="vtm5e-xpshop-commit-btn" data-action="commitCart" {{#if cartEmpty}}disabled{{/if}} {{#if overBudget}}disabled{{/if}}>
+      Confirmar Compras
+    </button>
+  </aside>
+</div>

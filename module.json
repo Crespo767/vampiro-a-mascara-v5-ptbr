@@ -1,0 +1,189 @@
+{
+  "id": "vampiro-a-mascara-v5-ptbr",
+  "title": "Vampiro a Máscara v5 PT-BR",
+  "description": "Compêndios de Vampiro: A Máscara 5ª Edição em português — Manual Básico e Guia do Jogador (Clãs, Disciplinas com Oblívio, Cerimônias, Rituais e Fórmulas, Tipos de Predador, Potência de Sangue, Vantagens e Defeitos, Folhas de História, Coterie) — e ferramentas para o sistema wod5e: criação de personagem, loja de XP, automação, ficha de personagem, cartões de rolagem e coterie. Baseado nos módulos VtM5e Tools (Harbl) e Vampire: The Masquerade 5e Compendium (Clownf1sh).",
+  "version": "1.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13.350"
+  },
+  "authors": [
+    {
+      "name": "Crespo767",
+      "url": "https://github.com/Crespo767"
+    },
+    {
+      "name": "Harbl (VtM5e Tools)"
+    },
+    {
+      "name": "Clownf1sh (V5 Compendium)"
+    }
+  ],
+  "url": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr",
+  "manifest": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr/releases/latest/download/module.json",
+  "download": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr/releases/download/v1.1.0/module.zip",
+  "readme": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr#readme",
+  "bugs": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr/issues",
+  "changelog": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr/blob/main/CHANGELOG.md",
+  "license": "LICENSE",
+  "relationships": {
+    "systems": [
+      {
+        "id": "wod5e",
+        "type": "system",
+        "compatibility": {
+          "verified": "5.3.15"
+        }
+      }
+    ],
+    "requires": [
+      {
+        "id": "babele",
+        "type": "module",
+        "manifest": "https://gitlab.com/riccisi/foundryvtt-babele/-/jobs/artifacts/2.9.1/raw/module/module.json?job=build",
+        "compatibility": {}
+      },
+      {
+        "id": "lib-wrapper",
+        "type": "module",
+        "manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json",
+        "compatibility": {}
+      }
+    ]
+  },
+  "esmodules": [
+    "babele.js",
+    "automation/scripts/main.js",
+    "charactersheet/scripts/init.js",
+    "charactersheet/scripts/glitchsmith-integration.js",
+    "chargen/scripts/main.js",
+    "coterie/scripts/main.js",
+    "xpshop/scripts/main.js"
+  ],
+  "styles": [
+    "automation/styles/vtm5e-automation.css",
+    "charactersheet/styles/vtm5e-charactersheet.css",
+    "chargen/styles/vtm5e-chargen.css",
+    "chatcards/styles/vtm5e-chatcards.css",
+    "coterie/styles/vtm5e-coterie.css",
+    "xpshop/styles/vtm5e-xpshop.css"
+  ],
+  "packs": [
+    {
+      "name": "clans",
+      "label": "Clãs",
+      "path": "packs/clans",
+      "type": "Item",
+      "system": "wod5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "disciplines",
+      "label": "Disciplinas",
+      "path": "packs/disciplines",
+      "type": "Item",
+      "system": "wod5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "predatortypes",
+      "label": "Tipos de Predador",
+      "path": "packs/predatortypes",
+      "type": "Item",
+      "system": "wod5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "bloodpotency",
+      "label": "Potência de Sangue",
+      "path": "packs/bloodpotency",
+      "type": "Item",
+      "system": "wod5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "meritsflaws",
+      "label": "Vantagens e Defeitos",
+      "path": "packs/meritsflaws",
+      "type": "Item",
+      "system": "wod5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "equipment",
+      "label": "Equipamento",
+      "path": "packs/equipment",
+      "type": "Item",
+      "system": "wod5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "loresheets",
+      "label": "Loresheets",
+      "path": "packs/loresheets",
+      "type": "Item",
+      "system": "wod5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "paths",
+      "label": "Caminhos",
+      "path": "packs/paths",
+      "type": "Item",
+      "system": "wod5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "regras-guia",
+      "label": "Regras do Guia do Jogador",
+      "path": "packs/regras-guia",
+      "type": "JournalEntry",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Vampiro a Máscara v5 PT-BR",
+      "sorting": "m",
+      "color": "#5c0a0a",
+      "packs": [
+        "clans",
+        "disciplines",
+        "predatortypes",
+        "bloodpotency",
+        "meritsflaws",
+        "equipment",
+        "loresheets",
+        "paths",
+        "regras-guia"
+      ]
+    }
+  ]
+}

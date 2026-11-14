@@ -1,0 +1,9 @@
+{
+ "label": "Caminhos",
+ "mapping": {
+  "description": "system.description",
+  "bane": "system.bane"
+ },
+ "folders": {},
+ "entries": {}
+}

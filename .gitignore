@@ -1,0 +1,11 @@
+# Arquivos de trava e log do LevelDB (gerados pelo Foundry a cada abertura)
+packs/*/LOCK
+packs/*/LOG
+packs/*/LOG.old
+
+# Pacote de release gerado localmente
+module.zip
+
+# Sistema
+Thumbs.db
+.DS_Store

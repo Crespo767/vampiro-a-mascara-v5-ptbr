@@ -1,0 +1,325 @@
+<div class="vtm5e-chargen">
+  <nav class="vtm5e-chargen-steps">
+    {{#each steps}}
+      <button type="button" class="vtm5e-chargen-step-btn {{#if this.active}}active{{/if}} {{#if this.done}}done{{/if}} {{#if this.locked}}locked{{/if}}" data-action="goToStep" data-step="{{this.id}}" {{#if this.locked}}disabled{{/if}}>
+        <span class="vtm5e-chargen-step-num">{{this.num}}</span>
+        <span class="vtm5e-chargen-step-label">{{this.label}}</span>
+      </button>
+    {{/each}}
+  </nav>
+
+  <div class="vtm5e-chargen-body">
+
+    {{#if stepFlags.isConcept}}
+    <section class="vtm5e-chargen-step">
+      <h2>Conceito, Ambição e Desejo</h2>
+      <p class="vtm5e-chargen-hint">O Conceito resume quem é seu personagem em uma frase. A Ambição é um grande objetivo que pode levar anos para ser alcançado. O Desejo é o que ele quer nesta semana.</p>
+      <label>Conceito</label>
+      <input type="text" data-field="system.headers.concept" value="{{concept}}" />
+      <label>Ambição</label>
+      <input type="text" data-field="system.headers.ambition" value="{{ambition}}" />
+      <label>Desejo</label>
+      <input type="text" data-field="system.headers.desire" value="{{desire}}" />
+      <label>Geração</label>
+      <select id="vtm5e-chargen-generation-select">
+        <option value="">Não definida</option>
+        {{#each generationOptions}}
+          <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+        {{/each}}
+      </select>
+      <p class="vtm5e-chargen-hint">Define a Potência do Sangue no valor inicial mínimo para essa geração (livro básico, p. 213) e sugere uma época para a Data do Abraço com base nas mesmas tabelas de geração (editável em Toques Finais). Benefícios do seu Clã ou Tipo de Predador podem aumentar ainda mais a Potência do Sangue.</p>
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isAttributes}}
+    <section class="vtm5e-chargen-step">
+      <h2>Atributos</h2>
+      <p class="vtm5e-chargen-hint">Distribuição do livro básico: um Atributo com ••••, três com •••, quatro com •• e um com •. Clique em um ponto para definir o nível; clique no último ponto preenchido para reduzi-lo.</p>
+      <div class="vtm5e-chargen-budget-row">
+        {{#each attributeBudget}}
+          <div class="vtm5e-chargen-budget-stat {{#if this.over}}over{{/if}}">
+            <span class="vtm5e-chargen-budget-dots">{{this.dots}}</span>
+            <b>{{this.used}}/{{this.allowed}}</b>
+          </div>
+        {{/each}}
+      </div>
+      {{#each attributes}}
+        <div class="vtm5e-chargen-attr-group">
+          <h3>{{@key}}</h3>
+          {{#each this}}
+            <div class="vtm5e-chargen-dot-row">
+              <span class="vtm5e-chargen-dot-row-label" data-tooltip="{{this.tooltip}}" data-tooltip-direction="UP">{{this.label}}</span>
+              <span class="vtm5e-chargen-dots">
+                {{#each this.dots}}
+                  <span class="vtm5e-chargen-dot {{#if this.filled}}filled{{/if}}" data-action="adjustAttribute" data-attribute="{{../id}}" data-n="{{this.n}}"></span>
+                {{/each}}
+              </span>
+            </div>
+          {{/each}}
+        </div>
+      {{/each}}
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isSkills}}
+    <section class="vtm5e-chargen-step">
+      <h2>Habilidades</h2>
+      <p class="vtm5e-chargen-hint">Distribuição do livro básico: escolha uma distribuição de Habilidades abaixo e atribua exatamente a quantidade indicada de Habilidades em cada nível. As demais ficam em 0. Você também recebe 2 Especializações gratuitas; quando o Tipo de Predador concede uma, ela é escolhida automaticamente.</p>
+
+      <div class="vtm5e-chargen-skill-dist-grid">
+        {{#each skillBudget.distributions}}
+          <div class="vtm5e-chargen-skill-dist-card {{#if this.selected}}selected{{/if}}" data-action="pickSkillDistribution" data-distribution="{{this.key}}">
+            <div class="vtm5e-chargen-skill-dist-name">{{this.label}}</div>
+            <div class="vtm5e-chargen-skill-dist-desc">{{this.description}}</div>
+          </div>
+        {{/each}}
+      </div>
+
+      {{#if skillBudget.selectedKey}}
+        <div class="vtm5e-chargen-budget-row">
+          {{#each skillBudget.rows}}
+            <div class="vtm5e-chargen-budget-stat {{#if this.over}}over{{/if}}">
+              <span class="vtm5e-chargen-budget-dots">{{this.dots}}</span>
+              <b>{{this.used}}/{{this.allowed}}</b>
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        <p class="vtm5e-chargen-hint">Escolha uma distribuição acima antes de atribuir pontos às Habilidades.</p>
+      {{/if}}
+
+      <div class="vtm5e-chargen-skill-columns">
+        {{#each skills}}
+          <div class="vtm5e-chargen-attr-group">
+            <h3>{{@key}}</h3>
+            {{#each this}}
+              <div class="vtm5e-chargen-dot-row">
+                <span class="vtm5e-chargen-dot-row-label" data-tooltip="{{this.tooltip}}" data-tooltip-direction="UP">{{this.label}}</span>
+                <span class="vtm5e-chargen-dots">
+                  {{#each this.dots}}
+                    <span class="vtm5e-chargen-dot {{#if this.filled}}filled{{/if}}" data-action="adjustSkill" data-skill="{{../id}}" data-n="{{this.n}}"></span>
+                  {{/each}}
+                </span>
+              </div>
+            {{/each}}
+          </div>
+        {{/each}}
+      </div>
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isClan}}
+    <section class="vtm5e-chargen-step">
+      <h2>Clã</h2>
+      <p class="vtm5e-chargen-hint">Clique em um clã para ler sua descrição abaixo. O ponto gratuito de Disciplina escolhido é aplicado ao clicar em Avançar.</p>
+      {{#if currentClan}}<p class="vtm5e-chargen-hint">Escolha atual: <b>{{currentClan.name}}</b>. Escolher outro clã substitui o atual.</p>{{/if}}
+      <div class="vtm5e-chargen-card-grid">
+        {{#each clans}}
+          <div class="vtm5e-chargen-card {{#if this.selected}}selected{{/if}}" data-clan-id="{{this.id}}">
+            <img src="{{this.img}}" alt="{{this.name}}" />
+            <div class="vtm5e-chargen-card-name">{{this.name}}</div>
+          </div>
+        {{/each}}
+      </div>
+      {{#if currentClan}}
+      <div class="vtm5e-chargen-detail">
+        <h3>{{currentClan.name}}</h3>
+        <div>{{{currentClan.system.description}}}</div>
+        <div class="vtm5e-chargen-bane">{{{currentClan.system.bane}}}</div>
+      </div>
+      {{/if}}
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isPredator}}
+    <section class="vtm5e-chargen-step">
+      <h2>Tipo de Predador</h2>
+      <p class="vtm5e-chargen-hint">Clique em um Tipo de Predador para ler sua descrição abaixo. Seus benefícios são aplicados ao clicar em Avançar; nesse momento, você também poderá fazer as escolhas necessárias (Disciplina, Especialização etc.).</p>
+      {{#if currentPredator}}<p class="vtm5e-chargen-hint">Escolha atual: <b>{{currentPredator.name}}</b>. Escolher outro substitui o atual. Se você já avançou além desta etapa, os benefícios da escolha anterior NÃO são desfeitos automaticamente; confira antes de trocar.</p>{{/if}}
+      <div class="vtm5e-chargen-card-grid">
+        {{#each predators}}
+          <div class="vtm5e-chargen-card {{#if this.selected}}selected{{/if}} {{#if this.unavailable}}unavailable{{/if}}" data-predator-id="{{this.id}}" {{#if this.unavailable}}title="Indisponível: {{this.unavailableReason}}"{{/if}}>
+            <img src="{{this.img}}" alt="{{this.name}}" />
+            <div class="vtm5e-chargen-card-name">{{this.name}}</div>
+            {{#if this.unavailable}}<div class="vtm5e-chargen-card-unavailable-tag">Indisponível</div>{{/if}}
+          </div>
+        {{/each}}
+      </div>
+      {{#if currentPredator}}
+      <div class="vtm5e-chargen-detail">
+        <h3>{{currentPredator.name}}</h3>
+        <div>{{{currentPredator.system.description}}}</div>
+      </div>
+      {{/if}}
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isMeritsflaws}}
+    <section class="vtm5e-chargen-step">
+      <h2>Qualidades, Defeitos e Antecedentes</h2>
+      <p class="vtm5e-chargen-hint">Distribuição do livro básico: 7 pontos em Qualidades e Antecedentes. Você deve escolher pelo menos 2 pontos em Defeitos <b>por conta própria, além dos</b> concedidos gratuitamente pelo Clã ou Tipo de Predador. Esses pontos gratuitos aparecem bloqueados abaixo e não contam para esse requisito nem para o bônus. Pontos em Defeitos escolhidos por você concedem até 2 pontos extras em Qualidades (1 para 1). Você pode escolher mais Defeitos, mas não receberá mais pontos extras.</p>
+      <p class="vtm5e-chargen-hint">O Antecedente <b>Recursos</b> (em Antecedentes, abaixo) define quanto dinheiro inicial você terá ao terminar. Quanto mais pontos, mais dinheiro para equipar seu personagem.</p>
+
+      {{#if thinBlood}}
+      <div class="vtm5e-chargen-tb-section">
+        <h3>Qualidades e Defeitos de Sangue-Ralo</h3>
+        <p class="vtm5e-chargen-hint">Personagens de sangue-ralo devem escolher de 1 a 3 Qualidades de Sangue-Ralo e o mesmo número de Defeitos de Sangue-Ralo. Eles não custam pontos e não contam para o limite de Qualidades e Antecedentes abaixo.</p>
+        <div class="vtm5e-chargen-tb-status {{#unless thinBlood.valid}}invalid{{/unless}}">
+          Qualidades: <b>{{thinBlood.meritsTaken}}</b>/3 &middot; Defeitos: <b>{{thinBlood.flawsTaken}}</b>/3
+          {{#if thinBlood.valid}} &middot; tudo certo{{else}} &middot; escolha de 1 a 3 de cada, em quantidades iguais{{/if}}
+        </div>
+        <div class="vtm5e-chargen-tb-columns">
+          <div>
+            <h4>Qualidades</h4>
+            {{#each thinBlood.merits}}
+              <div class="vtm5e-chargen-tb-item {{#if this.taken}}taken{{/if}}" data-action="toggleThinBloodItem" data-tb-id="{{this.id}}" title="{{this.description}}">
+                <span class="vtm5e-chargen-tb-item-name">{{this.name}}</span>
+                {{#if this.taken}}<span class="vtm5e-chargen-tb-check">✓</span>{{/if}}
+              </div>
+            {{/each}}
+          </div>
+          <div>
+            <h4>Defeitos</h4>
+            {{#each thinBlood.flaws}}
+              <div class="vtm5e-chargen-tb-item {{#if this.taken}}taken{{/if}}" data-action="toggleThinBloodItem" data-tb-id="{{this.id}}" title="{{this.description}}">
+                <span class="vtm5e-chargen-tb-item-name">{{this.name}}</span>
+                {{#if this.taken}}<span class="vtm5e-chargen-tb-check">✓</span>{{/if}}
+              </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+      {{/if}}
+
+      <div class="vtm5e-chargen-mf-pool">
+        <div class="vtm5e-chargen-mf-pool-stat">
+          <span>Qualidades / Antecedentes</span>
+          <b class="{{#if meritsFlaws.overBudget}}over{{/if}}">{{meritsFlaws.meritsSpent}} / {{meritsFlaws.poolMax}}</b>
+        </div>
+        <div class="vtm5e-chargen-mf-pool-stat">
+          <span>Defeitos escolhidos</span>
+          <b>{{meritsFlaws.flawsSpent}}</b>
+          <i>(+{{meritsFlaws.flawBonus}} ponto{{#unless meritsFlaws.flawBonus}}s{{/unless}} extra, máximo +2)</i>
+        </div>
+      </div>
+
+      {{#if meritsFlaws.owned.length}}
+      <div class="vtm5e-chargen-mf-owned">
+        <h3>Adquiridos</h3>
+        <ul>
+          {{#each meritsFlaws.owned}}
+            <li class="{{#if this.isFlaw}}flaw{{/if}}" title="{{this.description}}">
+              <span class="vtm5e-chargen-mf-owned-name">{{this.name}}</span>
+              <span class="vtm5e-chargen-mf-owned-dots">{{this.dotsDisplay}}</span>
+              {{#if this.isGranted}}<span class="vtm5e-chargen-mf-owned-tag">gratuito</span>{{/if}}
+              {{#if this.removable}}
+                {{#if this.compendiumId}}
+                  <button type="button" class="vtm5e-chargen-mf-owned-remove" data-action="adjustMeritFlaw" data-mf-id="{{this.compendiumId}}" data-n="0" title="Remover {{this.name}}">×</button>
+                {{else}}
+                  <button type="button" class="vtm5e-chargen-mf-owned-remove" data-action="removeOwnedFeature" data-item-id="{{this.actorItemId}}" title="Remover {{this.name}}">×</button>
+                {{/if}}
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+      {{/if}}
+
+      <input type="text" id="vtm5e-chargen-mf-search" placeholder="Buscar Qualidades, Defeitos e Antecedentes..." value="{{meritsFlaws.search}}" />
+
+      {{#each meritsFlaws.groups}}
+        <h3 class="vtm5e-chargen-mf-type-label">{{this.label}}</h3>
+        {{#each this.folders}}
+          <div class="vtm5e-chargen-mf-folder {{#if this.open}}open{{/if}}">
+            <button type="button" class="vtm5e-chargen-mf-folder-header" data-action="toggleMfFolder" data-folder="{{this.name}}">
+              <i class="fas fa-caret-right"></i> {{this.name}} <span class="vtm5e-chargen-mf-folder-count">({{this.items.length}})</span>
+            </button>
+            <div class="vtm5e-chargen-mf-folder-body">
+              {{#each this.items}}
+                <div class="vtm5e-chargen-mf-item {{#if this.unavailable}}unavailable{{/if}} {{#if this.expanded}}expanded{{/if}}">
+                  <div class="vtm5e-chargen-mf-item-main" {{#if this.unavailable}}title="Indisponível: {{this.unavailableReason}}"{{/if}}>
+                    <span class="vtm5e-chargen-mf-item-name" data-action="toggleMfItem" data-mf-item-id="{{this.id}}">
+                      <i class="fas fa-chevron-{{#if this.expanded}}up{{else}}down{{/if}} vtm5e-chargen-mf-item-caret"></i>
+                      {{this.name}}
+                      {{#if this.unavailable}}<span class="vtm5e-chargen-mf-unavailable-tag">indisponível</span>{{/if}}
+                    </span>
+                    {{#if this.fixedCost}}
+                      <button type="button" class="vtm5e-chargen-mf-fixed-btn {{#if this.owned}}taken{{/if}} {{#if this.lockedFixed}}locked{{/if}}" data-action="adjustMeritFlaw" data-mf-id="{{this.id}}" data-n="{{this.fixedCost}}" {{#if this.lockedFixed}}disabled{{/if}} {{#if this.unavailable}}disabled{{/if}} title="{{#if this.lockedFixed}}Concedido gratuitamente; não pode ser alterado aqui{{else if this.unavailable}}Indisponível: {{this.unavailableReason}}{{else}}Custo em pontos: {{this.fixedCost}}{{/if}}">
+                        <span class="vtm5e-chargen-mf-fixed-btn-dots">{{this.fixedCostDots}}</span>
+                        <span class="vtm5e-chargen-mf-fixed-btn-num">({{this.fixedCost}})</span>
+                      </button>
+                    {{else}}
+                      <span class="vtm5e-chargen-dots">
+                        {{#each this.dots}}
+                          <span class="vtm5e-chargen-dot {{#if this.filled}}filled{{/if}} {{#if this.locked}}locked{{/if}} {{#if this.capped}}capped{{/if}} {{#if ../unavailable}}unavailable{{/if}}" data-action="adjustMeritFlaw" data-mf-id="{{../id}}" data-n="{{this.n}}" title="{{#if this.locked}}Concedido gratuitamente; não pode ser alterado aqui{{else if ../unavailable}}Indisponível: {{../unavailableReason}}{{else if this.capped}}Limite atingido: {{this.capReason}}{{/if}}"></span>
+                        {{/each}}
+                      </span>
+                    {{/if}}
+                  </div>
+                  <p class="vtm5e-chargen-mf-item-desc">{{this.description}}</p>
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        {{/each}}
+      {{/each}}
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isTouchstones}}
+    <section class="vtm5e-chargen-step">
+      <h2>Pilares e Convicções</h2>
+      <p class="vtm5e-chargen-hint">Convicções são os dois ou três princípios dos quais o personagem não abre mão, independentemente do que a Besta queira. São limites concretos, como "Não vou ferir inocentes" ou "A família vem antes da Máscara". Pilares são as pessoas (às vezes um lugar ou uma causa) que mantêm essas Convicções vivas; normalmente há um por Convicção, alguém por quem o personagem ainda sangraria. Agir contra uma Convicção ou perder um Pilar aproxima o vampiro da Besta. Defini-los agora dá significado aos futuros testes de frenesi e degeneração. Normalmente são de 1 a 3 Convicções, com 1 Pilar por Convicção.</p>
+      <label>Convicções</label>
+      <textarea data-field="system.headers.tenets">{{tenets}}</textarea>
+      <label>Pilares</label>
+      <textarea data-field="system.headers.touchstones">{{touchstones}}</textarea>
+    </section>
+    {{/if}}
+
+    {{#if stepFlags.isFinal}}
+    <section class="vtm5e-chargen-step">
+      <h2>Toques Finais</h2>
+      <label>Nome do Personagem</label>
+      <input type="text" data-field="name" value="{{actor.name}}" />
+      <p class="vtm5e-chargen-hint">Este ainda é apenas o nome da sua conta. Dê ao personagem seu nome verdadeiro antes de terminar.</p>
+      <div class="vtm5e-chargen-final-grid">
+        <div><span>Vitalidade</span><b>{{health}}</b></div>
+        <div><span>Força de Vontade</span><b>{{willpower}}</b></div>
+        <div><span data-tooltip="Quanto da sua moralidade mortal você preservou diante da Besta. Humanidade baixa aumenta o risco de Máculas e frenesi." data-tooltip-direction="UP">Humanidade</span><b>{{humanity}}</b></div>
+        <div><span data-tooltip="A força e a idade da sua vitae. Uma Potência do Sangue maior fortalece as Disciplinas, mas agrava a Perdição e aumenta os custos em Fome." data-tooltip-direction="UP">Potência do Sangue</span><b>{{bloodPotency}}</b></div>
+        <div><span data-tooltip="Quanto cresceu a sede de sangue da Besta. Mais Fome significa mais dados de Fome nas rolagens e maior risco de Falha Bestial." data-tooltip-direction="UP">Fome</span><b>{{hunger}}</b></div>
+      </div>
+      <label>Senhor</label>
+      <input type="text" data-field="system.headers.sire" value="{{sire}}" />
+      <label>Data do Abraço</label>
+      <input type="text" data-field="system.bio.dateof.death" value="{{embraceDate}}" />
+      <p class="vtm5e-chargen-hint">Sugerida automaticamente a partir da Geração escolhida na etapa Conceito. É apenas uma estimativa baseada nas tabelas de geração do livro básico; altere como quiser.</p>
+    </section>
+    {{/if}}
+
+  </div>
+
+  <aside class="vtm5e-chargen-log">
+    <h3>Registro da Criação</h3>
+    {{#if log.length}}
+      <ul>
+        {{#each log}}<li>{{{this}}}</li>{{/each}}
+      </ul>
+    {{else}}
+      <p class="vtm5e-chargen-hint">Os benefícios automáticos aparecerão aqui conforme você fizer suas escolhas.</p>
+    {{/if}}
+  </aside>
+
+  <div class="vtm5e-chargen-nav">
+    <button type="button" data-action="prevStep" {{#if isFirstStep}}disabled{{/if}}>Voltar</button>
+    <div class="vtm5e-chargen-nav-right">
+      {{#if incompleteMessage}}<span class="vtm5e-chargen-nav-warning">{{incompleteMessage}}</span>{{/if}}
+      {{#if isLastStep}}
+        <button type="button" data-action="finishWizard" {{#if nextDisabled}}disabled{{/if}}>Concluir</button>
+      {{else}}
+        <button type="button" data-action="nextStep" {{#if nextDisabled}}disabled{{/if}}>Avançar</button>
+      {{/if}}
+    </div>
+  </div>
+</div>

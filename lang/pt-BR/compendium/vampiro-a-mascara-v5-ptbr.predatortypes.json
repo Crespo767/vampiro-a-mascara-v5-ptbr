@@ -1,0 +1,72 @@
+{
+ "label": "Tipos de Predador",
+ "mapping": {
+  "description": "system.description",
+  "bane": "system.bane"
+ },
+ "folders": {},
+ "entries": {
+  "2WJabZNXz9WOgyxw": {
+   "name": "Osíris",
+   "description": "<p>Você é uma celebridade entre os mortais ou então dirige um culto, uma igreja ou algo do tipo. Você se alimenta dos seus fãs ou adoradores, que o tratam como uma divindade. Você sempre tem acesso a sangue fácil, mas seguidores costumam criar problemas com as autoridades, a religião organizada e até a Camarilla. Em vida, você pode ter sido um DJ, escritor, cultista, pregador ou organizador de Live Actions (LARPs).</p><ul><li>Adicione uma especialização: Ocultismo (tradição específica) ou Performance (campo específico de entretenimento)</li><li>Ganhe um ponto em Feitiçaria de Sangue (somente Tremere ou Banu Haqim) ou Presença</li><li>Gaste três pontos entre os Antecedentes Fama e Rebanho</li><li>Gaste dois pontos entre os Defeitos Inimigos e Defeitos Míticos</li></ul>"
+  },
+  "BiHisvxqwzUcZGiC": {
+   "name": "Fazendeiro",
+   "description": "<p>Você só se alimenta de animais. Sua fome o atormenta constantemente, mas você não matou um ser humano sequer até agora (exceto, quem sabe, uma vez), e pretende manter assim. Você poderia ter sido qualquer um em vida, mas sua escolha descreve alguém obcecado pela moralidade. Talvez em vida você tenha sido um ativista, um padre, um voluntário do serviço humanitário ou um vegano, mas a opção de nunca colocar em risco uma vida humana pode ser assumida e mantida a algum custo por qualquer um. Os Ventrue não podem escolher este tipo de Predador.</p><p>Você não pode escolher Fazendeiro se sua Potência de Sangue for 3 ou mais.</p><ul><li>Adicione uma especialização: Empatia com Animais (Animal Específico) ou Sobrevivência (Caça)</li><li>Ganhe um ponto em Animalismo ou Proteanismo</li><li>Ganhe um ponto em Humanidade</li><li>Ganhe o Defeito Alimentação: (••) Fazendeiro</li></ul>"
+  },
+  "DfK1KxVU0mmaQuSL": {
+   "description": "<p>Você recorre à sua familiaridade com uma determinada subcultura e uma postura bem-trabalhada, alimentando-se dos membros daquele grupo, que acreditam que você é uma deles. Suas vítimas o adoram por seu status na cena, e aquelas que entendem o que você realmente é são desacreditadas. Você pode pertencer às ruas ou à classe alta, abusando dos fracos com falsas esperanças e promessas de ajudá-los a subir de vida. Quando vivo, você certamente pertencia a uma cena semelhante àquela que ronda agora.</p><ul><li>Adicione uma especialização: Etiqueta (cena específica), Liderança (cena específica) ou Manha (cena específica)</li><li>Ganhe um ponto em Dominação ou Potência</li><li>Ganhe a Vantagem Fama: (•)</li><li>Ganhe a Vantagem Contatos: (•)</li><li>Ganhe o Defeito Influência (•): Rejeitado (fora de sua subcultura) ou o Defeito Alimentação (•): Exclusão de Presa (uma subcultura diferente da sua)</li></ul>"
+  },
+  "JYMizUf0e6TewnvS": {
+   "description": "<p>Você recorre à sua discrição ou Disciplinas para se alimentar de vítimas adormecidas. Se elas nunca acordarem durante a alimentação, não saberão que você existe. Talvez você tenha sido muito antissocial em vida; você não se sente preparado para a intensa vida noturna interpessoal ou a violência física de caçadores mais extrovertidos.</p><ul><li>Adicione uma especialização: Medicina (Anestésicos) ou Furtividade (Invasão)</li><li>Ganhe um ponto em Auspícios ou Ofuscação</li><li>Ganhe um ponto em Recursos</li></ul>"
+  },
+  "SrHOSM0ISGpTdEME": {
+   "name": "Sereia",
+   "description": "<p>Você se alimenta quase exclusivamente durante ou enquanto finge fazer sexo, e confia nas suas Disciplinas, talento para sedução ou apetite insaciável dos outros para esconder sua natureza carnívora. Você dominou a arte do sexo casual ou percorreu a cena dos clubes noturnos como uma estrela sombria. Você se considera uma fera sensual, mas em seus momentos mais sombrios, teme ser, na melhor das hipóteses, um amante problemático e, na pior, um estuprador reincidente. Um ex-amante que escapou da destruição pode ser seu Pilar ou seu perseguidor (se for o caso, adicione-o ao Mapa de Relacionamentos). Talvez em vida você tenha sido um artista da sedução, produtor de cinema, autor, tarado glorioso – ou um virgem que pretende compensar o tempo perdido post-mortem.</p><ul><li>Adicione uma especialização: Persuasão (Sedução) ou Subterfúgio (Sedução)</li><li>Ganhe um ponto em Fortitude ou Presença</li><li>Ganhe a Qualidade Visual (••): Belo</li><li>Ganhe o Defeito Inimigo (•): Um amante desprezado ou parceiro ciumento</li></ul>"
+  },
+  "TxZJ9fBUa2qzNt2V": {
+   "name": "Consensualista",
+   "description": "<p>Você nunca se alimenta contra o livre-arbítrio de sua vítima. Por exemplo, você se disfarça como coletor de sangue para caridade, como pervertido de carteirinha bebedor de sangue na \"comunidade real de vampiros\", ou dizendo a verdade para suas vítimas e obtendo permissão para se alimentar. A Camarilla chama este último método de uma quebra da Máscara, porém muitos filósofos Anarchs o consideram um risco aceitável. Você poderia ter sido qualquer coisa em vida, mas um profissional do sexo, um coordenador político ou um advogado seriam reticentes em se alimentar sem consentimento.</p><ul><li>Adicione uma especialização: Medicina (Flebotomia) ou Persuasão (Bolsas)</li><li>Ganhe um ponto em Auspícios ou Fortitude</li><li>Ganhe um ponto em Humanidade</li><li>Ganhe o Defeito Segredo Sombrio: (•) Quebrador da Máscara</li><li>Ganhe o Defeito Alimentação (•): Exclusão de Presa (sem consentimento)</li></ul>"
+  },
+  "YT0OSIKHQdaY43Qv": {
+   "name": "Vira-lata",
+   "description": "<p>Um combativo caçador de assalto, você persegue, domina e bebe de quem puder, quando puder. Você pode ou não tentar ameaçar ou usar Dominação em suas vítimas a fim de silenciá-las ou fazer a alimentação parecer um roubo. Pense em como você chegou a esta abordagem direta de alimentação e o que o deixa confortável com a não vida de perseguir, atacar, alimentar-se e fugir. Você pode ter sido um sem-teto, um soldado das forças especiais, um assassino dos cartéis ou um caçador de animais selvagens.</p><ul><li>Adicione uma especialização: Intimidação (Assalto à Mão Armada) ou Briga (Agarramento)</li><li>Ganhe um ponto em Celeridade ou Potência</li><li>Perca um ponto de Humanidade</li><li>Ganhe três pontos em Contatos criminosos</li></ul>"
+  },
+  "c6Qw2m1TbtdbZDVj": {
+   "name": "Trinchador",
+   "description": "<p>Você se alimenta em segredo da sua família e amigos mortais (ou da família ou amigos de outra pessoa), com quem ainda mantém ligação. Os Trinchadores mais extremos adotam filhos, casam-se com um humano e tentam manter uma vida familiar o maior tempo possível. Adicione sua família ao Mapa de Relacionamentos.</p><p>Trinchadores costumam fazer grandes esforços para esconder a verdadeira condição da família, mas alguns também mantêm relacionamentos prejudiciais com sua própria espécie. A Camarilla proíbe que se assuma uma família humana dessa maneira, desaprovando os Trinchadores como brechas na Máscara prestes a acontecerem. Alguns Membros costumam chamar os Trinchadores de forma desdenhosa: caseiros, domésticos ou mesmo “Machados” (como um sobrenome familiar, não a arma) são exemplos comuns. Os Membros mais sábios podem massacrar a família de um Trinchador para o bem dele próprio se descobrirem seu segredo e se se importarem com o que acontecerá com ele.</p><ul><li>Adicione uma especialização: Persuasão (Gaslighting) ou Subterfúgio (Encobrimento)</li><li>Ganhe um ponto em Dominação ou Animalismo</li><li>Ganhe o Defeito Segredo Sombrio (•): Trinchador</li><li>Ganhe a Vantagem Rebanho (••)</li></ul>"
+  },
+  "eunX1ZMlSUN0mdpi": {
+   "name": "Sacoleiro",
+   "description": "<p>Você rouba, compra ou adquire sangue frio em vez de caçar, recorrendo ao mercado negro ou às suas habilidades como assaltante ou perseguidor de ambulância. Talvez você ainda trabalhe no turno da noite em um hospital. Os Ventrue não podem escolher este tipo de predador.</p><ul><li>Adicione uma especialização: Ladroagem (Abrir Fechaduras) ou Manha (Mercado Negro)</li><li>Ganhe um ponto em Feitiçaria de Sangue (somente Tremere ou Banu Haqim) ou Ofuscação</li><li>Ganhe a Qualidade Alimentação (•••): Esôfago de Ferro</li><li>Ganhe o Defeito Inimigo (••): Ou alguém acredita que você lhe deve ou há outro motivo para você ficar fora das ruas.</li></ul>"
+  },
+  "v1cCTPTzQNwVPN7T": {
+   "name": "Sanguessuga",
+   "description": "<p>Você bebe de outros vampiros, seja caçando, coagindo ou recebendo Sangue como pagamento – a única maneira verdadeiramente moral de se alimentar na qual você consegue pensar. Infelizmente, essa prática costuma ser proibida na sociedade dos Membros. Ou é arriscada pra caralho ou requer uma posição de poder invejável.</p><ul><li>Adicione uma especialização: Briga (Membros) ou Furtividade (contra Membros)</li><li>Ganhe um ponto em Celeridade ou Proteanismo</li><li>Perca um ponto em Humanidade</li><li>Aumente a Potência de Sangue em um</li><li>Ganhe o Defeito Segredo Sombrio (••): Diablerista, ou o Defeito Segregado: (••)</li><li>Ganhe o Defeito Alimentação (••): Exclusão de Presa (mortais)</li></ul>"
+  },
+  "GxpSYTEXVPTjhUoX": {
+   "name": "Extorsionista",
+   "description": "<p>Você obriga suas vítimas a pagar em sangue por proteção, vigilância ou outros serviços. A ameaça contra a qual oferece proteção pode ser real ou ter sido criada por você para tornar a extorsão mais fácil de aceitar.</p><ul><li>Adicione uma especialização: Intimidação (Coerção) ou Ladroagem (Segurança)</li><li>Ganhe um ponto em Dominação ou Potência</li><li>Distribua três pontos entre os Antecedentes Contatos e Recursos</li><li>Ganhe o Defeito Inimigo (••): a polícia ou uma vítima que escapou da extorsão e busca vingança</li></ul><p><em>Tradução não oficial — Guia do Jogador, p. 107.</em></p>"
+  },
+  "rQ5B2X8Q01GmWtvp": {
+   "name": "Ladrão de Túmulos",
+   "description": "<p>Você busca sangue entre cadáveres recentes e também caça enlutados, visitantes e pacientes em cemitérios e hospitais. A Ressonância Melancólica o atrai, e seus hábitos podem exigir um Refúgio ou contatos ligados a uma igreja, hospital ou necrotério.</p><ul><li>Adicione uma especialização: Ocultismo (Rituais Funerários) ou Medicina (Cadáveres)</li><li>Ganhe um ponto em Fortitude ou Oblívio</li><li>Ganhe a Qualidade Alimentação (•••): Esôfago de Ferro</li><li>Ganhe um ponto em Refúgio</li><li>Ganhe o Defeito Rebanho (••): Predador Óbvio; sua frieza torna seu comportamento profundamente perturbador durante a caça</li></ul><p><em>Tradução não oficial — Guia do Jogador, p. 108.</em></p>"
+  },
+  "hVew8wbdIZIqrz87": {
+   "name": "Ceifador",
+   "description": "<p>Você se alimenta apenas de pessoas próximas da morte, procurando vítimas em locais como abrigos, casas de repouso e instituições de cuidados paliativos. Em busca de novas presas, raramente consegue permanecer muito tempo no mesmo lugar.</p><ul><li>Adicione uma especialização: Percepção (Morte) ou Ladroagem (Falsificação)</li><li>Ganhe um ponto em Auspícios ou Oblívio</li><li>Ganhe um ponto em Aliados ou Influência na comunidade médica</li><li>Ganhe um ponto em Humanidade</li><li>Ganhe o Defeito Alimentação (•): Exclusão de Presa (mortais saudáveis)</li></ul><p><em>Tradução não oficial — Guia do Jogador, p. 108.</em></p>"
+  },
+  "Gt2SNQvljJ4Ey0gx": {
+   "name": "Montero",
+   "description": "<p>Como os caçadores da antiga montería espanhola, você usa uma equipe para conduzir a presa até você. Seus Lacaios podem organizar uma perseguição, uma fraude elaborada ou outro artifício para levar a vítima ao lugar escolhido.</p><ul><li>Adicione uma especialização: Liderança (Matilha de Caça) ou Furtividade (Tocaia)</li><li>Ganhe um ponto em Dominação ou Ofuscação</li><li>Ganhe dois pontos em Lacaios</li><li>Perca um ponto de Humanidade</li></ul><p><em>Tradução não oficial — Guia do Jogador, p. 108.</em></p>"
+  },
+  "i51s3f1mytM8SjTa": {
+   "name": "Perseguidor",
+   "description": "<p>Você estuda a rotina da vítima e procura pessoas cujo desaparecimento dificilmente chamará atenção. Depois, acompanha sua presa pela noite até chegar o momento de atacar.</p><ul><li>Adicione uma especialização: Investigação (Perfil) ou Furtividade (Sombra)</li><li>Ganhe um ponto em Animalismo ou Auspícios</li><li>Ganhe a Qualidade Sabujo de Sangue (•)</li><li>Ganhe um ponto em Contatos entre pessoas do seu território de caça que possam informar sobre suas vítimas</li><li>Perca um ponto de Humanidade</li></ul><p><em>Tradução não oficial — Guia do Jogador, p. 108–109.</em></p>"
+  },
+  "YytG5auTyuQu7VYf": {
+   "name": "Alçapão",
+   "description": "<p>Você prepara seu próprio território de caça e atrai as vítimas para dentro dele. Pode receber visitantes em um estabelecimento ou esperar intrusos em um imóvel, alimentando-se quando estiverem ao seu alcance.</p><ul><li>Adicione uma especialização: Persuasão (Marketing) ou Furtividade (Emboscadas ou Armadilhas)</li><li>Ganhe um ponto em Proteanismo ou Ofuscação</li><li>Ganhe um ponto em Refúgio</li><li>Ganhe um ponto em Lacaios ou Rebanho, ou um segundo ponto em Refúgio</li><li>Ganhe um Defeito de Refúgio: Assustador (•) ou Assombrado (•)</li></ul><p><em>Tradução não oficial — Guia do Jogador, p. 109.</em></p>"
+  }
+ }
+}
