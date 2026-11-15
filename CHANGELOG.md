@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.2.0 — Regras sem item no Diário
+- **Diário "Regras do Guia do Jogador"** ganha 5 entradas: **Carniçais** e **Mortais** (texto oficial do Companion, com as mudanças do Guia do Jogador em notas), **Sistemas de Coterie** (mudança de coterie, Coteries Fortes, criação de Domínio expandida), **Memoriam e Projetos** (versões simplificadas do Guia) e **Regras Opcionais do Companion** (Compulsões em Críticos Bestiais, Pegar a Metade).
+- **Notas do módulo** em Influenciar o Bando, Escamas de Górgona, Manto Estígio e Amaranto Florido, com uma leitura sugerida onde o livro não define a regra.
+- Termos: "Pilar" (no lugar de "Pedra de Toque") e "crítico bestial" (no lugar de "crítico bagunçado"), como no Manual Básico.
+
 ## 1.1.2 — Revisão do Guia do Jogador
 - **Leituras duvidosas do Guia** conferidas com o original em inglês: 96 trechos, com 10 correções. Entre elas: Aura de Decadência (o dano Superficial à Saúde não é reduzido pela metade), Lista de Amigos, Marcado por Palavras, Contato Contextual, Criptoleto e cinco páginas do Diário de Tipos de Coterie.
 - **Divergências do próprio livro:** vale a descrição detalhada em Campeões, Sabotadores e Vigilantes (a tabela do Diário foi ajustada), e a linha de parada em Cinzas às Cinzas (Vigor + Medicina, ou Vigor + Fortitude).

@@ -49,7 +49,7 @@ Os compêndios aparecem na aba **Compêndios**, dentro da pasta *Vampiro a Másc
 | Potência de Sangue | 0 a 6+ |
 | Vantagens e Defeitos | 210: Antecedentes, Qualidades e Defeitos gerais, de Refúgio, de Caitiff, de Carniçal e de Sangue-Ralo; Favores e Dívidas; **Variantes da Perdição**; Qualidades e Defeitos de **Coterie**, de **Domínio** e de Coterie por clã |
 | Folhas de História | 7 Linhagens Hecata do Guia do Jogador, uma pasta por Folha e um item por nível |
-| Regras do Guia do Jogador | Diário com os 21 **Tipos de Coterie** e a introdução de criação de coterie |
+| Regras do Guia do Jogador | Diário com os 21 **Tipos de Coterie**, **Carniçais**, **Mortais**, **Sistemas de Coterie**, **Memoriam e Projetos** e **Regras Opcionais do Companion** |
 | Equipamento | Armas, armaduras e equipamentos (ainda em inglês) |
 
 ### Ferramentas
