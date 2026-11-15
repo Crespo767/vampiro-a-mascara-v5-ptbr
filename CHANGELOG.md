@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## Não lançado
+
+- **Clãs do Companion no compêndio:** Ravnos, Salubri e Tzimisce passam a citar a fonte ("Fonte: Vampiro: A Máscara — Companion, p. N") na descrição e na Perdição. A Perdição do Salubri ganha a Nota do módulo que a ficha já mostrava: nos dois casos vale a Gravidade da Perdição do Salubri.
+
 ## 1.3.0 — Criação automática de PJ
 
 - **Criação automática de PJ** por macro (`chargen/macros/Criar_PJ_Automatico.js`): um vampiro completo e sorteado, com semente reproduzível, as mesmas regras e a mesma auditoria do assistente, resumo privado no chat e exclusão do Ator em caso de erro.
