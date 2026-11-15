@@ -1,8 +1,8 @@
 # Histórico de versões
 
-## Não lançado
+## 1.3.0 — Criação automática de PJ
 
-- **Criação automática de PJ** por macro (`Macros/macros_txt/Criar_PJ_Automatico.txt`): um vampiro completo e sorteado, com semente reproduzível, as mesmas regras e a mesma auditoria do assistente, resumo privado no chat e exclusão do Ator em caso de erro.
+- **Criação automática de PJ** por macro (`chargen/macros/Criar_PJ_Automatico.js`): um vampiro completo e sorteado, com semente reproduzível, as mesmas regras e a mesma auditoria do assistente, resumo privado no chat e exclusão do Ator em caso de erro.
 - **Assistente de criação conforme o Manual Básico:**
   - Disciplinas de clã 2+1 (p. 136); Caitiff escolhe duas Disciplinas quaisquer.
   - Caitiff começa com o Defeito Suspeito e não compra Status na criação (p. 107).
@@ -12,6 +12,7 @@
   - Vitalidade (Vigor + 3) e Força de Vontade (Autocontrole + Determinação) passam a ser gravadas na ficha (p. 136); antes ficavam no padrão 5 do sistema.
 - **Pastas em português no compêndio de Vantagens e Defeitos:** a seção de Sangue-Ralo voltou a aparecer, e as Qualidades e Defeitos de Sangue-Ralo não aparecem mais na lista geral. Itens de Caitiff só ficam disponíveis para Caitiff.
 - Especializações dos Tipos de Predador do Guia do Jogador (Montero, Extorsionista, Alçapão, Ceifador, Perseguidor e Ladrão de Túmulos) aparecem em português no assistente e na ficha.
+- Diálogo de Disciplina informa "2 pontos" quando o Clã concede 2; o resumo do macro no chat usa os nomes em português.
 - Os campos de texto do assistente não voltam mais ao topo da janela a cada alteração.
 
 ## 1.2.0 — Regras sem item no Diário
