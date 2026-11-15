@@ -1,6 +1,6 @@
 # Histórico de versões
 
-## Não lançado
+## 1.3.1 — Fonte do Companion nos clãs
 
 - **Clãs do Companion no compêndio:** Ravnos, Salubri e Tzimisce passam a citar a fonte ("Fonte: Vampiro: A Máscara — Companion, p. N") na descrição e na Perdição. A Perdição do Salubri ganha a Nota do módulo que a ficha já mostrava: nos dois casos vale a Gravidade da Perdição do Salubri.
 
