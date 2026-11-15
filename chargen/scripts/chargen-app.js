@@ -1,4 +1,4 @@
-import { applyTrackedGrants, clearTrackedGrants, checkRestrictions, checkConflicts, getRatingCap } from './grant-engine.js'
+import { applyTrackedGrants, clearTrackedGrants, checkRestrictions, checkConflicts, getRatingCap, clanCreationGrants, chargenPurchaseBlock, featureCategory, REQUIRED_SPECIALTY_SKILLS, applyFreeSpecialties, applyDerivedTrackers, extraAdvantagePoints, baseSkillValue } from './grant-engine.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
@@ -16,13 +16,13 @@ const STEPS = [
 // [vtm5e-ptbr] rótulos exibidos dos grupos (as chaves continuam internas)
 const GROUP_LABELS = { physical: 'Físicos', social: 'Sociais', mental: 'Mentais' }
 
-const ATTRIBUTE_GROUPS = {
+export const ATTRIBUTE_GROUPS = {
   physical: ['strength', 'dexterity', 'stamina'],
   social: ['charisma', 'manipulation', 'composure'],
   mental: ['intelligence', 'wits', 'resolve']
 }
 
-const SKILL_GROUPS = {
+export const SKILL_GROUPS = {
   physical: ['athletics', 'brawl', 'craft', 'drive', 'firearms', 'larceny', 'melee', 'stealth', 'survival'],
   social: ['animalken', 'etiquette', 'insight', 'intimidation', 'leadership', 'performance', 'persuasion', 'streetwise', 'subterfuge'],
   mental: ['academics', 'awareness', 'finance', 'investigation', 'medicine', 'occult', 'politics', 'science', 'technology']
@@ -80,12 +80,12 @@ const SKILL_TOOLTIPS = {
 // Attributes at 3; four Attributes at 2; one Attribute at 1." All 9
 // Attributes get assigned - the counts sum to exactly 9, so nothing is
 // left at 0 and nothing goes above 4 during chargen.
-const ATTRIBUTE_RATING_QUOTA = { 4: 1, 3: 3, 2: 4, 1: 1 }
+export const ATTRIBUTE_RATING_QUOTA = { 4: 1, 3: 3, 2: 4, 1: 1 }
 
 // Same source: "Pick one Skill distribution." Each option is an exact
 // count of Skills at each rating - not a freeform point pool. Whatever
 // Skills aren't covered by the chosen distribution's counts stay at 0.
-const SKILL_DISTRIBUTIONS = {
+export const SKILL_DISTRIBUTIONS = {
   jackOfAllTrades: {
     label: 'Pau pra Toda Obra',
     description: 'Uma Habilidade em •••, oito Habilidades em •• e dez Habilidades em •.',
@@ -114,7 +114,7 @@ const MIN_REQUIRED_FLAW_DOTS = 2
 // generation (the value a freshly-made character starts at; it can only
 // go up from there through play, per the same table's max column and the
 // "Blood Potency increases with age" rule on the same page).
-const GENERATION_INFO = {
+export const GENERATION_INFO = {
   '4th': { bp: 5, era: 'Matusalém: Abraçado há mais de 1.000 anos' },
   '5th': { bp: 4, era: 'Matusalém: Abraçado há mais de 1.000 anos' },
   '6th': { bp: 3, era: 'Ancião: Abraçado há cerca de 200 a 1.000 anos' },
@@ -331,6 +331,11 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       attributeBudget,
       skills,
       skillBudget,
+      specialties: {
+        required: REQUIRED_SPECIALTY_SKILLS.filter(id => baseSkillValue(actor, id) > 0).map(id => ({ ...this.#dotRow('skills', id), value: actor.flags?.[MODULE_ID]?.freeSpecialties?.[id] ?? '' })),
+        options: Object.values(SKILL_GROUPS).flat().filter(id => baseSkillValue(actor, id) > 0).map(id => ({ ...this.#dotRow('skills', id), selected: actor.flags?.[MODULE_ID]?.freeSpecialties?.free?.skill === id })),
+        freeLabel: actor.flags?.[MODULE_ID]?.freeSpecialties?.free?.label ?? ''
+      },
       clans: this.clanItems
         .map(c => ({ id: c.id, name: c.name, img: c.img, description: c.system.description, bane: c.system.bane, selected: currentClan?.name === c.name }))
         .sort((a, b) => a.name.localeCompare(b.name)),
@@ -389,7 +394,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     const counts = {}
     for (const id of ids) {
       if (id === excludeId) continue
-      const value = this.actor.system[category]?.[id]?.value ?? 0
+      const value = category === 'skills' ? baseSkillValue(this.actor, id) : (this.actor.system[category]?.[id]?.value ?? 0)
       if (value > 0) counts[value] = (counts[value] || 0) + 1
     }
     return counts
@@ -420,11 +425,8 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     }
   }
 
-  // Corebook budget: 7 dots of Merits/Backgrounds, plus up to 2 bonus dots
-  // refunded 1:1 for dots of Flaws taken (extra Flaw dots beyond 2 are
-  // still allowed, they just stop granting bonus points). Dots that came
-  // free from a grant (flags.vampiro-a-mascara-v5-ptbr.grantedPoints) never count
-  // against either side of the pool.
+  // Manual Básico p. 136 e 150: 7 pontos, mais até 2 por decisão do Narrador.
+  // Pontos concedidos não contam como compras ou Defeitos voluntários.
   #meritPoolStatus () {
     let meritsSpent = 0
     let flawsSpent = 0
@@ -437,9 +439,9 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       if (featuretype === 'flaw') flawsSpent += purchased
       else meritsSpent += purchased
     }
-    const flawBonus = Math.min(flawsSpent, 2)
-    const poolMax = 7 + flawBonus
-    return { meritsSpent, flawsSpent, flawBonus, poolMax, remaining: poolMax - meritsSpent }
+    const extra = extraAdvantagePoints()
+    const poolMax = 7 + extra
+    return { meritsSpent, flawsSpent, extra, poolMax, remaining: poolMax - meritsSpent }
   }
 
   // Gates the Next/Finish button on the step actually being finished per
@@ -483,9 +485,10 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
             const diff = Number(allowed) - (counts[rating] || 0)
             return diff > 0 ? `${diff} a mais em ${'•'.repeat(Number(rating))}` : `${-diff} acima do permitido em ${'•'.repeat(Number(rating))}`
           })
-        return missing.length === 0
-          ? { complete: true }
-          : { complete: false, message: `A distribuição ${dist.label} ainda não terminou; faltam: ${missing.join(', ')}.` }
+        if (missing.length) return { complete: false, message: `A distribuição ${dist.label} ainda não terminou; faltam: ${missing.join(', ')}.` }
+        const specialties = this.actor.flags?.[MODULE_ID]?.freeSpecialties ?? {}
+        if (REQUIRED_SPECIALTY_SKILLS.some(id => baseSkillValue(this.actor, id) > 0 && !String(specialties[id] ?? '').trim()) || !baseSkillValue(this.actor, specialties.free?.skill) || !String(specialties.free?.label ?? '').trim()) return { complete: false, message: 'Preencha as Especializações gratuitas e escolha uma Habilidade com pontos para a Especialização livre.' }
+        return { complete: true }
       }
 
       case 'clan':
@@ -503,8 +506,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
         // Predator type" (p.136) - the corebook is explicit that this is
         // separate from, not inclusive of, whatever a grant already forced
         // on the character. #meritPoolStatus().flawsSpent already excludes
-        // granted dots for exactly this reason (it's the same number that
-        // drives the merit-pool bonus), so reuse it here instead of
+        // granted dots for exactly this reason, so reuse it here instead of
         // counting all Flaw dots on the sheet.
         const flawsSpent = this.#meritPoolStatus().flawsSpent
         if (flawsSpent < MIN_REQUIRED_FLAW_DOTS) {
@@ -540,6 +542,50 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     }
   }
 
+  auditAllSteps (meritsFlawsItems) {
+    this.meritsFlawsItems = meritsFlawsItems
+    const previous = this.stepIndex
+    try {
+      const failures = STEPS.flatMap((step, index) => {
+        this.stepIndex = index
+        const result = this.#currentStepCompletion()
+        return result.complete ? [] : [`${step.label}: ${result.message}`]
+      })
+      const pool = this.#meritPoolStatus()
+      if (pool.meritsSpent !== pool.poolMax) failures.push(`Vantagens: gastos ${pool.meritsSpent} de ${pool.poolMax} pontos.`)
+      for (const item of this.actor.items.filter(i => i.type === 'feature')) {
+        const reason = chargenPurchaseBlock(this.actor, item)
+        if (reason && (item.system.points ?? 0) > (item.flags?.[MODULE_ID]?.grantedPoints ?? 0)) failures.push(reason)
+      }
+      const applied = this.actor.flags?.[MODULE_ID]?.appliedFreeSpecialties ?? []
+      const data = this.actor.flags?.[MODULE_ID]?.freeSpecialties ?? {}
+      const expected = REQUIRED_SPECIALTY_SKILLS.filter(id => baseSkillValue(this.actor, id) > 0).map(skill => ({ skill, label: String(data[skill] ?? '').trim() }))
+      expected.push({ skill: data.free?.skill, label: String(data.free?.label ?? '').trim() })
+      if (applied.length !== expected.length || expected.some((e, i) => e.skill !== applied[i]?.skill || e.label !== applied[i]?.label) || applied.some(e => !(this.actor.system.skills?.[e.skill]?.bonuses ?? []).some(b => b.source === e.label && b.value === 1 && b.paths?.includes(`skills.${e.skill}`)))) failures.push('Especializações gratuitas não foram aplicadas corretamente.')
+      const clan = this.actor.items.find(i => i.type === 'clan')
+      const grants = clanCreationGrants(clan)
+      const clanEntries = this.actor.flags?.[MODULE_ID]?.grantLedger?.clan?.entries ?? []
+      const disciplineGrant = grants.find(g => g.type === 'clanDisciplines')
+      const dots = clanEntries.filter(e => e.type === 'disciplineDot')
+      if (disciplineGrant) {
+        const allowed = disciplineGrant.choices.map(c => { const id = typeof c === 'string' ? c : c.discipline; return id === 'bloodsorcery' ? 'sorcery' : id })
+        if (dots.length !== 2 || dots[0].amount !== 2 || dots[1].amount !== 1 || dots[0].discipline === dots[1].discipline || dots.some(e => !allowed.includes(e.discipline) || (this.actor.system.disciplines?.[e.discipline]?.value ?? 0) < e.amount)) failures.push('Clã: Disciplinas iniciais inválidas.')
+      }
+      for (const entry of this.actor.flags?.[MODULE_ID]?.grantLedger?.predator?.entries ?? []) {
+        const value = this.actor.system.skills?.[entry.skill]?.value ?? 0
+        if (entry.type === 'skillDot' && (value - baseSkillValue(this.actor, entry.skill) !== 1 || baseSkillValue(this.actor, entry.skill) !== 0)) failures.push(`Tipo de Predador: o ponto em ${entry.skill} só vale para Habilidade sem pontos (Manual Básico p. 149).`)
+        if (entry.type === 'specialty' && baseSkillValue(this.actor, entry.skill) <= 0) failures.push(`Tipo de Predador: especialização em ${entry.skill}, Habilidade sem pontos (Manual Básico p. 149).`)
+      }
+      const predatorEntries = this.actor.flags?.[MODULE_ID]?.grantLedger?.predator?.entries ?? []
+      if (predatorEntries.some(e => e.type === 'skillDot' && predatorEntries.some(o => o.type === 'specialty' && o.skill === e.skill))) failures.push('Tipo de Predador: concedeu ponto e especialização na mesma Habilidade.')
+      if (enName(clan) === 'Thin-Blooded' && Object.values(this.actor.system.disciplines ?? {}).some(d => d.value > 0)) failures.push('Clã: Sangue-Ralo recebeu Disciplina intrínseca.')
+      if (enName(clan) === 'Caitiff' && !clanEntries.some(e => e.type === 'meritFlaw' && e.name === 'Suspect' && e.amount === 1)) failures.push('Clã: falta o Defeito Suspeito concedido.')
+      return failures
+    } finally {
+      this.stepIndex = previous
+    }
+  }
+
   #buildMeritsFlawsView () {
     const pool = this.#meritPoolStatus()
     const search = (this.mfSearch || '').trim().toLowerCase()
@@ -560,8 +606,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       // (configure-meritsflaws-clan-only-restrictions.js) staying in sync
       // with whatever's currently in the pack. Folder-name detection can't
       // drift out of date the way a hardcoded name list can.
-      const rawFolderName = doc.folder?.name ?? ''
-      if (/^Thin-Blood (Merits|Flaws)/.test(rawFolderName)) continue
+      if (['thinBloodMerit', 'thinBloodFlaw'].includes(featureCategory(doc))) continue
 
       const existing = this.actor.items.find(i => i.type === 'feature' && i.name === doc.name)
       const grantedPoints = existing?.flags?.['vampiro-a-mascara-v5-ptbr']?.grantedPoints ?? 0
@@ -581,8 +626,10 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       // greyed out, just possibly capped from going higher (handled by
       // the same check in #setMeritFlawRating when they try to increase).
       let unavailableReasons = []
+      const purchaseBlock = chargenPurchaseBlock(this.actor, doc)
+      if (purchaseBlock) unavailableReasons.push(purchaseBlock)
       if (!existing) {
-        unavailableReasons = checkRestrictions(this.actor, doc.flags?.['vampiro-a-mascara-v5-ptbr']?.restrictions ?? [])
+        unavailableReasons.push(...checkRestrictions(this.actor, doc.flags?.['vampiro-a-mascara-v5-ptbr']?.restrictions ?? []))
         const conflicts = checkConflicts(this.actor, doc.name, doc.flags?.['vampiro-a-mascara-v5-ptbr']?.conflictsWith ?? [])
         if (conflicts.length > 0) unavailableReasons = [...unavailableReasons, `Entra em conflito com ${conflicts.join(', ')}, que você já possui.`]
       }
@@ -682,9 +729,8 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     const merits = []
     const flaws = []
     for (const doc of this.meritsFlawsItems || []) {
-      const folderName = doc.folder?.name ?? ''
-      const isFlaw = /^Thin-Blood Flaws/.test(folderName)
-      const isMerit = /^Thin-Blood Merits/.test(folderName)
+      const isFlaw = featureCategory(doc) === 'thinBloodFlaw'
+      const isMerit = featureCategory(doc) === 'thinBloodMerit'
       if (!isFlaw && !isMerit) continue
 
       const existing = this.actor.items.find(i => i.type === 'feature' && i.name === doc.name)
@@ -744,7 +790,10 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     this.element.querySelectorAll('[data-field]').forEach(el => {
       el.addEventListener('change', async (event) => {
         const field = event.currentTarget.dataset.field
-        await this.actor.update({ [field]: event.currentTarget.value })
+        const value = event.currentTarget.value
+        // Mantém a posição: os campos de Especialização ficam no fim da etapa de Habilidades.
+        this.#preserveScroll()
+        await this.actor.update({ [field]: value })
         // Re-render so the Next button's gate (e.g. Concept/Ambition/Desire
         // on the concept step) picks up the new value immediately - 'change'
         // only fires on blur/enter, so focus is already gone and there's
@@ -817,7 +866,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       pickLabel: 'Clã',
       name: clanItem.name,
       sourceLabel: `Clã: ${clanItem.name}`,
-      grants: clanItem.flags?.['vampiro-a-mascara-v5-ptbr']?.grants ?? []
+      grants: clanCreationGrants(clanItem)
     }, this.log)
   }
 
@@ -833,7 +882,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     }, this.log)
   }
 
-  static #onGoToStep (event, target) {
+  static async #onGoToStep (event, target) {
     const id = target.dataset.step
     const idx = STEPS.findIndex(s => s.id === id)
     if (idx < 0) return
@@ -846,11 +895,17 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       return
     }
 
+    if (STEPS[this.stepIndex].id === 'skills' && idx !== this.stepIndex) {
+      const completion = this.#currentStepCompletion()
+      if (idx > this.stepIndex && !completion.complete) { ui.notifications.warn(completion.message); return }
+      await applyFreeSpecialties(this.actor)
+    }
     this.stepIndex = idx
     this.render()
   }
 
-  static #onPrevStep () {
+  static async #onPrevStep () {
+    if (STEPS[this.stepIndex].id === 'skills') await applyFreeSpecialties(this.actor)
     this.stepIndex = Math.max(0, this.stepIndex - 1)
     this.render()
   }
@@ -868,7 +923,11 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
 
     // Grants apply on leaving the step, not on the click that made the
     // pick - gives the player a chance to read the description first.
-    if (leavingStepId === 'clan') await this.#applyPendingClanGrants()
+    if (leavingStepId === 'attributes') await applyDerivedTrackers(this.actor)
+    if (leavingStepId === 'skills') await applyFreeSpecialties(this.actor)
+    if (leavingStepId === 'clan') {
+      try { await this.#applyPendingClanGrants() } catch (error) { ui.notifications.warn(error.message); return }
+    }
     if (leavingStepId === 'predator') await this.#applyPendingPredatorGrants()
 
     this.stepIndex = Math.min(STEPS.length - 1, this.stepIndex + 1)
@@ -889,6 +948,8 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     // clobber cash the player has since spent in the Gear Shop.
     const alreadyCompleted = !!this.actor.getFlag('vampiro-a-mascara-v5-ptbr', 'wizardCompleted')
 
+    // Só na primeira conclusão: reabrir o assistente depois não zera o dano sofrido em jogo.
+    if (!alreadyCompleted) await applyDerivedTrackers(this.actor)
     await this.actor.setFlag('vampiro-a-mascara-v5-ptbr', 'wizardCompleted', true)
     ui.notifications.info(`A criação de personagem de ${this.actor.name} foi concluída.`)
 
@@ -1048,15 +1109,14 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       return
     }
 
-    const folderName = doc.folder?.name ?? ''
-    const isFlaw = /^Thin-Blood Flaws/.test(folderName)
+    const isFlaw = featureCategory(doc) === 'thinBloodFlaw'
     const kindLabel = isFlaw ? 'Defeito' : 'Qualidade'
     const existing = this.actor.items.find(i => i.type === 'feature' && i.name === doc.name)
 
     if (!existing) {
       const sameCategoryNames = new Set(
         (this.meritsFlawsItems || [])
-          .filter(d => new RegExp(`^Thin-Blood ${isFlaw ? 'Flaws' : 'Merits'}`).test(d.folder?.name ?? ''))
+          .filter(d => featureCategory(d) === (isFlaw ? 'thinBloodFlaw' : 'thinBloodMerit'))
           .map(d => d.name)
       )
       const currentCount = this.actor.items.filter(i => i.type === 'feature' && sameCategoryNames.has(i.name)).length
@@ -1134,6 +1194,8 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     // never trap a player who already has something into being unable to
     // lower or remove it.
     if (delta > 0) {
+      const purchaseBlock = chargenPurchaseBlock(this.actor, doc)
+      if (purchaseBlock) { ui.notifications.error(purchaseBlock); return }
       const restrictions = doc.flags?.['vampiro-a-mascara-v5-ptbr']?.restrictions ?? []
       const restrictionFailures = checkRestrictions(this.actor, restrictions)
       if (restrictionFailures.length > 0) {

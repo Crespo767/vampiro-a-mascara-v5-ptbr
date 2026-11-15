@@ -4,6 +4,10 @@ Módulo para o [Foundry VTT](https://foundryvtt.com) que traz em português os c
 
 O conteúdo cobre dois livros: o **Manual Básico** e o **Guia do Jogador**.
 
+## Criação automática de PJ
+
+Crie uma macro de Script no Foundry e cole o conteúdo de `Macros/macros_txt/Criar_PJ_Automatico.txt`. As constantes `NOME` e `SEMENTE` são opcionais; uma semente informada reproduz as escolhas para os mesmos dados de compêndio. A macro abre a ficha e informa a semente; o resumo é enviado em mensagem privada. Requer o sistema wod5e, permissão para criar Atores e acesso à pasta de criação automática. O gerador escolhe as Disciplinas de clã e as Especializações gratuitas, respeita as restrições Caitiff e gasta 7 pontos de Vantagens, além dos pontos extras configurados pelo Narrador. Revise os textos e escolhas com o Narrador.
+
 ## Requisitos
 
 | Item | Versão |

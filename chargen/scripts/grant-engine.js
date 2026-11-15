@@ -9,6 +9,23 @@
 const MERITSFLAWS_PACK_ID = 'vampiro-a-mascara-v5-ptbr.meritsflaws'
 const DISCIPLINES_PACK_ID = 'vampiro-a-mascara-v5-ptbr.disciplines'
 
+// O gerador automático fornece uma função que seleciona um elemento da lista.
+// Chamadas concorrentes não podem compartilhar esse estado de módulo.
+let autoPicker = null
+export async function withAutoPicker (actor, picker, fn) {
+  if (autoPicker) throw new Error('Já existe uma criação automática em andamento.')
+  autoPicker = { actorId: actor.id, picker }
+  try {
+    return await fn()
+  } finally {
+    autoPicker = null
+  }
+}
+
+function pickerFor (actor) {
+  return autoPicker?.actorId === actor?.id ? autoPicker.picker : null
+}
+
 // Short, hover-tooltip-only blurbs - not rules text, just enough for a
 // player to recognize what they're picking between without leaving the
 // dialog. Full text always lives on the compendium item itself.
@@ -24,6 +41,100 @@ const DISCIPLINE_BLURBS = {
   potence: 'Força sobrenatural.',
   presence: 'Carisma sobrenatural e controle das emoções.',
   protean: 'Mudança de forma e comunhão com a terra e os animais.'
+}
+
+const CHARGEN_ID = 'vampiro-a-mascara-v5-ptbr'
+export const REQUIRED_SPECIALTY_SKILLS = ['academics', 'craft', 'performance', 'science']
+export function extraAdvantagePoints () {
+  return Math.max(0, Math.min(2, Math.floor(Number(game.settings?.get(CHARGEN_ID, 'extraAdvantagePoints')) || 0)))
+}
+
+export function clanCreationGrants (clanItem) {
+  const grants = clanItem?.flags?.[CHARGEN_ID]?.grants ?? []
+  const name = enName(clanItem)
+  if (name === 'Thin-Blooded') return grants.filter(g => g.type !== 'disciplineDot' && g.type !== 'clanDisciplines')
+  if (name === 'Caitiff') return [...grants.filter(g => g.type !== 'disciplineDot' && g.type !== 'clanDisciplines'), { type: 'clanDisciplines', choices: Object.keys(DISCIPLINE_BLURBS) }, { type: 'flaw', name: 'Suspect', rating: 1 }]
+  const dots = grants.filter(g => g.type === 'disciplineDot')
+  if (!dots.length) return grants
+  const choices = dots.flatMap(g => g.choices ?? [])
+  let inserted = false
+  return grants.flatMap(g => {
+    if (g.type !== 'disciplineDot') return [g]
+    if (inserted) return []
+    inserted = true
+    return [{ type: 'clanDisciplines', choices }]
+  })
+}
+
+// Categoria de uma Vantagem/Defeito pela pasta do compêndio meritsflaws. Os nomes das
+// pastas estão em pt-BR neste módulo; os nomes em inglês do VtM5e Tools seguem aceitos.
+export function featureCategory (doc) {
+  const name = doc?.folder?.name ?? ''
+  const parent = doc?.folder?.folder?.name ?? ''
+  if (/^(Thin-Blood Merits|Qualidades de Sangues?-Ralos)/i.test(name)) return 'thinBloodMerit'
+  if (/^(Thin-Blood Flaws|Defeitos de Sangues?-Ralos)/i.test(name)) return 'thinBloodFlaw'
+  if (/Caitiff/i.test(name)) return 'caitiff'
+  if (/Carniçal|Ghoul/i.test(name)) return 'ghoul'
+  if (/^Coterie$/i.test(parent) || /Coterie|Domínio|Domain/i.test(name)) return 'coterie'
+  if (/Variantes da Perdição|Bane Variant/i.test(name)) return 'baneVariant'
+  if (/Míticos|Mythic/i.test(name)) return 'mythic'
+  return 'general'
+}
+
+export function chargenPurchaseBlock (actor, doc) {
+  const clan = enName(actor.items.find(i => i.type === 'clan'))
+  const category = featureCategory(doc)
+  if (category === 'thinBloodMerit' || category === 'thinBloodFlaw') return 'Qualidades e Defeitos de Sangue-Ralo são escolhidos na seção própria, só por sangues-ralos.'
+  if (category === 'caitiff' && clan !== 'Caitiff') return 'Somente personagens Caitiff podem escolher esta Vantagem ou Defeito.'
+  return clan === 'Caitiff' && doc.system?.featuretype === 'background' && enName(doc) === 'Status'
+    ? 'Caitiff não podem adquirir Status durante a criação de personagem.' : null
+}
+
+// O registro identifica somente os bônus inseridos aqui; outros bônus com o mesmo rótulo são preservados.
+// Manual Básico p. 136: Vitalidade = Vigor + 3; Força de Vontade = Autocontrole + Determinação.
+// O wod5e guarda o máximo na ficha e não o recalcula; usa os valores-base (sem Efeitos Ativos).
+export async function applyDerivedTrackers (actor) {
+  const base = id => Number(actor._source?.system?.attributes?.[id]?.value ?? actor.system.attributes?.[id]?.value) || 0
+  const health = base('stamina') + 3
+  const willpower = base('composure') + base('resolve')
+  await actor.update({
+    'system.health.max': health, 'system.health.value': health, 'system.health.superficial': 0, 'system.health.aggravated': 0,
+    'system.willpower.max': willpower, 'system.willpower.value': willpower, 'system.willpower.superficial': 0, 'system.willpower.aggravated': 0
+  })
+}
+
+// Manual Básico p. 149: se o Tipo de Predador conceder uma Especialização numa
+// Habilidade sem pontos, o personagem ganha 1 ponto nela em vez da
+// Especialização. Esse ponto fica no registro do Predador (entrada 'skillDot')
+// e não conta na distribuição de Habilidades nem nas Especializações gratuitas.
+export function grantedSkillDots (actor, id) {
+  const ledger = actor.flags?.[CHARGEN_ID]?.grantLedger ?? {}
+  return Object.values(ledger).flatMap(slot => slot?.entries ?? [])
+    .filter(e => e.type === 'skillDot' && e.skill === id)
+    .reduce((sum, e) => sum + (Number(e.amount) || 0), 0)
+}
+
+export function baseSkillValue (actor, id) {
+  return Math.max((actor.system.skills?.[id]?.value ?? 0) - grantedSkillDots(actor, id), 0)
+}
+
+export async function applyFreeSpecialties (actor) {
+  const data = actor.flags?.[CHARGEN_ID]?.freeSpecialties ?? {}
+  const old = actor.flags?.[CHARGEN_ID]?.appliedFreeSpecialties ?? []
+  const selected = REQUIRED_SPECIALTY_SKILLS.filter(id => baseSkillValue(actor, id) > 0 && String(data[id] ?? '').trim()).map(skill => ({ skill, label: data[skill].trim() }))
+  if (baseSkillValue(actor, data.free?.skill) > 0 && String(data.free?.label ?? '').trim()) selected.push({ skill: data.free.skill, label: data.free.label.trim() })
+  const updates = {}
+  for (const skill of new Set([...old, ...selected].map(e => e.skill))) {
+    const bonuses = foundry.utils.deepClone(actor.system.skills?.[skill]?.bonuses ?? [])
+    for (const entry of old.filter(e => e.skill === skill)) {
+      const index = bonuses.findLastIndex(b => b.source === entry.label && b.value === 1 && b.displayWhenInactive === true && b.paths?.length === 1 && b.paths[0] === `skills.${skill}`)
+      if (index >= 0) bonuses.splice(index, 1)
+    }
+    for (const entry of selected.filter(e => e.skill === skill)) bonuses.push({ source: entry.label, value: 1, paths: [`skills.${skill}`], displayWhenInactive: true })
+    updates[`system.skills.${skill}.bonuses`] = bonuses
+  }
+  updates[`flags.${CHARGEN_ID}.appliedFreeSpecialties`] = selected
+  await actor.update(updates)
 }
 
 // The clan-grant data above spells Blood Sorcery "bloodsorcery" as one word,
@@ -49,7 +160,7 @@ async function getDisciplinePowers () {
 // Item document, or null if skipped/nothing available - callers must
 // tolerate null and just grant the bare dot in that case, never block
 // grant application on a pick existing.
-async function promptDisciplinePowerPick (actor, disciplineId, level, sourceLabel) {
+async function promptDisciplinePowerPick (actor, disciplineId, level, sourceLabel, amount = 1) {
   const allPowers = await getDisciplinePowers()
   const ownedPowerNames = new Set(actor.items.filter(i => i.type === 'power').map(i => i.name))
   const candidates = allPowers
@@ -61,6 +172,8 @@ async function promptDisciplinePowerPick (actor, disciplineId, level, sourceLabe
     .sort((a, b) => a.name.localeCompare(b.name))
 
   if (candidates.length === 0) return null
+
+  if (pickerFor(actor)) return pickerFor(actor)(candidates)
 
   const itemsHtml = candidates.map(doc => {
     const plainDesc = (doc.system.description || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
@@ -80,7 +193,7 @@ async function promptDisciplinePowerPick (actor, disciplineId, level, sourceLabe
     </div>`
   }).join('')
 
-  const content = `<p>${sourceLabel} concede um ponto em <b>${displayLabel(disciplineId)}</b> - escolha o Poder aprendido no nível ${level}:</p>
+  const content = `<p>${sourceLabel} concede ${amount === 1 ? 'um ponto' : `${amount} pontos`} em <b>${displayLabel(disciplineId)}</b> - escolha o Poder aprendido no nível ${level}:</p>
     <div class="vtm5e-chargen-power-list">${itemsHtml}</div>`
 
   let picked = null
@@ -131,7 +244,20 @@ const SPECIALTY_LABELS = {
   'Larceny (Lockpicking)': 'Ladroagem (Abrir Fechaduras)',
   'Streetwise (Black Market)': 'Manha (Mercado Negro)',
   'Brawl (Kindred)': 'Briga (Membros)',
-  'Stealth (against Kindred)': 'Furtividade (contra Membros)'
+  'Stealth (against Kindred)': 'Furtividade (contra Membros)',
+  // Guia do Jogador: redação das descrições do compêndio (conferidas na 1.1.2)
+  'Leadership (Hunting Pack)': 'Liderança (Matilha de Caça)',
+  'Stealth (Stakeout)': 'Furtividade (Tocaia)',
+  'Intimidation (Coercion)': 'Intimidação (Coerção)',
+  'Larceny (Security)': 'Ladroagem (Segurança)',
+  'Persuasion (Marketing)': 'Persuasão (Marketing)',
+  'Stealth (Ambushes or Traps)': 'Furtividade (Emboscadas ou Armadilhas)',
+  'Awareness (Death)': 'Percepção (Morte)',
+  'Larceny (Forgery)': 'Ladroagem (Falsificação)',
+  'Investigation (Profiling)': 'Investigação (Perfil)',
+  'Stealth (Shadowing)': 'Furtividade (Sombra)',
+  'Occult (Grave Rituals)': 'Ocultismo (Rituais Funerários)',
+  'Medicine (Cadavers)': 'Medicina (Cadáveres)'
 }
 function specialtyLabel (label) { return SPECIALTY_LABELS[label] ?? label }
 
@@ -187,7 +313,7 @@ const DISPLAY_LABELS = {
   bloodsorcery: 'Feitiçaria de Sangue', enemy: 'Inimigo', mythicFlaw: 'Defeito Mítico', mythicflaw: 'Defeito Mítico',
   'banu haqim': 'Banu Haqim', ministry: 'Ministério', 'thin-blood': 'Sangues-Ralos', malkavian: 'Malkavianos'
 }
-function displayLabel (id) {
+export function displayLabel (id) {
   if (!id) return ''
   const key = String(id)
   if (DISPLAY_LABELS[key] ?? DISPLAY_LABELS[key.toLowerCase()]) return DISPLAY_LABELS[key] ?? DISPLAY_LABELS[key.toLowerCase()]
@@ -203,6 +329,7 @@ function dots (n) {
 
 async function logAndAnnounce (actor, log, text) {
   log.push(text)
+  if (pickerFor(actor)) return
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
     content: `<p class="vtm5e-chargen-log-entry"><i class="fas fa-dice-d10"></i> ${text}</p>`
@@ -226,7 +353,7 @@ async function choiceTooltip (grant, choice) {
   }
   if (grant.type === 'backgroundDot') return getMeritsFlawsDescription(capitalize(choice))
   if (grant.type === 'merit' || grant.type === 'flaw') return getMeritsFlawsDescription(choice.name)
-  if (grant.type === 'specialty') return `Adiciona uma especialização a ${displayLabel(choice.skill)}.`
+  if (grant.type === 'specialty') return `Adiciona uma especialização a ${displayLabel(choice.skill)}. Sem pontos nessa Habilidade, recebe 1 ponto nela em vez da especialização (Manual Básico p. 149).`
   return ''
 }
 
@@ -255,6 +382,8 @@ async function resolveChoice (grant, sourceLabel, actor) {
 
   if (choices.length === 1) return choices[0]
 
+  if (pickerFor(actor)) return pickerFor(actor)(choices)
+
   await loadMeritsFlawsCache()
   const buttons = choices.map((c, i) => ({
     action: String(i),
@@ -281,7 +410,14 @@ async function resolveChoice (grant, sourceLabel, actor) {
   return choices[Number(result)]
 }
 
-async function promptSplitDots (grant, sourceLabel) {
+async function promptSplitDots (grant, sourceLabel, actor) {
+  const picker = pickerFor(actor)
+  if (picker) {
+    if (!Array.isArray(grant.among) || (!grant.among.length && grant.amount > 0)) throw new Error(`${sourceLabel}: não há opções para distribuir pontos.`)
+    const allocation = Object.fromEntries(grant.among.map(key => [key, 0]))
+    for (let i = 0; i < grant.amount; i++) allocation[picker(grant.among)]++
+    return allocation
+  }
   const fields = grant.among.map(key =>
     `<div class="form-group"><label>${displayLabel(key)}</label><input type="number" name="${key}" value="0" min="0" max="${grant.amount}" /></div>`
   ).join('')
@@ -391,11 +527,37 @@ async function grantBackgroundDots (actor, backgroundKey, amount, note, log, sou
 
 export async function applyGrant (actor, grant, sourceLabel, log, entries) {
   switch (grant.type) {
+    case 'clanDisciplines': {
+      if (enName(actor.items.find(i => i.type === 'clan')) === 'Thin-Blooded') break
+      const identity = c => typeof c === 'string' ? c : c.discipline
+      const first = await resolveChoice({ type: 'disciplineDot', choices: grant.choices }, `${sourceLabel} - 2 pontos`, actor)
+      if (!first) throw new Error('Escolha a Disciplina que recebe 2 pontos.')
+      const applied = []
+      try {
+        await applyGrant(actor, { type: 'disciplineDot', amount: 2, choices: [first] }, sourceLabel, log, applied)
+        const remaining = grant.choices.filter(c => identity(c) !== identity(first))
+        const second = await resolveChoice({ type: 'disciplineDot', choices: remaining }, `${sourceLabel} - 1 ponto`, actor)
+        if (!second) throw new Error('Escolha outra Disciplina para 1 ponto.')
+        await applyGrant(actor, { type: 'disciplineDot', amount: 1, choices: [second] }, sourceLabel, log, applied)
+      } catch (error) {
+        await revokeLedgerEntries(actor, applied, log, sourceLabel)
+        throw error
+      }
+      entries?.push(...applied)
+      break
+    }
     case 'specialty': {
       const choice = await resolveChoice(grant, sourceLabel, actor)
       if (!choice) return
-      const bonuses = foundry.utils.deepClone(actor.system.skills?.[choice.skill]?.bonuses || [])
       const specLabel = specialtyLabel(choice.label)
+      const skillValue = actor._source?.system?.skills?.[choice.skill]?.value ?? actor.system.skills?.[choice.skill]?.value ?? 0
+      if (skillValue <= 0) {
+        await actor.update({ [`system.skills.${choice.skill}.value`]: 1 })
+        await logAndAnnounce(actor, log, `<b>${sourceLabel}</b>: recebeu 1 ponto em <b>${displayLabel(choice.skill)}</b> em vez da especialização ${specLabel} (Manual Básico p. 149)`)
+        entries?.push({ type: 'skillDot', skill: choice.skill, amount: 1, replacedSpecialty: specLabel })
+        break
+      }
+      const bonuses = foundry.utils.deepClone(actor.system.skills?.[choice.skill]?.bonuses || [])
       bonuses.push({ source: specLabel, value: 1, paths: [`skills.${choice.skill}`], displayWhenInactive: true })
       await actor.update({ [`system.skills.${choice.skill}.bonuses`]: bonuses })
       await logAndAnnounce(actor, log, `<b>${sourceLabel}</b>: recebeu a especialização <b>${specLabel}</b>`)
@@ -436,7 +598,7 @@ export async function applyGrant (actor, grant, sourceLabel, log, entries) {
       // owned" filter sees it and won't offer the same power twice.
       const pickedPowerNames = []
       for (let level = current + 1; level <= current + amount; level++) {
-        const powerDoc = await promptDisciplinePowerPick(actor, disciplineId, level, sourceLabel)
+        const powerDoc = await promptDisciplinePowerPick(actor, disciplineId, level, sourceLabel, amount)
         if (!powerDoc) continue
         const data = powerDoc.toObject()
         delete data._id
@@ -468,7 +630,7 @@ export async function applyGrant (actor, grant, sourceLabel, log, entries) {
     }
 
     case 'splitDots': {
-      const allocation = await promptSplitDots(grant, sourceLabel)
+      const allocation = await promptSplitDots(grant, sourceLabel, actor)
       if (!allocation) return
       for (const [key, amt] of Object.entries(allocation)) {
         const amount = Number(amt)
@@ -564,6 +726,11 @@ async function revokeLedgerEntries (actor, entries, log, oldSourceLabel) {
         } else {
           await item.update({ 'system.points': newPoints, 'flags.vampiro-a-mascara-v5-ptbr.grantedPoints': newGranted })
         }
+        break
+      }
+      case 'skillDot': {
+        const current = actor._source?.system?.skills?.[entry.skill]?.value ?? actor.system.skills?.[entry.skill]?.value ?? 0
+        await actor.update({ [`system.skills.${entry.skill}.value`]: Math.max(current - (entry.amount ?? 1), 0) })
         break
       }
       case 'specialty': {

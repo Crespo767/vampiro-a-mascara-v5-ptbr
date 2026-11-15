@@ -1,5 +1,19 @@
 # Histórico de versões
 
+## Não lançado
+
+- **Criação automática de PJ** por macro (`Macros/macros_txt/Criar_PJ_Automatico.txt`): um vampiro completo e sorteado, com semente reproduzível, as mesmas regras e a mesma auditoria do assistente, resumo privado no chat e exclusão do Ator em caso de erro.
+- **Assistente de criação conforme o Manual Básico:**
+  - Disciplinas de clã 2+1 (p. 136); Caitiff escolhe duas Disciplinas quaisquer.
+  - Caitiff começa com o Defeito Suspeito e não compra Status na criação (p. 107).
+  - Especializações gratuitas em Erudição, Ofícios, Performance e Ciência com pontos, mais uma livre (p. 136 e 145).
+  - 7 pontos de Vantagens, sem o bônus por Defeitos; os pontos extras do Narrador (p. 150) ficam numa configuração de mundo.
+  - Especialização do Tipo de Predador numa Habilidade sem pontos vira 1 ponto nessa Habilidade, sem a Especialização (p. 149). O ponto não conta na distribuição de Habilidades.
+  - Vitalidade (Vigor + 3) e Força de Vontade (Autocontrole + Determinação) passam a ser gravadas na ficha (p. 136); antes ficavam no padrão 5 do sistema.
+- **Pastas em português no compêndio de Vantagens e Defeitos:** a seção de Sangue-Ralo voltou a aparecer, e as Qualidades e Defeitos de Sangue-Ralo não aparecem mais na lista geral. Itens de Caitiff só ficam disponíveis para Caitiff.
+- Especializações dos Tipos de Predador do Guia do Jogador (Montero, Extorsionista, Alçapão, Ceifador, Perseguidor e Ladrão de Túmulos) aparecem em português no assistente e na ficha.
+- Os campos de texto do assistente não voltam mais ao topo da janela a cada alteração.
+
 ## 1.2.0 — Regras sem item no Diário
 - **Diário "Regras do Guia do Jogador"** ganha 5 entradas: **Carniçais** e **Mortais** (texto oficial do Companion, com as mudanças do Guia do Jogador em notas), **Sistemas de Coterie** (mudança de coterie, Coteries Fortes, criação de Domínio expandida), **Memoriam e Projetos** (versões simplificadas do Guia) e **Regras Opcionais do Companion** (Compulsões em Críticos Bestiais, Pegar a Metade).
 - **Notas do módulo** em Influenciar o Bando, Escamas de Górgona, Manto Estígio e Amaranto Florido, com uma leitura sugerida onde o livro não define a regra.
