@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.1.2 — Revisão do Guia do Jogador
+- **Leituras duvidosas do Guia** conferidas com o original em inglês: 96 trechos, com 10 correções. Entre elas: Aura de Decadência (o dano Superficial à Saúde não é reduzido pela metade), Lista de Amigos, Marcado por Palavras, Contato Contextual, Criptoleto e cinco páginas do Diário de Tipos de Coterie.
+- **Divergências do próprio livro:** vale a descrição detalhada em Campeões, Sabotadores e Vigilantes (a tabela do Diário foi ajustada), e a linha de parada em Cinzas às Cinzas (Vigor + Medicina, ou Vigor + Fortitude).
+
 ## 1.1.1 — Companion
 - **Companion (Guia Suplementar):** conferência dos textos de Ravnos, Salubri, Tzimisce, dos 10 poderes e da Potência de Sangue contra o livro. O texto confere, com uma correção em Aliviando a Alma Bestial.
 - **Nomes oficiais do Companion** em 13 Vantagens e Defeitos do Guia do Jogador, por exemplo Táticas de Bando, A Todo Custo, Legados Vampíricos, Aura Imprópria e Maldição da Megaira. As regras e os pontos seguem o Guia do Jogador.
