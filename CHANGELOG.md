@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 1.4.0 — Fechamento das pendências do Guia do Jogador
+
+- **Novo compêndio “Antagonistas do Guia do Jogador”** (Atores SPC): Szlachta e Vozhd (carniçais, com Disciplinas), Cadáver sem Mente, Cadáver Agressivo e Servo Homuncular. Szlachta e Vozhd usam as características do Companion oficial (p. 22–23), iguais às do Guia (p. 241–243).
+- **Diário de Regras do Guia:** três entradas novas, Convicções e Pilares (p. 205–212), Crônicas e Tipos de Jogo (p. 195–204) e Antagonistas (p. 241–243).
+- **Carniçais:** Vício Fatal corrigido (“a capacidade de adiar o envelhecimento sem carregar o fardo da Maldição”); quadro “Usando Vitae para Curar os Vivos” (Guia, p. 139) na página de Disciplinas e Vitalidade.
+- **Notas do módulo:** Crimes de Guerra nas páginas Comando e Regência (citado sem descrição no livro, nenhum item criado); Cálice Secreto (proporção de 2 Checagens por ponto de Fome, sem custo total fixo); Variante da Perdição Tremere: Sangue Roubado (leitura sugerida, não é errata).
+
 ## 1.3.1 — Fonte do Companion nos clãs
 
 - **Clãs do Companion no compêndio:** Ravnos, Salubri e Tzimisce passam a citar a fonte ("Fonte: Vampiro: A Máscara — Companion, p. N") na descrição e na Perdição. A Perdição do Salubri ganha a Nota do módulo que a ficha já mostrava: nos dois casos vale a Gravidade da Perdição do Salubri.
