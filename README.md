@@ -59,11 +59,11 @@ Os compêndios aparecem na aba **Compêndios**, dentro da pasta *Vampiro a Másc
 
 ### Ferramentas
 - **Ficha de personagem**: ficha de vampiro reformulada, com Perdição e Compulsão do clã.
-- **Criação de personagem**: assistente passo a passo que aplica sozinho o que o Clã e o Tipo de Predador concedem.
-- **Loja de XP**: gasto de experiência com os custos do Manual Básico.
+- **Criação de personagem**: assistente passo a passo que aplica sozinho o que o Clã e o Tipo de Predador concedem. Abre sozinho quando um jogador sem personagem entra no mundo, ou pelo menu do cabeçalho da ficha ("Criação de Personagem").
+- **Loja de XP**: gasto de experiência com os custos do Manual Básico, incluindo Rituais, Cerimônias e Fórmulas (nível × 3).
 - **Automação**: aplicação de dano, testes resistidos, Compulsões e outras ajudas ao Narrador.
 - **Cartões de rolagem**: cartões de chat reformulados.
-- **Coterie**: janela do grupo, com Domínio (Chasse, Lien, Portillon), Antecedentes compartilhados, membros e equipamento. Ela abre pelo ícone de coroa na pasta de Atores.
+- **Coterie**: janela do grupo, com Domínio (Chasse, Lien, Portillon), Antecedentes compartilhados, membros e equipamento. Ela abre pelo ícone de coroa na pasta de Atores (aparece nas pastas com personagens de jogadores). A lista de desejos de cada jogador é um diário privado; para criá-la, o papel Jogador precisa da permissão "Criar Diários".
 
 ## Sobre a tradução
 

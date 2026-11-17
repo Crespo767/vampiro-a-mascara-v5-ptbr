@@ -734,8 +734,8 @@ async function postResistanceCard({ powerName, casterActor, casterName, casterUs
   const content = `
     <div class="vtm5e-automation-recap">
       <p class="vtm5e-automation-recap-title">${powerName}</p>
-      <p class="vtm5e-automation-recap-name">${casterName}: ${casterTotal} sucessos</p>
-      <p class="vtm5e-automation-recap-name">${resistorName}: ${resistorTotal} sucessos</p>
+      <p class="vtm5e-automation-recap-name">${casterName}: ${casterTotal} sucesso${casterTotal === 1 ? '' : 's'}</p>
+      <p class="vtm5e-automation-recap-name">${resistorName}: ${resistorTotal} sucesso${resistorTotal === 1 ? '' : 's'}</p>
       <p class="vtm5e-automation-recap-outcome ${resistorWon ? 'resisted' : 'failed'}">${outcomeLabel}</p>
       ${casterCritWin ? `<p class="vtm5e-automation-recap-critical">${casterName} - Vitória Crítica</p>` : ''}
       <p class="vtm5e-automation-recap-result">${resultLine}</p>

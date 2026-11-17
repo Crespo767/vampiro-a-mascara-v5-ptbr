@@ -271,7 +271,9 @@ const NOTE_LABELS = {
   'Cleaver': 'Trinchador',
   'Diablerist': 'Diablerista',
   'mortals (cold/procured blood)': 'mortais',
-  'a spurned lover or jealous partner': 'um amante desprezado ou parceiro ciumento'
+  'a spurned lover or jealous partner': 'um amante desprezado ou parceiro ciumento',
+  'medical community': 'comunidade médica',
+  'healthy mortals': 'mortais saudáveis'
 }
 function noteLabel (note) { return NOTE_LABELS[note] ?? note }
 
@@ -613,7 +615,7 @@ export async function applyGrant (actor, grant, sourceLabel, log, entries) {
       })
 
       const powerNote = pickedPowerNames.length > 0 ? ` - aprendeu <b>${pickedPowerNames.join(', ')}</b>` : ''
-      await logAndAnnounce(actor, log, `<b>${sourceLabel}</b>: +${amount} ponto em <b>${displayLabel(disciplineId)}</b> (agora ${dots(current + amount)})${powerNote}`)
+      await logAndAnnounce(actor, log, `<b>${sourceLabel}</b>: +${amount} ponto${amount === 1 ? '' : 's'} em <b>${displayLabel(disciplineId)}</b> (agora ${dots(current + amount)})${powerNote}`)
       entries?.push({ type: 'disciplineDot', discipline: disciplineId, amount, powerNames: pickedPowerNames })
       break
     }

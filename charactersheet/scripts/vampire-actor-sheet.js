@@ -143,8 +143,19 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
     position: { width: 1400, height: 900 },
     actions: {
       toggleExpandRow: onToggleExpandRow,
-      addExperience: onSpendOrAddExperience
+      addExperience: onSpendOrAddExperience,
+      openChargenWizard: function () {
+        game.modules.get(MODULE_ID).api.openChargenWizard(this.document)
+      }
     }
+  }
+
+  _getHeaderControls () {
+    const controls = super._getHeaderControls()
+    if (game.user.isGM || (this.document.isOwner && this.document.getFlag(MODULE_ID, 'wizardCompleted') !== true)) {
+      controls.push({ action: 'openChargenWizard', icon: 'fa-solid fa-wand-magic-sparkles', label: 'Criação de Personagem' })
+    }
+    return controls
   }
 
   static PARTS = (() => {

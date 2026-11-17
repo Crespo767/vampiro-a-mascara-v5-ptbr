@@ -170,6 +170,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
   // step-navigation renders (goToStep/nextStep/prevStep), where jumping to
   // the top of the new step's content is the correct behavior.
   #pendingScrollTop = null
+  #advancing = false
 
   // Set instead of (on top of) #pendingScrollTop when the render is
   // triggered by toggling a specific element open/closed. A plain
@@ -286,7 +287,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       ...s,
       num: i + 1,
       active: i === this.stepIndex,
-      done: i < this.stepIndex,
+      done: i < this.stepIndex && (s.id !== 'clan' || actor.items.some(item => item.type === 'clan')) && (s.id !== 'predator' || actor.items.some(item => item.type === 'predatorType')),
       locked: i > Math.max(this.stepIndex, this.maxStepIndex)
     }))
 
@@ -761,6 +762,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
 
   async _onRender (context, options) {
     super._onRender(context, options)
+    if (this.#advancing) this.element.querySelectorAll('[data-action="nextStep"], [data-action="prevStep"], [data-action="goToStep"]').forEach(button => { button.disabled = true })
 
     if (this.#pendingScrollTop !== null || this.#pendingScrollAnchor !== null) {
       const targetScrollTop = this.#pendingScrollTop
@@ -883,6 +885,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
   }
 
   static async #onGoToStep (event, target) {
+    if (this.#advancing) return
     const id = target.dataset.step
     const idx = STEPS.findIndex(s => s.id === id)
     if (idx < 0) return
@@ -895,6 +898,26 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       return
     }
 
+    if (idx > this.stepIndex) {
+      const previous = this.stepIndex
+      try {
+        for (let i = previous; i < idx; i++) {
+          this.stepIndex = i
+          const completion = this.#currentStepCompletion()
+          if (!completion.complete) { ui.notifications.warn(completion.message); return }
+          const stepId = STEPS[i].id
+          if (stepId === 'clan' || stepId === 'predator') {
+            const item = this.actor.items.find(entry => entry.type === (stepId === 'clan' ? 'clan' : 'predatorType'))
+            const label = stepId === 'clan' ? 'Clã' : 'Tipo de Predador'
+            if (this.actor.flags?.['vampiro-a-mascara-v5-ptbr']?.grantLedger?.[stepId]?.sourceLabel !== `${label}: ${item.name}`) {
+              ui.notifications.warn(`Use Avançar para concluir ${label}.`)
+              return
+            }
+          }
+        }
+      } finally { this.stepIndex = previous }
+    }
+
     if (STEPS[this.stepIndex].id === 'skills' && idx !== this.stepIndex) {
       const completion = this.#currentStepCompletion()
       if (idx > this.stepIndex && !completion.complete) { ui.notifications.warn(completion.message); return }
@@ -905,12 +928,14 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
   }
 
   static async #onPrevStep () {
+    if (this.#advancing) return
     if (STEPS[this.stepIndex].id === 'skills') await applyFreeSpecialties(this.actor)
     this.stepIndex = Math.max(0, this.stepIndex - 1)
     this.render()
   }
 
   static async #onNextStep () {
+    if (this.#advancing) return
     // Defense in depth - the button is already disabled when incomplete,
     // but don't rely on that alone.
     const completion = this.#currentStepCompletion()
@@ -919,20 +944,30 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       return
     }
 
-    const leavingStepId = STEPS[this.stepIndex].id
+    this.#advancing = true
+    this.element.querySelectorAll('[data-action="nextStep"], [data-action="prevStep"], [data-action="goToStep"]').forEach(button => { button.disabled = true })
+    try {
+      const leavingStepId = STEPS[this.stepIndex].id
 
-    // Grants apply on leaving the step, not on the click that made the
-    // pick - gives the player a chance to read the description first.
-    if (leavingStepId === 'attributes') await applyDerivedTrackers(this.actor)
-    if (leavingStepId === 'skills') await applyFreeSpecialties(this.actor)
-    if (leavingStepId === 'clan') {
-      try { await this.#applyPendingClanGrants() } catch (error) { ui.notifications.warn(error.message); return }
+      // As concessões são aplicadas ao sair da etapa, após a escolha.
+      if (leavingStepId === 'attributes') await applyDerivedTrackers(this.actor)
+      if (leavingStepId === 'skills') await applyFreeSpecialties(this.actor)
+      if (leavingStepId === 'clan') {
+        try { await this.#applyPendingClanGrants() } catch (error) { ui.notifications.warn(error.message); return }
+      }
+      if (leavingStepId === 'predator') {
+        try { await this.#applyPendingPredatorGrants() } catch (error) { ui.notifications.warn(error.message); return }
+      }
+
+      const afterGrants = this.#currentStepCompletion()
+      if (!afterGrants.complete) { ui.notifications.warn(afterGrants.message); return }
+
+      this.stepIndex = Math.min(STEPS.length - 1, this.stepIndex + 1)
+      this.maxStepIndex = Math.max(this.maxStepIndex, this.stepIndex)
+    } finally {
+      this.#advancing = false
+      this.render()
     }
-    if (leavingStepId === 'predator') await this.#applyPendingPredatorGrants()
-
-    this.stepIndex = Math.min(STEPS.length - 1, this.stepIndex + 1)
-    this.maxStepIndex = Math.max(this.maxStepIndex, this.stepIndex)
-    this.render()
   }
 
   static async #onFinishWizard () {
@@ -1267,6 +1302,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
   }
 
   async #pickClan (clanId) {
+    if (this.#advancing) return
     const clanDoc = this.clanItems.find(c => c.id === clanId)
     if (!clanDoc) {
       console.warn('vtm5e-chargen | #pickClan: no clan found in this.clanItems for id', clanId, this.clanItems)
@@ -1306,6 +1342,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
   }
 
   async #pickPredator (predatorId) {
+    if (this.#advancing) return
     const predDoc = this.predatorItems.find(p => p.id === predatorId)
     if (!predDoc) {
       console.warn('vtm5e-chargen | #pickPredator: no predator type found in this.predatorItems for id', predatorId, this.predatorItems)

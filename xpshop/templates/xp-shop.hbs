@@ -61,6 +61,7 @@
     <section class="vtm5e-xpshop-section">
       <h2>Especializações</h2>
       <p class="vtm5e-xpshop-hint">3 de Experiência cada. Concede bônus de +1 para um uso específico de uma Habilidade.</p>
+      {{#if specialties.skillOptions.length}}
       <div class="vtm5e-xpshop-specialty-form">
         <select name="specialtySkill">
           {{#each specialties.skillOptions}}
@@ -70,6 +71,9 @@
         <input type="text" name="specialtyText" placeholder="ex.: Interrogatório" />
         <button type="button" data-action="addSpecialty">Adicionar ao Carrinho (3 XP)</button>
       </div>
+      {{else}}
+      <p class="vtm5e-xpshop-hint">É preciso ter pelo menos um ponto em uma Habilidade ou adicioná-lo ao carrinho para comprar uma Especialização.</p>
+      {{/if}}
       {{#if specialties.draftEntries.length}}
       <div class="vtm5e-xpshop-specialty-drafts">
         <h3>No Carrinho</h3>
@@ -87,9 +91,10 @@
     <section class="vtm5e-xpshop-section">
       <h2>Disciplinas</h2>
       {{#if disciplines.thinBlooded}}
-        <p class="vtm5e-xpshop-hint">Personagens sangues-ralos não têm Disciplinas inerentes (livro básico, p. 136): não há nada para comprar aqui.</p>
+        <p class="vtm5e-xpshop-hint">Alquimia Sangue-Ralo: novo nível × 7. Cada ponto inclui uma fórmula do nível escolhido.</p>
       {{else}}
         <p class="vtm5e-xpshop-hint">Do clã: novo nível × 5. De fora do clã: novo nível × 7. Caitiff: novo nível × 6 para todas as Disciplinas. Cada ponto exige a escolha de um Poder desse nível. Clique em "+1 ponto" para ver as opções.</p>
+      {{/if}}
 
         {{#if disciplines.powerPicker}}
         <div class="vtm5e-xpshop-power-picker">
@@ -143,6 +148,17 @@
             </div>
           {{/each}}
         {{/if}}
+      <h3>Rituais, Cerimônias e Fórmulas</h3>
+      <p class="vtm5e-xpshop-hint">Custo: nível × 3 XP. A Disciplina correspondente precisa ter pelo menos o nível do item.</p>
+      {{#if disciplines.extraPowers.length}}
+        {{#each disciplines.extraPowers}}
+          <div class="vtm5e-xpshop-disc-row">
+            <span>{{this.label}}: {{this.name}} — Nível {{this.level}} — {{this.cost}} XP</span>
+            <button type="button" data-action="addExtraPower" data-power-id="{{this.id}}">Adicionar ao Carrinho</button>
+          </div>
+        {{/each}}
+      {{else}}
+        <p class="vtm5e-xpshop-hint">Nenhum item disponível para os níveis atuais ou no carrinho.</p>
       {{/if}}
     </section>
     {{/if}}

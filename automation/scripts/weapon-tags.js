@@ -1076,10 +1076,11 @@ async function computeReachBonus(item) {
 // stays within its own module (the HUD calls INTO vtm5e-automation via its
 // public API, never the other way around).
 async function resolveActiveWeapons(actor) {
-  const sets = actor.getFlag('enhancedcombathud', 'weaponSets')
+  const hudActive = game.modules.get('enhancedcombathud')?.active
+  const sets = hudActive ? actor.getFlag('enhancedcombathud', 'weaponSets') : actor.flags?.enhancedcombathud?.weaponSets
   if (!sets) return []
 
-  const active = actor.getFlag('enhancedcombathud', 'activeWeaponSet') || '1'
+  const active = (hudActive ? actor.getFlag('enhancedcombathud', 'activeWeaponSet') : actor.flags?.enhancedcombathud?.activeWeaponSet) || '1'
   const slot = sets[active] ?? {}
   const uuids = [slot.primary, slot.secondary].filter(Boolean)
 

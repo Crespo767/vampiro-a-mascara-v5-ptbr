@@ -20,10 +20,22 @@ function journalNameFor (user) {
   return `${JOURNAL_PREFIX}${user.name}`
 }
 
+// [vtm5e-ptbr] Só procura, sem criar: abrir a janela da coterie não pode
+// depender da permissão de criar diários (no Foundry 13 o papel Jogador não
+// a tem por padrão).
+export function findWishlistJournal (user) {
+  const name = journalNameFor(user)
+  return game.journal.find((j) => j.name === name) ?? null
+}
+
 export async function ensureWishlistJournal (user) {
   const name = journalNameFor(user)
   let journal = game.journal.find((j) => j.name === name)
   if (!journal) {
+    if (!game.user.can('JOURNAL_CREATE')) {
+      ui.notifications.warn('Sua lista de desejos ainda não existe e você não tem permissão para criar diários. Peça ao Narrador para liberar "Criar Diários" para Jogadores em Configurar Permissões.')
+      return null
+    }
     journal = await JournalEntry.create({
       name,
       pages: [{ name, type: 'text', text: { content: '', format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML } }],

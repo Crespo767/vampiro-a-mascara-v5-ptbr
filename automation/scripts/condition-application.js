@@ -148,7 +148,7 @@ function buildEffectsObject(effects) {
       keys: e.keys,
       intValue: e.intValue,
       strValue: '',
-      mode: e.mode ?? CONST.ACTIVE_EFFECT_CHANGE_TYPES.add,
+      mode: e.mode ?? CONST.ACTIVE_EFFECT_MODES?.ADD ?? CONST.ACTIVE_EFFECT_CHANGE_TYPES?.add ?? 2,
       flatSource: 'static',
       type: 'value'
     }

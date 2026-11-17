@@ -210,7 +210,7 @@ export class CoterieApplication extends foundry.applications.api.HandlebarsAppli
   // doesn't need a personal wishlist journal, this tab is a review view for
   // them.
   async #prepareWishlistContext () {
-    const { ensureWishlistJournal, getAllWishlistJournals, getWishlistItems } = await import('./wishlist-journals.js')
+    const { findWishlistJournal, getAllWishlistJournals, getWishlistItems } = await import('./wishlist-journals.js')
 
     if (game.user.isGM) {
       const wishlists = getAllWishlistJournals().map((journal) => ({
@@ -220,7 +220,7 @@ export class CoterieApplication extends foundry.applications.api.HandlebarsAppli
       return { isPlayerWishlist: false, wishlists }
     }
 
-    const journal = await ensureWishlistJournal(game.user)
+    const journal = findWishlistJournal(game.user)
     return { isPlayerWishlist: true, wishlistItems: getWishlistItems(journal) }
   }
 
@@ -359,6 +359,7 @@ export class CoterieApplication extends foundry.applications.api.HandlebarsAppli
 
     const { ensureWishlistJournal, addWishlistItem } = await import('./wishlist-journals.js')
     const journal = await ensureWishlistJournal(game.user)
+    if (!journal) return
     await addWishlistItem(journal, text)
     this.render()
   }
@@ -368,8 +369,9 @@ export class CoterieApplication extends foundry.applications.api.HandlebarsAppli
     const itemId = target.dataset.wishlistItemId
     if (!itemId) return
 
-    const { ensureWishlistJournal, removeWishlistItem } = await import('./wishlist-journals.js')
-    const journal = await ensureWishlistJournal(game.user)
+    const { findWishlistJournal, removeWishlistItem } = await import('./wishlist-journals.js')
+    const journal = findWishlistJournal(game.user)
+    if (!journal) return
     await removeWishlistItem(journal, itemId)
     this.render()
   }

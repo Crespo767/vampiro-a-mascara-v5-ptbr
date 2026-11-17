@@ -6,6 +6,7 @@ import {
   BLOOD_POTENCY_MULTIPLIER,
   DISCIPLINE_MULTIPLIER,
   SPECIALTY_COST,
+  RITUAL_FORMULA_MULTIPLIER,
   ADVANTAGE_COST_PER_DOT
 } from './cost-tables.js'
 import { commitCart } from './purchase-application.js'
@@ -29,6 +30,11 @@ const SKILL_GROUPS = {
 // canonical ids (system/api/def/disciplines.js) - found during design
 // review. Normalize before comparing, don't trust the raw string.
 const DISCIPLINE_ID_ALIASES = { bloodsorcery: 'sorcery' }
+const EXTRA_POWERS = {
+  rituals: { discipline: 'sorcery', label: 'Ritual' },
+  ceremonies: { discipline: 'oblivion', label: 'Cerimônia' },
+  alchemy: { discipline: 'alchemy', label: 'Fórmula' }
+}
 
 const CATEGORIES = [
   { id: 'attributes', label: 'Atributos' },
@@ -122,6 +128,7 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
       cancelDisciplinePick: XPShopApp.#onCancelDisciplinePick,
       toggleExpandPower: XPShopApp.#onToggleExpandPower,
       pickDisciplinePower: XPShopApp.#onPickDisciplinePower,
+      addExtraPower: XPShopApp.#onAddExtraPower,
       adjustAdvantage: XPShopApp.#onAdjustAdvantage,
       toggleAdvantageFolder: XPShopApp.#onToggleAdvantageFolder,
       removeCartLine: XPShopApp.#onRemoveCartLine,
@@ -202,6 +209,7 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
   // ---------- Discipline cost multiplier resolution ----------
 
   #disciplineMultiplier (disciplineId) {
+    if (disciplineId === 'alchemy' && this.#isThinBlooded()) return DISCIPLINE_MULTIPLIER.other
     const clanItem = this.actor.items.find(i => i.type === 'clan')
     if (!clanItem) return DISCIPLINE_MULTIPLIER.other // Ghouls own no Clan item at all
     if (enName(clanItem) === 'Caitiff') return DISCIPLINE_MULTIPLIER.caitiff
@@ -270,26 +278,17 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
 
   #buildSpecialtiesView () {
     const allSkillIds = Object.values(SKILL_GROUPS).flat()
-    const skillOptions = allSkillIds.map(id => ({ id, label: capitalize(id) }))
+    const skillOptions = allSkillIds.filter(id => this.#effectiveLevel('skills', id) >= 1).map(id => ({ id, label: capitalize(id) }))
     const draftEntries = this.cart.filter(e => e.category === 'specialties')
     return { skillOptions, draftEntries }
   }
 
   async #buildDisciplinesView () {
-    // "rituals"/"ceremonies" are sibling keys in the same registry
-    // (system/api/def/disciplines.js) and so also appear in
-    // actor.system.disciplines, but they're Blood Sorcery/Oblivion power
-    // subgroups, not independently-rated Disciplines - the corebook prices
-    // them separately ("Blood Sorcery Ritual: level x 3"), which is out of
-    // v1 scope (see plan). Excluded here rather than shown with the wrong
-    // cost formula.
     const knownIds = Object.keys(this.actor.system.disciplines ?? {})
       .filter(id => id !== 'rituals' && id !== 'ceremonies')
     const thinBlooded = this.#isThinBlooded()
 
-    const rows = thinBlooded
-      ? []
-      : knownIds.sort().map(id => {
+    const rows = knownIds.filter(id => thinBlooded ? id === 'alchemy' : id !== 'alchemy').sort().map(id => {
         const current = this.actor.system.disciplines?.[id]?.value ?? 0
         const effective = this.#effectiveDisciplineLevel(id)
         const multiplier = this.#disciplineMultiplier(id)
@@ -320,14 +319,12 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
     let powerPicker = null
     if (this.pendingDisciplinePick) {
       const { disciplineId, level } = this.pendingDisciplinePick
-      const alreadyPickedIds = new Set(this.#cartEntriesFor('disciplines', disciplineId).map(e => e.powerId))
-      const ownedPowerNames = new Set(this.actor.items.filter(i => i.type === 'power').map(i => i.name))
       const powers = (this.disciplinePowerItems || [])
         .filter(doc => {
           const docDisciplineId = DISCIPLINE_ID_ALIASES[doc.system.discipline] ?? doc.system.discipline
           return docDisciplineId === disciplineId && Number(doc.system.level) === level
         })
-        .filter(doc => !alreadyPickedIds.has(doc.id) && !ownedPowerNames.has(doc.name))
+        .filter(doc => !this.#hasPower(doc))
         .map(doc => {
           const plainDesc = (doc.system.description || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
           const expanded = this.expandedPowerIds.has(doc.id)
@@ -343,7 +340,22 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
       powerPicker = { disciplineId, disciplineLabel: capitalize(disciplineId), level, powers }
     }
 
-    return { rows, thinBlooded, powerPicker }
+    const extraPowers = (this.disciplinePowerItems || []).filter(doc => this.#extraPowerAvailable(doc))
+      .map(doc => ({ id: doc.id, name: doc.name, level: Number(doc.system.level), cost: Number(doc.system.level) * RITUAL_FORMULA_MULTIPLIER, label: EXTRA_POWERS[doc.system.discipline].label }))
+      .sort((a, b) => a.label.localeCompare(b.label) || a.level - b.level || a.name.localeCompare(b.name))
+    return { rows, thinBlooded, powerPicker, extraPowers }
+  }
+
+  #hasPower (doc) {
+    return this.actor.items.some(i => i.type === 'power' && (i.name === doc.name || enName(i) === enName(doc) || i.flags?.core?.sourceId === doc.uuid || i._stats?.compendiumSource === doc.uuid)) ||
+      this.cart.some(e => (e.category === 'disciplines' || e.category === 'extraPowers') && (e.powerId === doc.id || e.powerName === doc.name))
+  }
+
+  #extraPowerAvailable (doc) {
+    const rule = EXTRA_POWERS[doc.system.discipline]
+    const level = Number(doc.system.level)
+    return !!rule && (doc.system.discipline !== 'alchemy' || this.#isThinBlooded()) &&
+      Number.isInteger(level) && level >= 1 && level <= this.#effectiveDisciplineLevel(rule.discipline) && !this.#hasPower(doc)
   }
 
   #buildBloodPotencyView () {
@@ -500,8 +512,13 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
     // which element Foundry's action dispatcher hands back as `target`.
     const skillSelect = this.element.querySelector('[name="specialtySkill"]')
     const textInput = this.element.querySelector('[name="specialtyText"]')
-    const skillId = skillSelect.value
+    const skillId = skillSelect?.value
     const text = textInput.value.trim()
+
+    if (!Object.values(SKILL_GROUPS).flat().includes(skillId) || this.#effectiveLevel('skills', skillId) < 1) {
+      ui.notifications.warn('Escolha uma Habilidade com pelo menos um ponto, inclusive no carrinho.')
+      return
+    }
 
     if (!text) {
       ui.notifications.warn('Digite primeiro o nome de uma Especialização.')
@@ -559,6 +576,23 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
       label: `${capitalize(disciplineId)} ${level} — ${powerDoc.name}`
     })
     this.pendingDisciplinePick = null
+    this.render()
+  }
+
+  static #onAddExtraPower (event, target) {
+    const doc = this.disciplinePowerItems.find(d => d.id === target.dataset.powerId)
+    if (!doc || !this.#extraPowerAvailable(doc)) {
+      ui.notifications.warn('Este item não está disponível ou seus pré-requisitos não foram atendidos.')
+      return
+    }
+    const level = Number(doc.system.level)
+    const rule = EXTRA_POWERS[doc.system.discipline]
+    this.cart.push({
+      id: foundry.utils.randomID(8), category: 'extraPowers', traitId: rule.discipline,
+      targetLevel: level, powerId: doc.id, powerName: doc.name,
+      cost: level * RITUAL_FORMULA_MULTIPLIER,
+      label: `${rule.label}: ${doc.name} (nível ${level})`
+    })
     this.render()
   }
 
@@ -640,6 +674,26 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
     if (this.#cartTotal > this.#remainingXP) {
       ui.notifications.error(`Experiência insuficiente: o carrinho custa ${this.#cartTotal}, e restam apenas ${this.#remainingXP}.`)
       return
+    }
+
+    for (const entry of this.cart) {
+      if (entry.category === 'specialties' && this.#effectiveLevel('skills', entry.skillId) < 1) {
+        ui.notifications.error(`A especialização ${entry.label} exige pelo menos um ponto na Habilidade.`)
+        return
+      }
+      if (entry.category === 'extraPowers' && (this.#effectiveDisciplineLevel(entry.traitId) < entry.targetLevel || (entry.traitId === 'alchemy' && !this.#isThinBlooded()))) {
+        ui.notifications.error(`${entry.label} não atende mais aos pré-requisitos.`)
+        return
+      }
+      if (entry.category === 'disciplines') {
+        const current = this.#currentValue('disciplines', entry.traitId)
+        for (let n = current + 1; n < entry.targetLevel; n++) {
+          if (!this.#cartEntriesFor('disciplines', entry.traitId).some(e => e.targetLevel === n)) {
+            ui.notifications.error(`Adicione os níveis anteriores de ${capitalize(entry.traitId)} antes de confirmar.`)
+            return
+          }
+        }
+      }
     }
 
     try {

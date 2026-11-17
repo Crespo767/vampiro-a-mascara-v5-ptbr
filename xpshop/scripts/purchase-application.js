@@ -69,6 +69,15 @@ export async function commitCart (actor, cart) {
     scalarUpdates[`system.disciplines.${disciplineId}.visible`] = true
   }
 
+  for (const entry of cart.filter(e => e.category === 'extraPowers')) {
+    const compendiumDoc = await fromUuid(`Compendium.vampiro-a-mascara-v5-ptbr.disciplines.Item.${entry.powerId}`)
+    if (!compendiumDoc) throw new Error(`Item não encontrado no compêndio: ${entry.powerName}`)
+    const data = compendiumDoc.toObject()
+    delete data._id
+    delete data.ownership
+    newItems.push(data)
+  }
+
   // ---- Advantages: raise existing item, or create a new one ----
   const advantageEntries = cart.filter(e => e.category === 'advantages')
   for (const entry of advantageEntries) {

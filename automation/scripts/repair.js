@@ -15,7 +15,9 @@ const REPAIR_TITLE_MARKER = 'REPAIR::'
 const DEFAULT_REPAIR_DIFFICULTY = 3
 
 function repairDifficultyForItem (item) {
-  const priceCents = item.getFlag('vtm5e-gearshop', 'price')
+  const priceCents = game.modules.get('vtm5e-gearshop')?.active
+    ? item.getFlag('vtm5e-gearshop', 'price')
+    : item.flags?.['vtm5e-gearshop']?.price
   if (!Number.isFinite(priceCents)) return DEFAULT_REPAIR_DIFFICULTY
 
   const dollars = priceCents / 100

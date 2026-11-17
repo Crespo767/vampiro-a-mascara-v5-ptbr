@@ -230,7 +230,6 @@
 .vtm5e-xpshop-disc-name {
   font-family: var(--vtm5e-cs-font-display);
   color: var(--vtm5e-cs-text);
-  text-transform: capitalize;
 }
 
 .vtm5e-xpshop-disc-multiplier {

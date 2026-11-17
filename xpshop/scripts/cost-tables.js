@@ -11,6 +11,7 @@
 // No Humanity purchase exists in this table - deliberately not modeled.
 
 export const SPECIALTY_COST = 3
+export const RITUAL_FORMULA_MULTIPLIER = 3
 export const ADVANTAGE_COST_PER_DOT = 3
 
 export const ATTRIBUTE_MULTIPLIER = 5

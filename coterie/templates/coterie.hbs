@@ -19,7 +19,7 @@
                 <div class="vtm5e-coterie-tracker-dots">
                     {{#each tracker.dots as |dot|}}
                         <span class="vtm5e-coterie-tracker-dot {{#if dot.active}}active{{/if}}"
-                              {{#if ../../isGM}}data-action="setTracker" data-tracker-key="{{../tracker.key}}" data-index="{{dot.index}}"{{/if}}></span>
+                              {{#if ../../isGM}}data-action="setTracker" data-tracker-key="{{tracker.key}}" data-index="{{dot.index}}"{{/if}}></span>
                     {{/each}}
                 </div>
             </div>
@@ -108,7 +108,7 @@
                     <div class="vtm5e-coterie-tracker-dots">
                         {{#each tracker.dots as |dot|}}
                             <span class="vtm5e-coterie-tracker-dot {{#if dot.active}}active{{/if}}"
-                                  {{#if ../../isGM}}data-action="setTracker" data-tracker-key="{{../tracker.key}}" data-index="{{dot.index}}"{{/if}}></span>
+                                  {{#if ../../isGM}}data-action="setTracker" data-tracker-key="{{tracker.key}}" data-index="{{dot.index}}"{{/if}}></span>
                         {{/each}}
                     </div>
                     {{#if tracker.huntingDifficulty}}<span class="vtm5e-coterie-hunting-difficulty-inline">Dificuldade de Caça {{tracker.huntingDifficulty}}</span>{{/if}}
@@ -133,7 +133,7 @@
                     <div class="vtm5e-coterie-tracker-dots">
                         {{#each bg.dots as |dot|}}
                             <span class="vtm5e-coterie-tracker-dot {{#if dot.active}}active{{/if}}"
-                                  {{#if ../../isGM}}data-action="setBackgroundRating" data-background-key="{{../bg.key}}" data-index="{{dot.index}}"{{/if}}></span>
+                                  {{#if ../../isGM}}data-action="setBackgroundRating" data-background-key="{{bg.key}}" data-index="{{dot.index}}"{{/if}}></span>
                         {{/each}}
                     </div>
                     <input type="text" class="vtm5e-coterie-text-input vtm5e-coterie-background-note" data-background-note="{{bg.key}}" value="{{bg.note}}"

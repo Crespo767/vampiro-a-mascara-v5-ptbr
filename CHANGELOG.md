@@ -1,5 +1,17 @@
 # Histórico de versões
 
+## 1.6.2 — Correções dos testes no Foundry
+
+- **Ataques com arma** voltam a funcionar sem o módulo Argon (enhancedcombathud): a rolagem não abria e dava erro no console.
+- **Poderes passivos** (como Resiliência) aplicam o bônus de novo, sem erro, no Foundry 13.
+- **Coterie:** Chasse, Lien, Portillon e os Antecedentes compartilhados voltam a gravar. A janela abre para jogadores mesmo sem permissão de criar diários.
+- **Criação de personagem:** clicar duas vezes em "Avançar" não aplica mais o Clã em dobro nem pula o Tipo de Predador. Novo atalho "Criação de Personagem" no menu do cabeçalho da ficha.
+- **Loja de XP:** compra de Rituais, Cerimônias e Fórmulas (nível × 3). Especialização só em Habilidade com ponto. Alquimia Sangue-Ralo só para Sangues-Ralos, que agora a veem na loja.
+- **Textos:** as notas de regra de 48 poderes, que apareciam em inglês no cartão de teste resistido, foram traduzidas. "Sucesso por" e "Falha por" voltam a mostrar a margem. O resumo da criação automática não mostra mais tags HTML e diz "12ª". Concordâncias corrigidas ("+2 pontos", "1 sucesso", "1 ponto"), e "Feitiçaria de Sangue" sem maiúscula indevida. Notas do Ceifador em português.
+- **Referências corrigidas:** "Tabu Folclórico" (Variante Tzimisce), "Destituído" (Dunsirn) e "Erudição" (exemplo de Projeto).
+- **Tipos de Coterie:** nomes padronizados como "Plumário" e "Gangue de Presas"; o quadro geral ganhou rolagem horizontal.
+- **Equipamento:** 98 ícones que não existem no Foundry 13 foram trocados por ícones do núcleo.
+
 ## 1.6.1 — Política editorial e fontes dos Clãs
 
 - **Clãs do Guia do Jogador** (Banu Haqim, Hecata, Lasombra e Ministério): as descrições continuam resumidas. O rodapé agora diz "Descrição resumida não oficial — Guia do Jogador (Players Guide, Renegade Game Studios, 2023), p. N". Perdição, Compulsão e Disciplinas não mudaram.
