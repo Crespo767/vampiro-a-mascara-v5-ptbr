@@ -1,5 +1,15 @@
 # Histórico de versões
 
+## 1.6.0 — Guia do Jogador conferido com o original em inglês
+
+- **Todo o conteúdo do Guia do Jogador no módulo foi conferido frase a frase com o Players Guide em inglês:** Clãs, Tipos de Predador, Folhas de História, Disciplinas, Vantagens e Defeitos e as entradas do Diário (Carniçais, Mortais, Sistemas e Tipos de Coterie, Memoriam e Projetos). Foram 92 campos corrigidos nos compêndios e 24 páginas no Diário. O texto oficial do Companion foi mantido.
+- **Tipos de Predador:** os 6 do Guia ganharam a Parada de Predador, que faltava.
+- **Folhas de História:** voltaram benefícios omitidos, como os 2 pontos de Máscara dos Dunsirn e os 2 sucessos automáticos em Cerimônias de Tenochtitlan.
+- **Vantagens, Defeitos e Disciplinas:** frases, exemplos e regras omitidas foram restaurados. "Saúde" virou Vitalidade em todos os textos.
+- **Tipos de Coterie:** as epígrafes de cada tipo voltaram, e o quadro foi corrigido em vários pontos (Pilares, Recursos, Chasse). Em Campeões, o quadro impresso repete por engano os requisitos do Culto de Sangue; o módulo segue a descrição.
+- **Carniçais:** o quadro "Usando Vitae" ficou fiel ao original, e as referências cruzadas passaram para a Nota do módulo.
+- **Szlachta:** a nota da ficha passa a dizer Olhos da Besta (Proteanismo); na 1.5.0 dizia "Metamorfose".
+
 ## 1.5.0 — Revisão bilíngue e retratos dos Antagonistas
 
 - **Diário conferido frase a frase com o Players Guide em inglês** (p. 195–212 e 241–243): 16 correções de fidelidade em Convicções e Pilares (8), Crônicas e Tipos de Jogo (7) e Antagonistas (1). Exemplos: o Pilar "amigo que também é inimigo" (*frenemy*), "casas noturnas" em vez de "boatos", a pergunta sobre o sono diurno, a recomendação de regras rápidas só quando a aventura precisa terminar numa sessão. Os textos oficiais do Companion (Servos Carniçais, Szlachta, Vozhd) foram mantidos.
