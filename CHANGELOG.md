@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.4.1 — Termos de Crônicas e Antagonistas
+
+- **Crônicas e Tipos de Jogo:** termos padronizados como “aventura de sessão única” (*one-shot*), “sessão gravada ou transmitida” (*actual play*), “RPG por postagens” (*play-by-post*) e “transbordamento emocional” (*bleed*), com Nota do módulo: são traduções próprias, conferidas com uma reprodução do original em inglês, não termos oficiais.
+- **Antagonistas:** a primeira página passa a se chamar “Servos Carniçais” (título do Companion), com o subtítulo “Tzimisce”. Nota do módulo em Retornados: o termo designa cadáveres animados por Cerimônias de Oblívio, e os quatro nomes são traduções próprias.
+- **Szlachta:** Nota do módulo na ficha sobre os dois poderes de nível 1 (escolha do Narrador, pendente no modelo) e a parada excepcional de 8 dados. Nenhuma característica mudou, e os IDs dos Atores foram mantidos.
+
 ## 1.4.0 — Fechamento das pendências do Guia do Jogador
 
 - **Novo compêndio “Antagonistas do Guia do Jogador”** (Atores SPC): Szlachta e Vozhd (carniçais, com Disciplinas), Cadáver sem Mente, Cadáver Agressivo e Servo Homuncular. Szlachta e Vozhd usam as características do Companion oficial (p. 22–23), iguais às do Guia (p. 241–243).
