@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.6.1 — Política editorial e fontes dos Clãs
+
+- **Clãs do Guia do Jogador** (Banu Haqim, Hecata, Lasombra e Ministério): as descrições continuam resumidas. O rodapé agora diz "Descrição resumida não oficial — Guia do Jogador (Players Guide, Renegade Game Studios, 2023), p. N". Perdição, Compulsão e Disciplinas não mudaram.
+- **Clãs do Manual Básico:** os 9 ganharam o rodapé "Fonte: Vampiro: A Máscara — Manual Básico, p. N", como os do Companion já tinham.
+- **README:** nova seção "Política editorial". As regras necessárias para jogar aparecem completas; o texto narrativo novo entra resumido, e todas as fontes ficam identificadas.
+
 ## 1.6.0 — Guia do Jogador conferido com o original em inglês
 
 - **Todo o conteúdo do Guia do Jogador no módulo foi conferido frase a frase com o Players Guide em inglês:** Clãs, Tipos de Predador, Folhas de História, Disciplinas, Vantagens e Defeitos e as entradas do Diário (Carniçais, Mortais, Sistemas e Tipos de Coterie, Memoriam e Projetos). Foram 92 campos corrigidos nos compêndios e 24 páginas no Diário. O texto oficial do Companion foi mantido.

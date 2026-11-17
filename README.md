@@ -69,9 +69,20 @@ Os compêndios aparecem na aba **Compêndios**, dentro da pasta *Vampiro a Másc
 
 - **Manual Básico**: os textos seguem a edição brasileira oficial e foram conferidos página a página contra o livro.
 - **Companion**: os poderes e clãs que aparecem no Companion oficial em português (Ravnos, Salubri, Tzimisce e alguns poderes) usam a redação dele.
-- **Guia do Jogador**: não existe edição oficial em português. Os itens que só aparecem no Guia têm **tradução própria**, com o vocabulário do Manual Básico, e são marcados no fim do texto com *"Tradução não oficial — Guia do Jogador, p. N"*. Alguns trechos tiveram leitura difícil; podem ser revistos em versões futuras.
+- **Guia do Jogador**: não existe edição oficial em português. Os itens que só aparecem no Guia têm **tradução própria**, com o vocabulário do Manual Básico, conferida frase a frase com o original em inglês (versão 1.6.0). Eles são marcados no fim do texto com *"Tradução não oficial — Guia do Jogador, p. N"*. As descrições dos quatro Clãs do Guia (Banu Haqim, Hecata, Lasombra e Ministério) são resumos e trazem *"Descrição resumida não oficial"*.
+- Os termos do Guia são traduções próprias conferidas com o original em inglês, não termos oficiais.
 
 Encontrou um erro de tradução ou de regra? Abra uma [issue](https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr/issues) com o nome do item e a página do livro.
+
+## Política editorial
+
+O módulo é uma ferramenta de apoio ao jogo e não substitui a leitura dos livros oficiais.
+
+- **Regras necessárias para jogar** (Vantagens, Defeitos, Disciplinas, Tipos de Predador, Perdições, Compulsões, sistemas do Diário) aparecem completas e fiéis ao livro de origem.
+- **Texto descritivo e narrativo** (ambientação, história, perfil dos Clãs) entra resumido, com redação própria. O módulo não incorpora seções narrativas completas dos livros além das apresentações de Clã que já vêm na base dos compêndios do Manual Básico e do Companion.
+- **Identificação da fonte:** os Clãs de todas as fontes e os itens do Companion e do Guia do Jogador trazem a origem no fim do texto. O texto oficial em português leva *"Fonte: … Manual Básico / Companion, p. N"*, a tradução própria leva *"Tradução não oficial — Guia do Jogador, p. N"* e o resumo leva *"Descrição resumida não oficial — …"*. Os demais itens do Manual Básico seguem a edição oficial, sem rodapé.
+- **Sem alterações mecânicas:** correções de texto não mudam IDs, tipos de Item, modificadores nem automações.
+- Uma decisão editorial já fechada só é reaberta com uma fonte nova que a contradiga.
 
 ## Créditos
 
