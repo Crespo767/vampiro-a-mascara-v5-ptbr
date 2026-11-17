@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.6.6 — Fechar "Selecione a Rolagem" sem erro
+
+- **Rolagens:** fechar a janela "Selecione a Rolagem" pelo X deixava um erro no console (falha do wod5e 5.3.15, que só reconhece o botão Cancelar). O módulo agora trata isso como cancelamento; as rolagens continuam iguais.
+
 ## 1.6.5 — Fichas de Caçador e Lobisomem
 
 - **Caçador e Lobisomem:** as fichas não abriam no wod5e 5.3.15 (o cabeçalho usava um template que não existe mais no sistema). Voltam a abrir, com Ímpeto, Credo, Aflição, Tribo e Auspício.

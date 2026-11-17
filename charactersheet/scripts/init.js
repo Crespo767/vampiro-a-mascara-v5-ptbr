@@ -90,3 +90,23 @@ Hooks.on('renderDocumentSheetV2', (app) => {
     }
   }, 50)
 })
+
+// [vtm5e-ptbr] No wod5e 5.3.15, fechar a janela "Selecione a Rolagem" pelo X
+// devolve null (só o botão Cancelar devolve 'cancel'), e RollFromDataset
+// tenta ler null.skillSelect, deixando um erro no console. Trata esse caso
+// como cancelamento; qualquer outro erro continua aparecendo normalmente.
+Hooks.once('init', () => {
+  const api = globalThis.WOD5E?.api
+  const original = api?.RollFromDataset
+  if (typeof original !== 'function' || original.vtm5eCancelGuard) return
+  const guarded = async function (...args) {
+    try {
+      return await original.apply(this, args)
+    } catch (error) {
+      if (error instanceof TypeError && /reading 'skillSelect'/.test(error.message)) return
+      throw error
+    }
+  }
+  guarded.vtm5eCancelGuard = true
+  api.RollFromDataset = guarded
+})
