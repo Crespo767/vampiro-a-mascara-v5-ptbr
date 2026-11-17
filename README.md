@@ -63,7 +63,7 @@ Os compêndios aparecem na aba **Compêndios**, dentro da pasta *Vampiro a Másc
 - **Loja de XP**: gasto de experiência com os custos do Manual Básico, incluindo Rituais, Cerimônias e Fórmulas (nível × 3).
 - **Automação**: aplicação de dano, testes resistidos, Compulsões e outras ajudas ao Narrador.
 - **Cartões de rolagem**: cartões de chat reformulados.
-- **Coterie**: janela do grupo, com Domínio (Chasse, Lien, Portillon), Antecedentes compartilhados, membros e equipamento. Ela abre pelo ícone de coroa na pasta de Atores (aparece nas pastas com personagens de jogadores). A lista de desejos de cada jogador é um diário privado; para criá-la, o papel Jogador precisa da permissão "Criar Diários".
+- **Coterie**: janela do grupo, com Domínio (Chasse, Lien, Portillon), Antecedentes compartilhados, membros e equipamento. Ela abre pelo botão "Coterie" (com coroa) no topo da aba de Atores, ou pela coroa nas pastas que têm personagens de jogadores. A lista de desejos de cada jogador é um diário privado; para criá-la, o papel Jogador precisa da permissão "Criar Diários".
 
 ## Sobre a tradução
 

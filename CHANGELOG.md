@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.6.7 — Botão da Coterie na aba de Atores
+
+- **Coterie:** novo botão "Coterie" (com coroa) no topo da aba de Atores, ao lado de "Criar Ator" e "Criar Pasta". Antes a coroa só aparecia em pastas com personagens de jogadores, e a Coterie ficava sem acesso quando os personagens estavam fora de pastas (como o personagem criado automaticamente para o jogador). As coroas das pastas continuam.
+
 ## 1.6.6 — Fechar "Selecione a Rolagem" sem erro
 
 - **Rolagens:** fechar a janela "Selecione a Rolagem" pelo X deixava um erro no console (falha do wod5e 5.3.15, que só reconhece o botão Cancelar). O módulo agora trata isso como cancelamento; as rolagens continuam iguais.

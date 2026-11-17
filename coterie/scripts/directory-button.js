@@ -20,6 +20,22 @@ export function registerDirectoryButton () {
     const root = html instanceof HTMLElement ? html : html[0]
     if (!root) return
 
+    // [vtm5e-ptbr] Coroa fixa no topo da aba, ao lado de "Criar Ator" e
+    // "Criar Pasta": a Coterie abre mesmo quando os personagens dos
+    // jogadores estão fora de pastas.
+    const actions = root.querySelector('.directory-header .header-actions')
+    if (actions && !actions.querySelector('.vtm5e-coterie-header-btn')) {
+      const top = document.createElement('button')
+      top.type = 'button'
+      top.className = 'vtm5e-coterie-header-btn'
+      top.innerHTML = '<i class="fas fa-crown" inert></i><span>Coterie</span>'
+      top.addEventListener('click', (event) => {
+        event.preventDefault()
+        game.modules.get('vampiro-a-mascara-v5-ptbr')?.api?.openCoterie()
+      })
+      actions.appendChild(top)
+    }
+
     root.querySelectorAll('.directory-item.folder').forEach((li) => {
       const header = li.querySelector(':scope > .folder-header')
       if (!header || header.querySelector('.vtm5e-coterie-open-btn')) return
