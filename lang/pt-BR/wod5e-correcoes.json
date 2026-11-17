@@ -1,0 +1,13 @@
+{
+ "WOD5E": {
+  "Settings": {
+   "AutomateOblivion": "Automatizar Máculas de Oblívio",
+   "AutomateOblivionHint": "Se habilitado, rolar 1 ou 10 nas Checagens de Sangue de poderes da Disciplina Oblívio dá uma Mácula na Humanidade do ator associado."
+  },
+  "VTM": {
+   "OblivionStainsTitle": "Máculas de Oblívio",
+   "OblivionStainsContent": "Os efeitos de Oblívio cobram seu preço. A Humanidade de {actor} sofreu {amount} Mácula(s).",
+   "RollRouse": "Rolar Checagem de Sangue"
+  }
+ }
+}

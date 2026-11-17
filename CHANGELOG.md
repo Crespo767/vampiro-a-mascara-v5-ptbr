@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.4.2 — Correções na tradução do sistema
+
+- O módulo passa a corrigir cinco textos da tradução pt-BR do próprio wod5e, sem alterar o sistema: “Máculas de Oblívio” (era “Título das Máculas de Oblívio”), “Os efeitos de Oblívio…” (era “Oblivio” sem acento), “Rolar Checagem de Sangue” (era “Chegagem”) e a opção “Automatizar Máculas de Oblívio”, cuja explicação dizia “testes de despertar” em vez de Checagens de Sangue. Arquivo: `lang/pt-BR/wod5e-correcoes.json`.
+
 ## 1.4.1 — Termos de Crônicas e Antagonistas
 
 - **Crônicas e Tipos de Jogo:** termos padronizados como “aventura de sessão única” (*one-shot*), “sessão gravada ou transmitida” (*actual play*), “RPG por postagens” (*play-by-post*) e “transbordamento emocional” (*bleed*), com Nota do módulo: são traduções próprias, conferidas com uma reprodução do original em inglês, não termos oficiais.
