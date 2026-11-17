@@ -58,3 +58,30 @@ Hooks.once('init', () => {
   // Argon HUD instead of a sheet button.
   game.modules.get(MODULE_ID).api = Object.assign(game.modules.get(MODULE_ID).api ?? {}, { onFeed })
 })
+
+// [vtm5e-ptbr] Nomes longos (Folhas de História, Potência de Sangue 0 etc.)
+// não cabiam no campo de nome da ficha de item do wod5e (input com fonte
+// grande e largura fixa). Diminui a fonte só quando o nome não cabe.
+const ITEM_NAME_MIN_FONT_PX = 18
+function fitItemName (input) {
+  if (!input?.isConnected) return
+  input.style.fontSize = ''
+  let size = parseFloat(getComputedStyle(input).fontSize)
+  while (input.scrollWidth > input.clientWidth && size > ITEM_NAME_MIN_FONT_PX) {
+    size -= 1
+    input.style.fontSize = `${size}px`
+  }
+}
+Hooks.on('renderDocumentSheetV2', (app) => {
+  if (!(app.document instanceof Item)) return
+  // A ficha pode trocar o campo depois deste hook; busca de novo no ajuste.
+  setTimeout(() => {
+    const input = app.element?.querySelector('input.itemname')
+    if (!input) return
+    fitItemName(input)
+    if (!input.dataset.vtm5eFit) {
+      input.dataset.vtm5eFit = '1'
+      input.addEventListener('input', () => fitItemName(input))
+    }
+  }, 50)
+})

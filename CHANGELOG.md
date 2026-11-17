@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.6.3 — Nomes longos na ficha de item
+
+- **Ficha de item:** nomes longos, como os das Folhas de História e "Potência de Sangue 0 (zero): Sangue-Ralo", ficavam cortados no campo de nome. Agora a fonte diminui só quando o nome não cabe; nomes curtos continuam do mesmo tamanho.
+
 ## 1.6.2 — Correções dos testes no Foundry
 
 - **Ataques com arma** voltam a funcionar sem o módulo Argon (enhancedcombathud): a rolagem não abria e dava erro no console.
