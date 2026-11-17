@@ -62,7 +62,7 @@ Hooks.once('init', () => {
 // [vtm5e-ptbr] Nomes longos (Folhas de História, Potência de Sangue 0 etc.)
 // não cabiam no campo de nome da ficha de item do wod5e (input com fonte
 // grande e largura fixa). Diminui a fonte só quando o nome não cabe.
-const ITEM_NAME_MIN_FONT_PX = 18
+const ITEM_NAME_MIN_FONT_PX = 13
 function fitItemName (input) {
   if (!input?.isConnected) return
   input.style.fontSize = ''
@@ -73,10 +73,15 @@ function fitItemName (input) {
   }
 }
 Hooks.on('renderDocumentSheetV2', (app) => {
-  if (!(app.document instanceof Item)) return
+  // Item: campo de nome do wod5e. Ator: nome no cabeçalho das fichas do
+  // módulo (.cs-header, até 230 px) e das fichas do wod5e (PdN, grupo: 250 px).
+  const selector = app.document instanceof Item
+    ? 'input.itemname'
+    : (app.document instanceof Actor ? '.cs-header .charname, .header-profile .charname' : null)
+  if (!selector) return
   // A ficha pode trocar o campo depois deste hook; busca de novo no ajuste.
   setTimeout(() => {
-    const input = app.element?.querySelector('input.itemname')
+    const input = app.element?.querySelector(selector)
     if (!input) return
     fitItemName(input)
     if (!input.dataset.vtm5eFit) {

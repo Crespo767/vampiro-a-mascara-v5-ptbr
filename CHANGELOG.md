@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.6.5 — Fichas de Caçador e Lobisomem
+
+- **Caçador e Lobisomem:** as fichas não abriam no wod5e 5.3.15 (o cabeçalho usava um template que não existe mais no sistema). Voltam a abrir, com Ímpeto, Credo, Aflição, Tribo e Auspício.
+- **Nomes nas fichas de ator:** nomes longos não ficam mais cortados, nem nas fichas de personagem do módulo nem nas de PdN e grupo do wod5e; a fonte diminui só quando o nome não cabe.
+- **Textos:** "Plumário" padronizado também em Sistemas de Coterie; exemplo do campo Tipo de Coterie com "Gangue de Presas"; o tipo de item do Ímpeto do Caçador aparecia como "Veículo".
+
 ## 1.6.4 — Ficha de PdN dos Antagonistas
 
 - **Antagonistas:** a ficha de PdN do wod5e (Szlachta, Vozhd e os demais) recebia por engano o estilo da ficha de vampiro do módulo, e o nome aparecia cortado ("S…", "V…"). O estilo do módulo agora vale só para as fichas de personagem; a de PdN voltou ao visual do sistema, com o nome inteiro sobre o retrato.

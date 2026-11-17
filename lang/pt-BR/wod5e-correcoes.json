@@ -13,5 +13,10 @@
    "OblivionStainsContent": "Os efeitos de Oblívio cobram seu preço. A Humanidade de {actor} sofreu {amount} Mácula(s).",
    "RollRouse": "Rolar Checagem de Sangue"
   }
+ },
+ "TYPES": {
+  "Item": {
+   "drive": "Ímpeto"
+  }
  }
 }

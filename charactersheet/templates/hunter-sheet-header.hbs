@@ -19,13 +19,13 @@
                 <div class="cs-bc-line">
                     <span class="cs-bc-label" data-tooltip="O que leva você a caçar: seu motivo pessoal para arriscar a vida contra o sobrenatural." data-tooltip-direction="DOWN">{{localize "WOD5E.HTR.Drive"}}:</span>
                     <span class="cs-bc-value-wrap">
-                        {{> "systems/wod5e/display/shared/actors/partials/dynamic-item-display.hbs" item=drive type="drive"}}
+                        {{#if drive}}<span class="data-item nowrap">{{drive.name}}</span><a class="edit-data-item" data-action="itemEdit" data-item-id="{{drive.id}}"><i class="fa-solid fa-pen-nib"></i></a>{{else}}<a class="add-data-item" data-action="createItem" data-type="drive"><i class="fa-solid fa-plus"></i></a>{{/if}}
                     </span>
                 </div>
                 <div class="cs-bc-line">
                     <span class="cs-bc-label" data-tooltip="Sua filosofia de caça: como você justifica a violência e onde traça o limite." data-tooltip-direction="DOWN">{{localize "WOD5E.HTR.Creed"}}:</span>
                     <span class="cs-bc-value-wrap">
-                        {{> "systems/wod5e/display/shared/actors/partials/dynamic-item-display.hbs" item=creed type="creed"}}
+                        {{#if creed}}<span class="data-item nowrap">{{creed.name}}</span><a class="edit-data-item" data-action="itemEdit" data-item-id="{{creed.id}}"><i class="fa-solid fa-pen-nib"></i></a>{{else}}<a class="add-data-item" data-action="createItem" data-type="creed"><i class="fa-solid fa-plus"></i></a>{{/if}}
                     </span>
                 </div>
                 <div class="cs-bc-line cs-despair-line">

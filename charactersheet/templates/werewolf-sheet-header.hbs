@@ -17,13 +17,13 @@
                 <div class="cs-bc-line">
                     <span class="cs-bc-label" data-tooltip="Sua tribo: a família espiritual e a identidade cultural da sua matilha entre os Garou." data-tooltip-direction="DOWN">{{localize "WOD5E.WTA.Tribe"}}:</span>
                     <span class="cs-bc-value-wrap">
-                        {{> "systems/wod5e/display/shared/actors/partials/dynamic-item-display.hbs" item=tribe type="tribe"}}
+                        {{#if tribe}}<span class="data-item nowrap">{{tribe.name}}</span><a class="edit-data-item" data-action="itemEdit" data-item-id="{{tribe.id}}"><i class="fa-solid fa-pen-nib"></i></a>{{else}}<a class="add-data-item" data-action="createItem" data-type="tribe"><i class="fa-solid fa-plus"></i></a>{{/if}}
                     </span>
                 </div>
                 <div class="cs-bc-line">
                     <span class="cs-bc-label" data-tooltip="A fase da lua sob a qual você nasceu: molda seu papel e seu primeiro Dom." data-tooltip-direction="DOWN">{{localize "WOD5E.WTA.Auspice"}}:</span>
                     <span class="cs-bc-value-wrap">
-                        {{> "systems/wod5e/display/shared/actors/partials/dynamic-item-display.hbs" item=auspice type="auspice"}}
+                        {{#if auspice}}<span class="data-item nowrap">{{auspice.name}}</span><a class="edit-data-item" data-action="itemEdit" data-item-id="{{auspice.id}}"><i class="fa-solid fa-pen-nib"></i></a>{{else}}<a class="add-data-item" data-action="createItem" data-type="auspice"><i class="fa-solid fa-plus"></i></a>{{/if}}
                     </span>
                 </div>
             </div>
