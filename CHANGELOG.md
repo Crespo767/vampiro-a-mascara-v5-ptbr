@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.6.4 — Ficha de PdN dos Antagonistas
+
+- **Antagonistas:** a ficha de PdN do wod5e (Szlachta, Vozhd e os demais) recebia por engano o estilo da ficha de vampiro do módulo, e o nome aparecia cortado ("S…", "V…"). O estilo do módulo agora vale só para as fichas de personagem; a de PdN voltou ao visual do sistema, com o nome inteiro sobre o retrato.
+
 ## 1.6.3 — Nomes longos na ficha de item
 
 - **Ficha de item:** nomes longos, como os das Folhas de História e "Potência de Sangue 0 (zero): Sangue-Ralo", ficavam cortados no campo de nome. Agora a fonte diminui só quando o nome não cabe; nomes curtos continuam do mesmo tamanho.
