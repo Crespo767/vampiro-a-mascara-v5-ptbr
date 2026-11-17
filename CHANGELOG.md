@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 1.5.0 — Revisão bilíngue e retratos dos Antagonistas
+
+- **Diário conferido frase a frase com o Players Guide em inglês** (p. 195–212 e 241–243): 16 correções de fidelidade em Convicções e Pilares (8), Crônicas e Tipos de Jogo (7) e Antagonistas (1). Exemplos: o Pilar "amigo que também é inimigo" (*frenemy*), "casas noturnas" em vez de "boatos", a pergunta sobre o sono diurno, a recomendação de regras rápidas só quando a aventura precisa terminar numa sessão. Os textos oficiais do Companion (Servos Carniçais, Szlachta, Vozhd) foram mantidos.
+- **Rodapés corrigidos** nas páginas Servos Carniçais, Szlachta e Vozhd, que desde a 1.4.0 mostravam "241uia do Jogador, p. G".
+- **Nota do Vozhd corrigida** no Diário e na ficha: o Guia diz que ele não precisa comer nada além do sangue do mestre, uma vez por mês (a nota anterior dizia "muito alimento", erro da tradução automática).
+- **Szlachta pronto para jogo:** Olhos da Besta (Metamorfose) e Sentir a Besta (Animalismo), Disciplinas do clã Tzimisce, e Briga 8 como Parada de Dados Excepcional. A nota da ficha explica a escolha; o ID e as características continuam os mesmos.
+- **Retratos dos 5 Antagonistas** (ficha e token), gerados para o módulo, em `assets/antagonistas/`.
+
 ## 1.4.2 — Correções na tradução do sistema
 
 - O módulo passa a corrigir cinco textos da tradução pt-BR do próprio wod5e, sem alterar o sistema: “Máculas de Oblívio” (era “Título das Máculas de Oblívio”), “Os efeitos de Oblívio…” (era “Oblivio” sem acento), “Rolar Checagem de Sangue” (era “Chegagem”) e a opção “Automatizar Máculas de Oblívio”, cuja explicação dizia “testes de despertar” em vez de Checagens de Sangue. Arquivo: `lang/pt-BR/wod5e-correcoes.json`.
