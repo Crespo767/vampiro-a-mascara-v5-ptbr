@@ -401,7 +401,8 @@ async function resolveWeaponOpposedRoll(pending, defenderActor, defenderRoll, is
     // unlike Sharp, which the corebook restricts to mortals only. Checked
     // first/independently so it can't be masked by Sharp's narrower rule.
     if (pending.isIncendiary) damageSeverity = 'aggravated'
-    else if ((pending.isSharp || pending.isFirearm) && defenderActor?.system?.gamesystem !== 'vampire') damageSeverity = 'aggravated'
+    // Firearms deal Aggravated to non-vampires, except Tasers (SI p. 71).
+    else if ((pending.isSharp || (pending.isFirearm && !pending.isTaser)) && defenderActor?.system?.gamesystem !== 'vampire') damageSeverity = 'aggravated'
   }
 
   // Electrical only fires on the attacker's own hit landing - same

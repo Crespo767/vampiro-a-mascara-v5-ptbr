@@ -305,9 +305,9 @@ export function registerDamageApplication() {
       const mode = token.actor ? getStepSetting('damageApplication', token.actor) : 'prompt'
       if (mode !== 'auto') continue
 
-      // Sharp weapons and firearms deal Aggravated damage to non-vampires.
       const tags = weapon.getFlag(MODULE_ID, 'weaponTags')
-      const severity = ((tags?.sharp || tags?.firearm) && token.actor?.system?.gamesystem !== 'vampire')
+      // Firearms deal Aggravated to non-vampires, except Tasers (SI p. 71).
+      const severity = ((tags?.sharp || (tags?.firearm && !tags?.taser)) && token.actor?.system?.gamesystem !== 'vampire')
         ? 'aggravated'
         : 'superficial'
       // Relayed (performPrivilegedDamage) rather than a direct
