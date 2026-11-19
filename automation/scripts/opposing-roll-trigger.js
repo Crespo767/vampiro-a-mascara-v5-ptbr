@@ -658,9 +658,10 @@ async function renderHit(hit, shotNote, isBilateralTie) {
     taserNoteHTML = `<p class="vtm5e-automation-recap-narrative">${loserName} está atordoado pelo taser e precisa de ${threshold} ou mais sucessos em Autocontrole + Determinação para agir no próximo turno.</p>`
   }
 
-  const damageLabel = breakdown.aggravated && breakdown.superficial
-    ? `${breakdown.aggravated} Agravado + ${breakdown.superficial} Superficial à Vitalidade`
-    : `Dano ${breakdown.aggravated || (isBilateralTie && displayDamageAmount === 0 && damageSeverity === 'aggravated') ? 'Agravado' : 'Superficial'} à Vitalidade`
+  const aggravatedShown = breakdown.aggravated + breakdown.upgraded
+  const damageLabel = aggravatedShown && breakdown.superficial
+    ? `${aggravatedShown} Agravado + ${breakdown.superficial} Superficial à Vitalidade`
+    : `Dano ${aggravatedShown || (isBilateralTie && displayDamageAmount === 0 && damageSeverity === 'aggravated') ? 'Agravado' : 'Superficial'} à Vitalidade`
   let calculation = `${shotNote}Margem ${hitMargin}`
   if (weaponDamageValue > 0) calculation += ` + arma ${weaponDamageValue}`
   if (ammoBonus > 0) calculation += ` + munição ${ammoBonus}`
@@ -668,7 +669,9 @@ async function renderHit(hit, shotNote, isBilateralTie) {
   if (breakdown.converted > 0) calculation += ` Armadura ${breakdown.armor} converteu ${breakdown.converted} em Superficial.`
   if (breakdown.superficialRaw > 0 && breakdown.toughness > 0) calculation += ` Tenacidade −${breakdown.toughness}: Superficial ${breakdown.superficialRaw} → ${breakdown.superficialAfterToughness}.`
   if (breakdown.superficialRaw > 0) calculation += ` Superficial ${breakdown.superficialAfterToughness} ÷ 2 = ${breakdown.superficialHalved}.`
-  if (breakdown.total < breakdown.aggravatedRaw + breakdown.superficialHalved) calculation += ' Limitado pela trilha de Vitalidade.'
+  if (breakdown.upgraded > 0) calculation += ` Trilha cheia: ${breakdown.upgraded} Superficial ${breakdown.upgraded === 1 ? 'virou' : 'viraram'} Agravado (Livro Básico, p. 127).`
+  if (breakdown.total < breakdown.aggravatedRaw + breakdown.superficialHalved) calculation += ' O excesso não cabe na trilha.'
+  if (breakdown.trackFullyAggravated) calculation += ` Trilha toda Agravada: ${actor?.system?.gamesystem === 'vampire' ? 'Torpor' : 'coma ou morte'} (Livro Básico, p. 127).`
   const damageHTML = displayDamageAmount > 0 || isBilateralTie
     ? `
       <p class="vtm5e-automation-recap-name">${loserName}</p>
@@ -678,7 +681,7 @@ async function renderHit(hit, shotNote, isBilateralTie) {
         <div class="vtm5e-automation-recap-calc" style="font-size:0.85em;opacity:0.8">${calculation}</div>
       </div>
     `
-    : `<p class="vtm5e-automation-recap-result">A trilha de Vitalidade de ${loserName} já está cheia.</p>`
+    : `<p class="vtm5e-automation-recap-result">A trilha de Vitalidade de ${loserName} já está toda Agravada.</p>`
   const pendingDamage = !willAutoApply && token && damageAmount > 0
     ? { actorId: token.actor?.id, amount: damageAmount, controllingUserId, track: 'health', applyOptions: armorOptions }
     : null

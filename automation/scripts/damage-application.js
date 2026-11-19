@@ -76,7 +76,7 @@ async function consumeDefyBaneBudget(actor, amount) {
  * track limit without writing to the actor. Shared by application and recap.
  */
 export function computeDamageBreakdown(actor, amount, damageType, { reduceByArmor = false, armorPiercingAmmo = false, halveSuperficial = reduceByArmor } = {}) {
-  const empty = { raw: amount, damageType, armor: 0, converted: 0, aggravatedRaw: 0, superficialRaw: 0, toughness: 0, superficialAfterToughness: 0, superficialHalved: 0, aggravated: 0, superficial: 0, total: 0 }
+  const empty = { raw: amount, damageType, armor: 0, converted: 0, aggravatedRaw: 0, superficialRaw: 0, toughness: 0, superficialAfterToughness: 0, superficialHalved: 0, aggravated: 0, superficial: 0, upgraded: 0, trackFullyAggravated: false, total: 0 }
   if (!actor) return empty
 
   let armor = reduceByArmor ? getEquippedArmorReduction(actor) : 0
@@ -88,10 +88,18 @@ export function computeDamageBreakdown(actor, amount, damageType, { reduceByArmo
   const superficialAfterToughness = superficialRaw > 0 && toughness > 0 ? Math.max(superficialRaw - toughness, 1) : superficialRaw
   const superficialHalved = halveSuperficial ? Math.ceil(superficialAfterToughness / 2) : superficialAfterToughness
   const health = actor.system.health
-  const room = Math.max((health?.max ?? 0) - (health?.aggravated ?? 0) - (health?.superficial ?? 0), 0)
+  const max = health?.max ?? 0
+  const currentAggravated = health?.aggravated ?? 0
+  const currentSuperficial = health?.superficial ?? 0
+  const room = Math.max(max - currentAggravated - currentSuperficial, 0)
   const aggravated = Math.min(aggravatedRaw, room)
   const superficial = Math.min(superficialHalved, room - aggravated)
-  return { raw: amount, damageType, armor, converted, aggravatedRaw, superficialRaw, toughness, superficialAfterToughness, superficialHalved, aggravated, superficial, total: aggravated + superficial }
+  // Corebook p. 127: each level taken while the track is full turns one
+  // Superficial box into Aggravated (after halving).
+  const overflow = (aggravatedRaw - aggravated) + (superficialHalved - superficial)
+  const upgraded = Math.min(overflow, currentSuperficial + superficial)
+  const trackFullyAggravated = max > 0 && currentAggravated + aggravated + upgraded >= max
+  return { raw: amount, damageType, armor, converted, aggravatedRaw, superficialRaw, toughness, superficialAfterToughness, superficialHalved, aggravated, superficial, upgraded, trackFullyAggravated, total: aggravated + superficial + upgraded }
 }
 
 export function computeAppliedDamage(actor, amount, damageType, options) {
@@ -100,7 +108,8 @@ export function computeAppliedDamage(actor, amount, damageType, options) {
 
 /**
  * Apply both damage types after armor conversion, Toughness, optional
- * superficial halving and the health track limit. Overflow is not handled.
+ * superficial halving and the health track limit, including the full-track
+ * Superficial-to-Aggravated overflow (corebook p. 127).
  * Weapon attacks opt into armor and halving with reduceByArmor; callers can
  * also control halving explicitly with halveSuperficial.
  */
@@ -147,13 +156,16 @@ export async function applyDamageToTarget(token, amount, damageType, options = {
   if (breakdown.total <= 0) return 0
 
   const update = {}
-  if (breakdown.aggravated > 0) update['system.health.aggravated'] = (actor.system.health?.aggravated ?? 0) + breakdown.aggravated
-  if (breakdown.superficial > 0) update['system.health.superficial'] = (actor.system.health?.superficial ?? 0) + breakdown.superficial
+  const aggravatedAdded = breakdown.aggravated + breakdown.upgraded
+  const superficialChange = breakdown.superficial - breakdown.upgraded
+  if (aggravatedAdded > 0) update['system.health.aggravated'] = (actor.system.health?.aggravated ?? 0) + aggravatedAdded
+  if (superficialChange !== 0) update['system.health.superficial'] = Math.max((actor.system.health?.superficial ?? 0) + superficialChange, 0)
   await actor.update(update)
 
   const parts = []
   if (breakdown.aggravated > 0) parts.push(`${breakdown.aggravated} de dano Agravado`)
   if (breakdown.superficial > 0) parts.push(`${breakdown.superficial} de dano Superficial`)
+  if (breakdown.upgraded > 0) parts.push(`${breakdown.upgraded} Superficial convertido em Agravado (trilha cheia)`)
   ui.notifications.info(`${MODULE_ID} | ${actor.name} sofreu ${parts.join(' e ')}`)
   return breakdown.total
 }
