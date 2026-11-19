@@ -1,10 +1,10 @@
 import { findWeaponForRoll, splitAdvancedDice, renderRollCardHTML, isBestialFailure, adjustBestialFailureLabel, isMessyCritical, adjustMessyCriticalLabel } from './roll-utils.js'
 import { getStepSetting } from './settings.js'
 import { getRoutingTargets } from './socket-routing.js'
-import { computeAppliedDamage } from './damage-application.js'
+import { computeDamageBreakdown } from './damage-application.js'
 import { rollCompulsion, buildCompulsionHTML } from './compulsion.js'
 import { applyStatusCondition } from './condition-application.js'
-import { getLoadedAmmoType, getAmmoDamageBonus, getFlatDamageBonus } from './weapon-tags.js'
+import { getLoadedAmmoType, getAmmoDamageBonus, getWeaponDamageValue } from './weapon-tags.js'
 import { performPrivilegedWrite, performPrivilegedDamage } from './privileged-write-relay.js'
 import { markBroken } from './repair.js'
 
@@ -97,6 +97,7 @@ async function promptWeaponDefense(originalMessage, attackerRoll, weapon, target
     // defender's counter-attack, if any, uses a completely different
     // (untracked) pool with no relation to the original attacker's weapon.
     isSharp: !!weapon.getFlag(MODULE_ID, 'weaponTags')?.sharp,
+    isFirearm: !!weapon.getFlag(MODULE_ID, 'weaponTags')?.firearm,
     isFragile: !!weapon.getFlag(MODULE_ID, 'weaponTags')?.fragile,
     isTaser: !!weapon.getFlag(MODULE_ID, 'weaponTags')?.taser,
     isIncendiary: !!weapon.getFlag(MODULE_ID, 'weaponTags')?.incendiary,
@@ -106,7 +107,7 @@ async function promptWeaponDefense(originalMessage, attackerRoll, weapon, target
     // chambered, not the weapon's own tags, so it's captured separately
     // here rather than read off weaponTags like the three booleans above.
     loadedAmmoType: getLoadedAmmoType(weapon),
-    flatDamageBonus: getFlatDamageBonus(weapon),
+    weaponDamageValue: getWeaponDamageValue(weapon),
     attackerWeaponId: weapon.id,
     promptMessageId: null
   })
@@ -366,10 +367,10 @@ async function resolveWeaponOpposedRoll(pending, defenderActor, defenderRoll, is
   let loserName = null
   let loserUserId = null
   let damageAmount = 0
-  // Superficial unless the ATTACKER's own weapon is Sharp and it's actually
-  // their hit landing (margin > 0 below) - a defender's counter-attack (
-  // margin < 0) uses a different, untracked pool, so Sharp never applies
-  // there regardless of what the original attacker was wielding.
+  let weaponDamageValue = 0
+  let ammoBonus = 0
+  // The attacker's weapon can change severity; a defender's counter-attack
+  // uses a different, untracked pool and remains Superficial.
   let damageSeverity = 'superficial'
 
   if (margin <= 0) {
@@ -393,12 +394,14 @@ async function resolveWeaponOpposedRoll(pending, defenderActor, defenderRoll, is
     loserToken = defenderActor?.getActiveTokens()[0]
     loserName = defenderActor?.name
     loserUserId = defenderUserId
-    damageAmount = margin + getAmmoDamageBonus(pending.loadedAmmoType) + pending.flatDamageBonus
+    weaponDamageValue = pending.weaponDamageValue
+    ammoBonus = getAmmoDamageBonus(pending.loadedAmmoType)
+    damageAmount = margin + weaponDamageValue + ammoBonus
     // Incendiary (fire) is Aggravated to EVERY target including vampires -
     // unlike Sharp, which the corebook restricts to mortals only. Checked
     // first/independently so it can't be masked by Sharp's narrower rule.
     if (pending.isIncendiary) damageSeverity = 'aggravated'
-    else if (pending.isSharp && defenderActor?.system?.gamesystem !== 'vampire') damageSeverity = 'aggravated'
+    else if ((pending.isSharp || pending.isFirearm) && defenderActor?.system?.gamesystem !== 'vampire') damageSeverity = 'aggravated'
   }
 
   // Electrical only fires on the attacker's own hit landing - same
@@ -446,7 +449,7 @@ async function resolveWeaponOpposedRoll(pending, defenderActor, defenderRoll, is
   // Piercing ammo, RAW: "-2 Armor Value", Second Inquisition p.72) - a
   // defender's counter (margin < 0) uses an untracked generic pool, not
   // pending's weapon/ammo at all, same gating as Sharp above. Armor
-  // REDUCTION itself (see postWeaponResolutionCard) still always applies in
+  // conversion (see postWeaponResolutionCard) still applies in
   // both directions - it's based on whoever's actually receiving the
   // damage's own equipped armor, not on which side attacked.
   const isArmorPiercingAmmo = margin > 0 && pending.loadedAmmoType === 'armorPiercing'
@@ -470,6 +473,9 @@ async function resolveWeaponOpposedRoll(pending, defenderActor, defenderRoll, is
     loserUserId,
     damageAmount,
     damageSeverity,
+    margin,
+    weaponDamageValue,
+    ammoBonus,
     isArmorPiercingAmmo,
     isTaser,
     onHitTagNoteHTML,
@@ -614,55 +620,28 @@ async function applyOnHitTagEffects(pending, defenderActor) {
 // side plus a separate "who won"/"apply damage" message - embeds each side's
 // actual roll card (dice faces and all) so nothing is lost, then deletes the
 // originals via sourceMessageIds once this card is live.
-async function postWeaponResolutionCard({ weaponName, attackerName, attackerRollHTML, attackerCompulsionHTML, defenderName, defenderRollHTML, defenderCompulsionHTML, defenseLabel, attackerWon, resultLine, loserToken, loserName, loserUserId, damageAmount, damageSeverity, isArmorPiercingAmmo, isTaser, onHitTagNoteHTML, sourceMessageIds }) {
+async function postWeaponResolutionCard({ weaponName, attackerName, attackerRollHTML, attackerCompulsionHTML, defenderName, defenderRollHTML, defenderCompulsionHTML, defenseLabel, attackerWon, resultLine, loserToken, loserName, loserUserId, damageAmount, damageSeverity, margin, weaponDamageValue, ammoBonus, isArmorPiercingAmmo, isTaser, onHitTagNoteHTML, sourceMessageIds }) {
   // Looked up per the actor actually taking the damage - an NPC's damage can
   // apply automatically while a player's still waits for a click, or vice versa.
   const mode = loserToken?.actor ? getStepSetting('damageApplication', loserToken.actor) : 'prompt'
   const willAutoApply = mode === 'auto' && loserToken && damageAmount > 0
   const armorOptions = { reduceByArmor: true, armorPiercingAmmo: isArmorPiercingAmmo }
 
-  // The card has to display what actually landed, not the raw pre-armor
-  // damageAmount - armor silently reduces (or fully absorbs) what
-  // applyDamageToTarget writes to the health track, and the old code showed
-  // damageAmount unconditionally, making the chat log claim more damage
-  // happened than the actor's sheet actually reflects.
-  //
-  // computeAppliedDamage is a pure read (no permission needed) - used for
-  // the DISPLAYED number in both auto and prompt mode now, rather than
-  // trusting applyDamageToTarget's return value for auto mode. That used to
-  // matter because auto mode awaited the real write and used its return
-  // value; now the write itself may be relayed (performPrivilegedDamage,
-  // when this client - the attacker's, per this function's caller - lacks
-  // permission over the loser's actor, e.g. a player's attack hitting a
-  // GM-only NPC), and a relayed write is fire-and-forget with no return
-  // value to wait on. Computing the display number locally sidesteps that
-  // entirely - it doesn't matter which client actually performs the write.
-  let displayDamageAmount = damageAmount
-  if (loserToken?.actor && damageAmount > 0) {
-    displayDamageAmount = computeAppliedDamage(loserToken.actor, damageAmount, damageSeverity, armorOptions)
-  }
+  // Calculate the display locally before the possibly relayed write.
+  const breakdown = computeDamageBreakdown(loserToken?.actor, damageAmount, damageSeverity, armorOptions)
+  const displayDamageAmount = breakdown.total
   if (willAutoApply) {
     await performPrivilegedDamage(loserToken, damageAmount, damageSeverity, armorOptions)
   }
 
-  // Taser (Second Inquisition p.71): threshold is the ACTUAL damage that
-  // landed (post-armor), not the raw pre-reduction margin - reuses
-  // displayDamageAmount rather than recomputing, same number the card
-  // itself shows. Vampires halve the threshold (rounded up); no such
-  // halving exists anywhere else in this module, so it's computed locally
-  // here rather than folded into computeAppliedDamage. No auto-roll for the
-  // escape test itself, same manual-clear precedent as Burning/Staked below
-  // - this module has no turn-tracker to hook an automatic "skip next turn"
-  // into, so the condition just carries the threshold in its note for the
-  // player/GM to check by hand.
+  // Taser threshold uses the actual damage shown on the card.
   let taserNoteHTML = ''
   if (isTaser && displayDamageAmount > 0 && loserToken?.actor) {
-    const isVampire = loserToken.actor.system?.gamesystem === 'vampire'
-    const threshold = isVampire ? Math.ceil(displayDamageAmount / 2) : displayDamageAmount
+    const threshold = displayDamageAmount
     await performPrivilegedWrite(loserToken.actor, 'applyStatusCondition', {
       spec: {
         name: 'Stunned (Taser)',
-        note: `<p>Atingido por um taser: role Autocontrole + Determinação; são necessários ${threshold} ou mais sucessos para agir normalmente no próximo turno${isVampire ? ' (dano reduzido à metade para vampiros, Second Inquisition p. 71)' : ''}. Com menos sucessos, não pode agir no próximo turno. Narrador ou jogador: remova esta condição após a resolução.</p>`,
+        note: `<p>Atingido por um taser: role Autocontrole + Determinação; são necessários ${threshold} ou mais sucessos para agir normalmente no próximo turno. Com menos sucessos, não pode agir no próximo turno. Narrador ou jogador: remova esta condição após a resolução.</p>`,
         bonuses: []
       }
     })
@@ -676,16 +655,28 @@ async function postWeaponResolutionCard({ weaponName, attackerName, attackerRoll
   // in roll-utils.js) always offer BOTH regardless of damageSeverity here -
   // same pre-existing limitation already noted in discipline-resistance.js,
   // not solved by this change either.
+  const damageLabel = breakdown.aggravated && breakdown.superficial
+    ? `${breakdown.aggravated} Agravado + ${breakdown.superficial} Superficial à Vitalidade`
+    : `Dano ${breakdown.aggravated ? 'Agravado' : 'Superficial'} à Vitalidade`
+  let calculation = `Margem ${Math.abs(margin)}`
+  if (margin > 0 && weaponDamageValue > 0) calculation += ` + arma ${weaponDamageValue}`
+  if (margin > 0 && ammoBonus > 0) calculation += ` + munição ${ammoBonus}`
+  calculation += ` = ${damageAmount} de dano bruto (${damageSeverity === 'aggravated' ? 'Agravado' : 'Superficial'}).`
+  if (breakdown.converted > 0) calculation += ` Armadura ${breakdown.armor} converteu ${breakdown.converted} em Superficial.`
+  if (breakdown.superficialRaw > 0 && breakdown.toughness > 0) calculation += ` Tenacidade −${breakdown.toughness}: Superficial ${breakdown.superficialRaw} → ${breakdown.superficialAfterToughness}.`
+  if (breakdown.superficialRaw > 0) calculation += ` Superficial ${breakdown.superficialAfterToughness} ÷ 2 = ${breakdown.superficialHalved}.`
+  if (breakdown.total < breakdown.aggravatedRaw + breakdown.superficialHalved) calculation += ' Limitado pela trilha de Vitalidade.'
   const bottomSection = displayDamageAmount > 0
     ? `
       <p class="vtm5e-automation-recap-name">${loserName}</p>
       <div class="vtm5e-automation-recap-damage">
         <div class="vtm5e-automation-recap-damage-amount">${displayDamageAmount}</div>
-        <div class="vtm5e-automation-recap-damage-label">Dano ${damageSeverity === 'aggravated' ? 'Agravado' : 'Superficial'} à Vitalidade</div>
+        <div class="vtm5e-automation-recap-damage-label">${damageLabel}</div>
+        <div class="vtm5e-automation-recap-calc" style="font-size:0.85em;opacity:0.8">${calculation}</div>
       </div>
     `
     : damageAmount > 0
-      ? `<p class="vtm5e-automation-recap-result">A armadura de ${loserName} absorve todo o impacto. Nenhum dano.</p>`
+      ? `<p class="vtm5e-automation-recap-result">A trilha de Vitalidade de ${loserName} já está cheia.</p>`
       : `<p class="vtm5e-automation-recap-result">${resultLine}</p>`
 
   // Bottom banner naming who actually won the contest (attackerWon, computed

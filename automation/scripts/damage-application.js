@@ -1,7 +1,7 @@
 import { findWeaponForRoll } from './roll-utils.js'
 import { isConditionNamed } from './condition-application.js'
 import { getStepSetting } from './settings.js'
-import { getLoadedAmmoType, getAmmoDamageBonus, getFlatDamageBonus } from './weapon-tags.js'
+import { getLoadedAmmoType, getAmmoDamageBonus, getWeaponDamageValue } from './weapon-tags.js'
 import { performPrivilegedDamage } from './privileged-write-relay.js'
 import { isBroken, isUnrepairable, isWorn, absorbArmorDamage, effectiveArmorValue, armorDamageAbsorbedFor, armorThresholdFor, repairAttemptsFor, MAX_REPAIR_ATTEMPTS } from './repair.js'
 import { equippedSlotFor, slotLabel } from './equip.js'
@@ -72,65 +72,37 @@ async function consumeDefyBaneBudget(actor, amount) {
 }
 
 /**
- * Pure calculation of how much damage would actually land on actor, after
- * armor reduction (if applicable) and the max-health-track clamp - no
- * writes. Shared by applyDamageToTarget (which then writes this number) and
- * opposing-roll-trigger.js's recap card, which needs to DISPLAY the real
- * number rather than the raw pre-reduction margin (see that file's
- * postWeaponResolutionCard - this used to be the source of a real bug where
- * the chat card always showed the raw margin even when armor silently
- * reduced what actually hit the health track).
+ * Calculate armor conversion, Toughness, superficial halving and the health
+ * track limit without writing to the actor. Shared by application and recap.
  */
-export function computeAppliedDamage(actor, amount, damageType, { reduceByArmor = false, armorPiercingAmmo = false } = {}) {
-  if (!actor) return 0
+export function computeDamageBreakdown(actor, amount, damageType, { reduceByArmor = false, armorPiercingAmmo = false, halveSuperficial = reduceByArmor } = {}) {
+  const empty = { raw: amount, damageType, armor: 0, converted: 0, aggravatedRaw: 0, superficialRaw: 0, toughness: 0, superficialAfterToughness: 0, superficialHalved: 0, aggravated: 0, superficial: 0, total: 0 }
+  if (!actor) return empty
 
-  let armorReduction = 0
-  if (reduceByArmor) {
-    armorReduction = getEquippedArmorReduction(actor)
-    // Armor-Piercing ammo, per Second Inquisition RAW (p.72) - "Reduces
-    // target's Armor Value by 2." (There used to be a second, homebrew-only
-    // "ignores armor entirely" path via the Blunt weapon tag - removed
-    // 2026-07-22, it was meaningfully more powerful than anything RAW gives
-    // a melee weapon, including this ammo type itself.)
-    if (armorPiercingAmmo) armorReduction = Math.max(armorReduction - 2, 0)
-  }
-  // Toughness (unlike armor) always applies when active - it's not gated
-  // behind reduceByArmor, since it's a Discipline effect on the character,
-  // not equipment tied to a weapon-attack context. Applied AFTER armor
-  // (which can reduce a hit to 0) and, per RAW (corebook p.259), "cannot
-  // reduce the damage below one" - its own floor is 1, not 0, so it never
-  // un-blocks a hit armor already fully stopped.
-  const afterArmor = Math.max(amount - armorReduction, 0)
-  if (afterArmor <= 0) return 0
-  const toughnessReduction = getToughnessReduction(actor, damageType)
-  const reducedAmount = toughnessReduction > 0 ? Math.max(afterArmor - toughnessReduction, 1) : afterArmor
+  let armor = reduceByArmor ? getEquippedArmorReduction(actor) : 0
+  if (armorPiercingAmmo) armor = Math.max(armor - 2, 0)
+  const converted = damageType === 'aggravated' ? Math.min(armor, amount) : 0
+  const aggravatedRaw = damageType === 'aggravated' ? amount - converted : 0
+  const superficialRaw = damageType === 'aggravated' ? converted : amount
+  const toughness = getToughnessReduction(actor, 'superficial')
+  const superficialAfterToughness = superficialRaw > 0 && toughness > 0 ? Math.max(superficialRaw - toughness, 1) : superficialRaw
+  const superficialHalved = halveSuperficial ? Math.ceil(superficialAfterToughness / 2) : superficialAfterToughness
+  const health = actor.system.health
+  const room = Math.max((health?.max ?? 0) - (health?.aggravated ?? 0) - (health?.superficial ?? 0), 0)
+  const aggravated = Math.min(aggravatedRaw, room)
+  const superficial = Math.min(superficialHalved, room - aggravated)
+  return { raw: amount, damageType, armor, converted, aggravatedRaw, superficialRaw, toughness, superficialAfterToughness, superficialHalved, aggravated, superficial, total: aggravated + superficial }
+}
 
-  const current = actor.system.health?.[damageType] ?? 0
-  const max = actor.system.health?.max ?? 0
-  const otherType = damageType === 'superficial' ? 'aggravated' : 'superficial'
-  const otherCurrent = actor.system.health?.[otherType] ?? 0
-
-  // Clamp so the two damage types together don't exceed max boxes
-  const room = Math.max(max - otherCurrent - current, 0)
-  return Math.min(reducedAmount, room)
+export function computeAppliedDamage(actor, amount, damageType, options) {
+  return computeDamageBreakdown(actor, amount, damageType, options).total
 }
 
 /**
- * Apply a number of damage boxes to a token's actor health track.
- * Clamps at max - does not yet implement VtM5e's superficial-overflow-to-
- * aggravated rule (documented follow-up, not done in v0.1). Returns the
- * amount actually written (post-armor-reduction, post-max-clamp) - callers
- * that display a number to the player should use the return value, not the
- * raw `amount` they passed in, once armor is involved.
- *
- * options.reduceByArmor/options.armorPiercingAmmo default to false, so every
- * EXISTING caller (discipline-resistance.js, ward-tracking.js - supernatural/
- * poison/warding damage, none of which armor should block) is completely
- * unaffected by armor without any change on their end. Only weapon-attack
- * call sites opt in. armorPiercingAmmo (Armor-Piercing ammo - RAW "-2 Armor
- * Value", see computeAppliedDamage) only matters when reduceByArmor is also
- * true - it has no effect on callers that never asked for armor reduction
- * in the first place.
+ * Apply both damage types after armor conversion, Toughness, optional
+ * superficial halving and the health track limit. Overflow is not handled.
+ * Weapon attacks opt into armor and halving with reduceByArmor; callers can
+ * also control halving explicitly with halveSuperficial.
  */
 export async function applyDamageToTarget(token, amount, damageType, options = {}) {
   const actor = token.actor
@@ -140,16 +112,11 @@ export async function applyDamageToTarget(token, amount, damageType, options = {
   // call into up to two independent sub-calls (each running the full logic
   // below on its own, including its own room-clamp) - simplest correct way
   // to hand off part of a hit to a different damage type without teaching
-  // computeAppliedDamage's "how much lands" math about type-conversion at
-  // all. consumeDefyBaneBudget writes the reduced budget BEFORE recursing,
+  // the calculation about Defy Bane's separate budget. consumeDefyBaneBudget
+  // writes the reduced budget BEFORE recursing,
   // so the second sub-call (still 'aggravated') sees the already-reduced
   // budget and won't convert again - safe from infinite recursion, and
-  // correctly handles a hit bigger than the remaining budget. Known minor
-  // imprecision when reduceByArmor is also true: the wear-tracking loop
-  // below runs once per sub-call, so a split hit can wear armor slightly
-  // more than one combined hit of the same total would - accepted rather
-  // than restructuring wear-tracking for this narrow, rare combination
-  // (Defy Bane + armored Aggravated damage).
+  // correctly handles a hit bigger than the remaining budget.
   if (damageType === 'aggravated') {
     const budget = getDefyBaneBudget(actor)
     if (budget > 0) {
@@ -163,21 +130,13 @@ export async function applyDamageToTarget(token, amount, damageType, options = {
     }
   }
 
-  const { reduceByArmor = false, armorPiercingAmmo = false } = options
-  const applied = computeAppliedDamage(actor, amount, damageType, options)
+  const breakdown = computeDamageBreakdown(actor, amount, damageType, options)
 
   // Wear tracking (repair.js's absorbArmorDamage) - each equipped layer
   // (Body Armor first, then whatever Underarmor is worn beneath it) takes
-  // wear equal to the lesser of its OWN Armor Value and whatever's left of
-  // the raw incoming hit once the layer(s) in front of it have taken their
-  // share - regardless of whether the character's health track had room
-  // left for the remainder (a hit fully stopped by armor still wears it
-  // down exactly like a partially-stopped one would). Deliberately computed
-  // off each layer's raw value, not the Armor-Piercing-reduced total below -
-  // AP ammo defeats armor, it doesn't spare it, so a layer still takes full
-  // wear trying (and partially failing) to stop an AP round.
-  const armorLayers = reduceByArmor ? equippedArmorLayers(actor) : []
-  let remainingForWear = amount
+  // wear from the converted damage, distributed outermost layer first.
+  const armorLayers = breakdown.converted > 0 ? equippedArmorLayers(actor) : []
+  let remainingForWear = breakdown.converted
   for (const layer of armorLayers) {
     if (remainingForWear <= 0) break
     const layerAbsorbed = Math.min(effectiveArmorValue(layer), remainingForWear)
@@ -185,29 +144,18 @@ export async function applyDamageToTarget(token, amount, damageType, options = {
     remainingForWear -= layerAbsorbed
   }
 
-  let armorReduction = 0
-  if (reduceByArmor) {
-    armorReduction = armorLayers.reduce((sum, item) => sum + effectiveArmorValue(item), 0)
-    if (armorPiercingAmmo) armorReduction = Math.max(armorReduction - 2, 0)
-  }
+  if (breakdown.total <= 0) return 0
 
-  // Toughness can no longer be the sole cause of applied === 0 (its floor is
-  // 1, per RAW - see computeAppliedDamage), so a full block here always
-  // means armor (or the health track having no room left).
-  if (applied <= 0) {
-    if (armorReduction > 0 && amount - armorReduction <= 0) {
-      ui.notifications.info(`${MODULE_ID} | A armadura de ${actor.name} absorve todo o golpe.`)
-    }
-    return 0
-  }
+  const update = {}
+  if (breakdown.aggravated > 0) update['system.health.aggravated'] = (actor.system.health?.aggravated ?? 0) + breakdown.aggravated
+  if (breakdown.superficial > 0) update['system.health.superficial'] = (actor.system.health?.superficial ?? 0) + breakdown.superficial
+  await actor.update(update)
 
-  const current = actor.system.health?.[damageType] ?? 0
-  await actor.update({
-    [`system.health.${damageType}`]: current + applied
-  })
-
-  ui.notifications.info(`${MODULE_ID} | ${actor.name} sofreu ${applied} de dano ${damageType}`)
-  return applied
+  const parts = []
+  if (breakdown.aggravated > 0) parts.push(`${breakdown.aggravated} de dano Agravado`)
+  if (breakdown.superficial > 0) parts.push(`${breakdown.superficial} de dano Superficial`)
+  ui.notifications.info(`${MODULE_ID} | ${actor.name} sofreu ${parts.join(' e ')}`)
+  return breakdown.total
 }
 
 // Willpower counterpart to applyDamageToTarget above - simpler (no armor/
@@ -335,9 +283,9 @@ export function registerDamageApplication() {
     // loadedAmmoType flag), not the roll itself, so it's read here rather
     // than baked into the attack roll. Armor-Piercing (-2 Armor Value, RAW,
     // Second Inquisition p.72) is checked the same way further down, when
-    // armor reduction is applied.
+    // armor conversion is calculated.
     const ammoType = getLoadedAmmoType(weapon)
-    const amount = successes + getAmmoDamageBonus(ammoType) + getFlatDamageBonus(weapon)
+    const amount = successes + getWeaponDamageValue(weapon) + getAmmoDamageBonus(ammoType)
     const isArmorPiercingAmmo = ammoType === 'armorPiercing'
 
     const targets = Array.from(game.user.targets)
@@ -357,12 +305,9 @@ export function registerDamageApplication() {
       const mode = token.actor ? getStepSetting('damageApplication', token.actor) : 'prompt'
       if (mode !== 'auto') continue
 
-      // Auto mode defaults to superficial, EXCEPT a weapon tagged Sharp
-      // (weapon-tags.js) forces Aggravated against a mortal target - the
-      // one place wod5e's weapon schema does carry a damage-type signal
-      // now that the tag exists. Vampire targets are unaffected either way
-      // (Sharp's whole text is "deals Aggravated damage to mortals").
-      const severity = (weapon.getFlag(MODULE_ID, 'weaponTags')?.sharp && token.actor?.system?.gamesystem !== 'vampire')
+      // Sharp weapons and firearms deal Aggravated damage to non-vampires.
+      const tags = weapon.getFlag(MODULE_ID, 'weaponTags')
+      const severity = ((tags?.sharp || tags?.firearm) && token.actor?.system?.gamesystem !== 'vampire')
         ? 'aggravated'
         : 'superficial'
       // Relayed (performPrivilegedDamage) rather than a direct
@@ -387,7 +332,7 @@ export function registerDamageApplication() {
     if (successes <= 0) return
 
     const ammoType = getLoadedAmmoType(weapon)
-    const amount = successes + getAmmoDamageBonus(ammoType) + getFlatDamageBonus(weapon)
+    const amount = successes + getWeaponDamageValue(weapon) + getAmmoDamageBonus(ammoType)
     const isArmorPiercingAmmo = ammoType === 'armorPiercing'
 
     // Same per-target deferral/mode logic as the createChatMessage handler

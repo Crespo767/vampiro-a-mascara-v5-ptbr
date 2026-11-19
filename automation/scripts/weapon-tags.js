@@ -219,16 +219,16 @@ export function getAmmoDamageBonus(ammoType) {
   return ammoType === 'hollowPoint' ? 1 : 0
 }
 
-// A flat per-hit damage bonus on the WEAPON itself, not its ammo - added for
-// the Second Inquisition Vehicles/Drones pull (2026-07-22): crew-served/
-// mounted weapons (CROWS .50 cal, helicopter guns, Predator Drone
-// munitions) carry a fixed "Damage +X" the corebook's opposed-roll-margin
-// model has nowhere else to put (Reach is the only other numeric-not-
-// toggle weapon flag, same UI treatment below). Reads/adds exactly like
-// getAmmoDamageBonus above, just from a different flag - see
-// damage-application.js/opposing-roll-trigger.js for both call sites.
+// Legacy weapon damage value, used only when the native weaponvalue is not
+// positive. Some mounted weapons store the same value in both fields.
 export function getFlatDamageBonus(weapon) {
   return weapon?.getFlag(MODULE_ID, 'flatDamageBonus') ?? 0
+}
+
+export function getWeaponDamageValue(weapon) {
+  const base = Number(weapon?.system?.weaponvalue) || 0
+  const legacy = getFlatDamageBonus(weapon)
+  return base > 0 ? base : legacy
 }
 
 // Every wod5e actor sheet class that can own weapon items and uses the
@@ -1179,7 +1179,7 @@ function buildWeaponTagsSection(item) {
   // Same numeric-not-toggle treatment as Reach above - see getFlatDamageBonus.
   const flatDamageLabel = document.createElement('label')
   flatDamageLabel.style.display = 'block'
-  flatDamageLabel.textContent = 'Bônus Fixo de Dano (adicionado a cada acerto, como o "Dano +X" de uma arma montada ou operada por equipe)'
+  flatDamageLabel.textContent = 'Bônus Fixo de Dano (legado: só é usado quando o Valor de Dano da arma for 0)'
   const flatDamageInput = document.createElement('input')
   flatDamageInput.type = 'number'
   flatDamageInput.name = 'flatDamageBonus'
