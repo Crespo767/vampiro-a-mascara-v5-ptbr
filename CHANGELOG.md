@@ -1,5 +1,16 @@
 # Histórico de versões
 
+## 1.7.0 — Combate pelas regras dos livros e compêndio de Equipamentos revisto
+
+- **Dano de armas:** o valor da arma entra no dano (margem + valor + bônus da munição). A armadura converte dano Agravado em Superficial, 1 por ponto, em vez de subtrair dano. O dano Superficial de ataques é dividido por 2, arredondando para cima. Armas de fogo e afiadas causam Agravado a mortais; a pistola de choque é exceção.
+- **Trilha de Vitalidade cheia:** o dano que excede a trilha converte Superficial em Agravado (Livro Básico, p. 127). O cartão avisa quando a trilha fica toda Agravada (torpor, coma ou morte).
+- **Munições e tags especiais:** incendiárias e Sopro de Dragão causam Agravado a todos (Sopro de Dragão segue o texto em inglês: 1 Agravado por rodada; nota de tradução na descrição). Flash-bang não causa dano e deixa o alvo Cego ou Desorientado. Estaca de madeira com ataque localizado ao coração e 5 ou mais de dano deixa um vampiro Estaqueado. "Automática" passa a ser +1 dado opcional e não esvazia o carregador. Ponta oca está marcada como regra da casa.
+- **Ataque e defesa:** paradas padrão das armas pelo livro; modificadores opcionais de fora de alcance, tiro dentro do corpo a corpo, arma longa no corpo a corpo e ataque localizado (−2 sucessos). A janela de defesa tem cobertura e o botão "Alvo parado (Dificuldade 1)".
+- **Empate bilateral:** em empate com parada própria, os dois lados sofrem dano como margem 1.
+- **Compêndio de Equipamentos:** de 113 para 163 itens, em 6 pastas (Armas Brancas, Armas de Fogo, Explosivos e Especiais, Armaduras, Munição, Equipamento e Veículos). Nomes genéricos em português, com os modelos reais como exemplo e o nome original em inglês na descrição, para busca. Cada item traz o selo Oficial, Analogia ou Proposta (regra da casa) e a fonte. Valores corrigidos pelo Livro Básico e pela Segunda Inquisição; itens duplicados fundidos; armas de veículo e drone sem contador de munição; carregadores estendidos fundidos no carregador padrão; cartucho de fósforo branco removido.
+- **Munição:** "Abrir Caixa" só reabastece carregadores do mesmo calibre e tipo de munição. Novas caixas de ponta oca 9 mm, perfurante 5,56 mm e Sopro de Dragão calibre 12.
+- **Fichas existentes:** itens já arrastados para personagens não são alterados. Para usar os novos valores, arraste o item de novo a partir do compêndio.
+
 ## 1.6.7 — Botão da Coterie na aba de Atores
 
 - **Coterie:** novo botão "Coterie" (com coroa) no topo da aba de Atores, ao lado de "Criar Ator" e "Criar Pasta". Antes a coroa só aparecia em pastas com personagens de jogadores, e a Coterie ficava sem acesso quando os personagens estavam fora de pastas (como o personagem criado automaticamente para o jogador). As coroas das pastas continuam.
