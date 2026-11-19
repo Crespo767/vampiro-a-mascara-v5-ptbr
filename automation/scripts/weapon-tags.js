@@ -928,12 +928,20 @@ export async function reloadMagazineFromAmmoBox(actor, magazineItem) {
   const topsUpExisting = currentFill < ratedMax
 
   const caliber = magazineItem.getFlag(MODULE_ID, 'caliber') ?? ''
-  const compatibleBoxes = actor.items.filter((i) => {
+  const ammoType = magazineItem.getFlag(MODULE_ID, 'ammoType') ?? ''
+  const matchesMagazine = (i) => {
     if (i.type !== 'gear' || !i.getFlag(MODULE_ID, 'isAmmoBox')) return false
     const boxCaliber = i.getFlag(MODULE_ID, 'caliber') ?? ''
-    if (boxCaliber !== caliber) return false
-    return (i.system.uses?.current ?? 0) >= roundsNeeded
-  })
+    return boxCaliber === caliber && (i.getFlag(MODULE_ID, 'ammoType') ?? '') === ammoType
+  }
+  const matchingBoxes = actor.items.filter(matchesMagazine)
+  if (matchingBoxes.length === 0) {
+    const ammoLabel = AMMO_TYPES[ammoType]?.label.toLocaleLowerCase('pt-BR') ?? ammoType
+    ui.notifications.warn(`Nenhuma caixa de munição ${ammoLabel} compatível com ${magazineItem.name}.`)
+    return
+  }
+
+  const compatibleBoxes = matchingBoxes.filter((i) => (i.system.uses?.current ?? 0) >= roundsNeeded)
 
   if (compatibleBoxes.length === 0) {
     ui.notifications.warn(`${MODULE_ID} | Não há munição em caixa ${caliber || 'compatível'} suficiente para reabastecer ${magazineItem.name} (${roundsNeeded} necessárias).`)
@@ -961,7 +969,7 @@ export async function reloadMagazineFromAmmoBox(actor, magazineItem) {
     })
     if (!result || result === 'cancel') return
     chosenBox = actor.items.get(result.boxId)
-    if (!chosenBox) return
+    if (!chosenBox || !matchesMagazine(chosenBox)) return
   }
 
   const remainingBoxRounds = (chosenBox.system.uses.current ?? 0) - roundsNeeded
