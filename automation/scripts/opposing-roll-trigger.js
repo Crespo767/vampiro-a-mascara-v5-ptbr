@@ -4,7 +4,7 @@ import { getRoutingTargets } from './socket-routing.js'
 import { computeDamageBreakdown } from './damage-application.js'
 import { rollCompulsion, buildCompulsionHTML } from './compulsion.js'
 import { applyStatusCondition } from './condition-application.js'
-import { getLoadedAmmoType, getAmmoDamageBonus, getWeaponDamageValue } from './weapon-tags.js'
+import { getLoadedAmmoType, getAmmoDamageBonus, getWeaponDamageValue, OFF_BY_DEFAULT } from './weapon-tags.js'
 import { performPrivilegedWrite, performPrivilegedDamage } from './privileged-write-relay.js'
 import { markBroken } from './repair.js'
 
@@ -310,18 +310,11 @@ async function applyDefenseTagBonus(actor, chosenEntries) {
   })
 }
 
-// NOW wires in getActiveModifiers (previously this bypassed situational
-// modifiers entirely, confirmed by reading it before this change - the
-// gap Cover/Defensive needed closed). Side effect worth knowing: any OTHER
-// paths:['all'] condition already on the actor - Health/Willpower
-// Impairment's -2, most notably - now correctly applies to defense rolls
-// too, which it never did before. That's a genuine bug fix (Impairment is
-// RAW supposed to hit every pool), not something scoped to just this
-// feature, so defense rolls may get harder for already-wounded characters
-// starting now.
 async function rollWeaponDefense(actor, valuePaths, title) {
   const { getActiveModifiers } = await import('/systems/wod5e/system/scripts/rolls/situational-modifiers.js')
-  const activeModifiers = await getActiveModifiers({ actor, selectors: [] })
+  // Attribute modifiers use the pool path without its value suffix.
+  const selectors = valuePaths.map(path => path.replace(/\.value$/, ''))
+  const activeModifiers = await getActiveModifiers({ actor, selectors })
 
   const basicDiceRaw = await WOD5E.api.getBasicDice({ valuePaths, flatMod: activeModifiers.totalValue, actor })
   const advancedDiceRaw = await WOD5E.api.getAdvancedDice({ actor })
@@ -373,7 +366,13 @@ async function resolveWeaponOpposedRoll(pending, defenderActor, defenderRoll, is
   // uses a different, untracked pool and remains Superficial.
   let damageSeverity = 'superficial'
 
-  if (margin <= 0) {
+  if (pending.isFlashbang) {
+    resultLine = margin > 0
+      ? `${pending.attackerName} acerta com margem ${margin}.`
+      : margin < 0
+        ? `${defenderActor?.name} vence a disputa com margem ${Math.abs(margin)}.`
+        : 'Empate: a disputa favorece quem defende.'
+  } else if (margin <= 0) {
     // Defender wins or ties (ties go to the defender per the rulebook).
     // Dodge specifically forfeits counter-damage even on a win - that's
     // the whole tradeoff for choosing it over a custom pool.
@@ -400,21 +399,22 @@ async function resolveWeaponOpposedRoll(pending, defenderActor, defenderRoll, is
     // Incendiary (fire) is Aggravated to EVERY target including vampires -
     // unlike Sharp, which the corebook restricts to mortals only. Checked
     // first/independently so it can't be masked by Sharp's narrower rule.
-    if (pending.isIncendiary) damageSeverity = 'aggravated'
+    if (pending.isIncendiary || pending.loadedAmmoType === 'dragonsBreath') damageSeverity = 'aggravated'
     // Firearms deal Aggravated to non-vampires, except Tasers (SI p. 71).
     else if ((pending.isSharp || (pending.isFirearm && !pending.isTaser)) && defenderActor?.system?.gamesystem !== 'vampire') damageSeverity = 'aggravated'
   }
 
-  // Electrical only fires on the attacker's own hit landing - same
-  // reasoning as Sharp above (a defender's counter doesn't use the
-  // original attacker's weapon at all).
+  // Hit effects apply only on a hit; flash-bang affects either outcome.
   const onHitNoteHTML = margin > 0
-    ? await applyOnHitTagEffects(pending, defenderActor)
+    ? await applyOnHitTagEffects(pending, defenderActor, damageAmount)
+    : ''
+  const flashbangNoteHTML = pending.isFlashbang && defenderActor
+    ? await applyFlashbangEffect(defenderActor, margin > 0)
     : ''
   // Fragile is checked independently of hit/miss (a fumble, not a win) -
   // see applyFragileFumble below.
   const fragileNoteHTML = await applyFragileFumble(attackerActor, pending)
-  const onHitTagNoteHTML = onHitNoteHTML + fragileNoteHTML
+  const onHitTagNoteHTML = flashbangNoteHTML + onHitNoteHTML + fragileNoteHTML
 
   // Losing the contest IS "failing the roll" for Bestial Failure purposes -
   // margin<=0 means the attacker didn't beat the defender (a failure for
@@ -502,55 +502,18 @@ async function applyFragileFumble(attackerActor, pending) {
   return `<p class="vtm5e-automation-recap-narrative">${weaponItem.name} quebra nas mãos de ${pending.attackerName}: quebrada (-2 dados) até ser reparada.</p>`
 }
 
-// (Electrical used to live here too - removed 2026-07-22 in favor of a real
-// TASER-style stun mechanic, not yet built.)
-async function applyOnHitTagEffects(pending, defenderActor) {
+async function applyOnHitTagEffects(pending, defenderActor, damageAmount) {
   let noteHTML = ''
 
-  // Dragon's Breath/Wood are ammo (weapon-tags.js's loadedAmmoType), not
-  // weapon tags, but apply the same real, mechanical condition-on-a-hit
-  // pattern, manually cleared by the GM (no Combat-tracker integration
-  // exists anywhere in this codebase).
   if (pending.loadedAmmoType === 'dragonsBreath' && defenderActor) {
     await performPrivilegedWrite(defenderActor, 'applyStatusCondition', {
       spec: {
         name: 'Burning',
-        note: '<p>Munição Sopro do Dragão: -2 dados em todas as paradas. Narrador: remova após o próximo turno do alvo.</p>',
-        bonuses: [{
-          source: 'Em chamas',
-          value: '-2',
-          paths: ['all'],
-          displayWhenInactive: false,
-          activeWhen: { check: 'always', path: '', value: '' }
-        }]
+        note: '<p>Sopro de Dragão: o alvo está em chamas e sofre 1 de dano Agravado por rodada até o fogo ser apagado (Livro Básico, p. 380). Narrador: aplique o dano a cada rodada e remova a condição quando o fogo for apagado.</p>',
+        bonuses: []
       }
     })
-    noteHTML += `<p class="vtm5e-automation-recap-narrative">${defenderActor.name} está em chamas (-2 dados; remova após seu próximo turno).</p>`
-  }
-
-  // Flash-bang (Second Inquisition p.150) - simplified to this system's
-  // existing binary hit/miss model: a full Blind on the attacker's win, no
-  // effect otherwise. RAW actually has EITHER side risk blindness depending
-  // on who wins the Dex+Athletics-vs-Wits+Resolve contest (a thrower can
-  // blind themselves), and a lesser -2 dice consolation penalty for the
-  // side that wins - both dropped here since this module's opposed-roll
-  // pipeline only ever applies the attacker's own weapon effects to the
-  // DEFENDER (see Sharp/Taser/Incendiary above), not the reverse.
-  if (pending.isFlashbang && defenderActor) {
-    await performPrivilegedWrite(defenderActor, 'applyStatusCondition', {
-      spec: {
-        name: 'Blinded (Flash-bang)',
-        note: '<p>Granada de luz e som: -3 dados em todas as paradas. Narrador: remova após o próximo turno do alvo (proteção ocular e cegueira do atacante em caso de erro não são automatizadas; veja weapon-tags.js).</p>',
-        bonuses: [{
-          source: 'Cego',
-          value: '-3',
-          paths: ['all'],
-          displayWhenInactive: false,
-          activeWhen: { check: 'always', path: '', value: '' }
-        }]
-      }
-    })
-    noteHTML += `<p class="vtm5e-automation-recap-narrative">${defenderActor.name} está cego pela granada de luz e som (-3 dados; remova após seu próximo turno).</p>`
+    noteHTML += `<p class="vtm5e-automation-recap-narrative">${defenderActor.name} pegou fogo (1 Agravado por rodada até apagar).</p>`
   }
 
   // Thermite (p.73) - RAW is a real 3-round damage-over-time burn (3 Agg./
@@ -572,49 +535,58 @@ async function applyOnHitTagEffects(pending, defenderActor) {
     noteHTML += `<p class="vtm5e-automation-recap-narrative">${defenderActor.name} está em chamas devido à termite. Narrador: aplique 3 de dano Agravado por rodada durante 3 rodadas.</p>`
   }
 
-  // White Phosphorus round (p.73) - same -3 dice tier as Wood/Flash-bang,
-  // applied broadly to all pools rather than just "vision-reliant" ones
-  // (this module doesn't have a selector for that) - the Dominate/Presence
-  // interaction clauses are pure narrative, noted but not enforced.
+  // Players toggle the penalty for rolls that depend on sight.
   if (pending.loadedAmmoType === 'whitePhosphorus' && defenderActor) {
     await performPrivilegedWrite(defenderActor, 'applyStatusCondition', {
       spec: {
         name: 'Phosphorus-Blinded',
-        note: '<p>Munição de fósforo branco: -3 dados em todas as paradas (pelas regras, apenas nas que dependem da visão). Também impede Dominação por contato visual e concede +2 dados para resistir a Presença enquanto durar; esses efeitos não são automatizados. Narrador: remova após o próximo turno do alvo.</p>',
+        note: '<p>Fósforo branco: -3 dados nas paradas que dependem da visão (marque a opção na rolagem). Torna ineficaz a Dominação por contato visual e dá +2 dados para resistir à Presença (Segunda Inquisição, p. 73). Narrador: remova quando a fumaça se dissipar.</p>',
         bonuses: [{
-          source: 'Cego pelo fósforo',
+          source: 'Cego pelo fósforo (marque se a parada depende da visão)',
           value: '-3',
           paths: ['all'],
-          displayWhenInactive: false,
-          activeWhen: { check: 'always', path: '', value: '' }
+          displayWhenInactive: true,
+          activeWhen: OFF_BY_DEFAULT
         }]
       }
     })
-    noteHTML += `<p class="vtm5e-automation-recap-narrative">${defenderActor.name} está cego pelo fósforo (-3 dados; remova após seu próximo turno).</p>`
+    noteHTML += `<p class="vtm5e-automation-recap-narrative">${defenderActor.name} está cego pelo fósforo (-3 nas paradas que dependem da visão).</p>`
   }
 
-  // Wood/stake rounds: the actual corebook rule (a stake through the heart
-  // risks Torpor) only makes sense against a vampire - silently does
-  // nothing to a mortal/other target rather than pretending a wooden round
-  // has some other effect on them.
+  // The GM verifies the called shot before applying paralysis.
   if (pending.loadedAmmoType === 'wood' && defenderActor?.system?.gamesystem === 'vampire') {
-    await performPrivilegedWrite(defenderActor, 'applyStatusCondition', {
-      spec: {
-        name: 'Staked (Torpor Risk)',
-        note: '<p>Atingido por munição de estaca de madeira: -3 dados em todas as paradas enquanto a estaca permanecer cravada. Narrador: remova a condição quando a estaca for retirada e, caso ela não seja retirada, decida sobre o Torpor conforme as regras de estaqueamento do livro básico.</p>',
-        bonuses: [{
-          source: 'Estaqueado',
-          value: '-3',
-          paths: ['all'],
-          displayWhenInactive: false,
-          activeWhen: { check: 'always', path: '', value: '' }
-        }]
-      }
-    })
-    noteHTML += `<p class="vtm5e-automation-recap-narrative">${defenderActor.name} está estaqueado (-3 dados; risco de Torpor até a estaca ser retirada).</p>`
+    noteHTML += damageAmount >= 5
+      ? `<p class="vtm5e-automation-recap-narrative">Estaca: se este ataque foi localizado no coração (declarado antes da rolagem, -2 sucessos), ${defenderActor.name} fica paralisado (Livro Básico, p. 304). Narrador: aplique a paralisia manualmente.</p>`
+      : '<p class="vtm5e-automation-recap-narrative">Estaca: dano menor que 5, não paralisa mesmo se tiver acertado o coração (Livro Básico, p. 304).</p>'
   }
 
   return noteHTML
+}
+
+async function applyFlashbangEffect(defenderActor, attackerWon) {
+  const spec = attackerWon
+    ? {
+      name: 'Blinded (Flash-bang)',
+      note: '<p>Granada de luz e som: o alvo não enxerga nada por alguns segundos (Segunda Inquisição, p. 72). O livro não fixa penalidade: o Narrador aplica as consequências de não enxergar e remove a condição quando passar.</p>',
+      bonuses: []
+    }
+    : {
+      name: 'Disoriented (Flash-bang)',
+      note: '<p>Granada de luz e som: desorientado, -2 dados nas paradas de Raciocínio por uma rodada (Segunda Inquisição, p. 72). Narrador: remova após uma rodada.</p>',
+      bonuses: [{
+        source: 'Desorientado',
+        value: '-2',
+        paths: ['attributes.wits'],
+        displayWhenInactive: false,
+        activeWhen: { check: 'always', path: '', value: '' }
+      }]
+    }
+  await performPrivilegedWrite(defenderActor, 'applyStatusCondition', { spec })
+
+  const result = attackerWon
+    ? `${defenderActor.name} não enxerga nada por alguns segundos.`
+    : `${defenderActor.name} fica desorientado (-2 em Raciocínio por uma rodada).`
+  return `<p class="vtm5e-automation-recap-narrative">${result}</p>`
 }
 
 // Single recap card per opposed roll instead of a separate roll message per

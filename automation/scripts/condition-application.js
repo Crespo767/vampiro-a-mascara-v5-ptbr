@@ -56,6 +56,7 @@ function statusIdFor(name) {
 const CONDITION_LABELS = {
   Burning: 'Em Chamas',
   'Blinded (Flash-bang)': 'Cego (granada de luz e som)',
+  'Disoriented (Flash-bang)': 'Desorientado (granada de luz e som)',
   'On Fire (Thermite)': 'Em Chamas (termita)',
   'Phosphorus-Blinded': 'Cego (fósforo)',
   'Staked (Torpor Risk)': 'Estaqueado (risco de Torpor)',

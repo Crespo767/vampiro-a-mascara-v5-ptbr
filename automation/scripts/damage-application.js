@@ -269,6 +269,8 @@ export function registerDamageApplication() {
 
     const successes = roll.total
     if (successes <= 0) return
+    // Flash-bangs deal no damage (Second Inquisition p. 72).
+    if (weapon.getFlag(MODULE_ID, 'weaponTags')?.flashbang) return
 
     // createChatMessage fires on every connected client when the roll syncs.
     // message.isOwner is true for BOTH the roll's author AND every GM (GMs
@@ -306,8 +308,10 @@ export function registerDamageApplication() {
       if (mode !== 'auto') continue
 
       const tags = weapon.getFlag(MODULE_ID, 'weaponTags')
+      // Fire (Incendiary tag, Dragon's Breath ammo) is Aggravated to everyone.
       // Firearms deal Aggravated to non-vampires, except Tasers (SI p. 71).
-      const severity = ((tags?.sharp || (tags?.firearm && !tags?.taser)) && token.actor?.system?.gamesystem !== 'vampire')
+      const isFire = tags?.incendiary || ammoType === 'dragonsBreath'
+      const severity = (isFire || ((tags?.sharp || (tags?.firearm && !tags?.taser)) && token.actor?.system?.gamesystem !== 'vampire'))
         ? 'aggravated'
         : 'superficial'
       // Relayed (performPrivilegedDamage) rather than a direct
@@ -330,6 +334,8 @@ export function registerDamageApplication() {
 
     const successes = roll.total
     if (successes <= 0) return
+    // Flash-bangs deal no damage (Second Inquisition p. 72).
+    if (weapon.getFlag(MODULE_ID, 'weaponTags')?.flashbang) return
 
     const ammoType = getLoadedAmmoType(weapon)
     const amount = successes + getWeaponDamageValue(weapon) + getAmmoDamageBonus(ammoType)

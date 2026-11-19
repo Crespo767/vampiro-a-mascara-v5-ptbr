@@ -36,7 +36,7 @@ const EQUIPMENT_PACK_ID = 'vampiro-a-mascara-v5-ptbr.equipment'
 // anywhere in wod5e). Jake's call: strip it rather than nerf it and leave a
 // vestigial half-tag around.
 const WEAPON_TAGS = {
-  fullAuto: { label: 'Automática', blurb: '+2 dados no ataque; esvazia o carregador em um turno; exige recarga.' },
+  fullAuto: { label: 'Automática', blurb: 'Cadência superior: o Narrador pode conceder +1 dado ao ataque quando o volume de fogo ajudar (opção do Livro Básico, p. 301). Não esvazia o carregador; quem esvazia a arma é o Ataque Total (p. 298).' },
   balanced: { label: 'Balanceada', blurb: '+1 dado em ações de arremesso.' },
   throwable: { label: 'Arremessável', blurb: 'Um teste de Destreza + Atletismo permite arremessar esta arma em um ataque à distância.' },
   twoHanded: { label: 'Duas Mãos', blurb: 'Exige duas mãos; -2 dados na parada se usada com uma mão.' },
@@ -51,17 +51,13 @@ const WEAPON_TAGS = {
   brawl: { label: 'Briga', blurb: 'Usa a Perícia Briga.' },
   firearm: { label: 'Arma de Fogo', blurb: 'Usa a Perícia Armas de Fogo; é barulhenta, exceto se for Silenciosa.' },
   protection: { label: 'Proteção', blurb: "Anula a desvantagem do alcance desta arma ao se defender." },
-  taser: { label: 'Taser', blurb: "Ao ser atingido, o alvo deve testar Autocontrole + Determinação e igualar ou superar o dano sofrido (reduzido à metade, arredondando para cima, para vampiros), ou não poderá agir no próximo turno. Segunda Inquisição, p. 71." },
+  taser: { label: 'Taser', blurb: 'Ao ser atingido, o alvo testa Autocontrole + Determinação e precisa igualar ou superar o dano registrado (já reduzido à metade, quando Superficial), ou não poderá agir no próximo turno. Segunda Inquisição, p. 71.' },
   incendiary: { label: 'Incendiária', blurb: 'Causa dano Agravado a todos os alvos, inclusive vampiros (fogo), substituindo a regra de Afiada que afeta apenas mortais. Segunda Inquisição, p. 70.' },
-  flashbang: { label: 'Granada de Luz e Som', blurb: 'Ao ser atingido, o alvo fica Cego (-3 dados em todas as paradas) até o Narrador ou jogador remover a condição. Simplificação de Segunda Inquisição, p. 150: não inclui resistência por proteção ocular nem cegueira de quem erra o ataque.' },
+  flashbang: { label: 'Granada de Luz e Som', blurb: 'Arremesso com Destreza + Atletismo contra Raciocínio + Determinação do alvo; proteção ocular dá +2 dados ao alvo. Se o alvo perder, fica sem enxergar por alguns segundos; se vencer, fica desorientado (-2 dados nas paradas de Raciocínio) por uma rodada. Não causa dano. Segunda Inquisição, p. 72.' },
   thermite: { label: 'Termita', blurb: "Ao ser atingido, o alvo pega fogo (Narrador: 3 de dano Agravado por rodada durante 3 rodadas; muito difícil de apagar). Não é automatizado: este módulo não conta rodadas. Segunda Inquisição, p. 73." }
 }
 
-// Exact source strings used both when creating the temporary bonus AND when
-// reading back which ones the player actually toggled on (see
-// FULL_AUTO_LABEL's use in the createChatMessage hook below) - kept as
-// constants specifically so the two places can never drift out of sync.
-const FULL_AUTO_LABEL = 'Automática (+2, esvazia o carregador)'
+const FULL_AUTO_LABEL = 'Superioridade de fogo (+1, opcional)'
 const ONE_HANDED_LABEL = 'Usando com Uma Mão (-2)'
 const UNWIELDY_LABEL = 'Desajeitada (-1)'
 const REACH_ADVANTAGE_LABEL = 'Vantagem de Alcance (+1)'
@@ -78,19 +74,10 @@ const WORN_LABEL = 'Desgastada (-1, reparada muitas vezes)'
 // Confirmed by reading situational-modifiers.js's filterModifiers - the
 // exact logic every wod5e roll dialog already runs on _rollItem's own
 // getSituationalModifiers call, so this needs no dialog of our own.
-const OFF_BY_DEFAULT = { check: 'isPath', path: '__vtm5e-automation-never-matches__', value: '' }
+export const OFF_BY_DEFAULT = { check: 'isPath', path: '__vtm5e-automation-never-matches__', value: '' }
 const ALWAYS_ON = { check: 'always', path: '', value: '' }
 
-// Full Auto empties the magazine regardless of how many rounds were left -
-// without a floor, the optimal (degenerate) play is always waiting until
-// the mag is nearly dry before going full auto, since it "wastes" almost
-// nothing while still banking the +2 dice. Requiring at least half the
-// weapon's own max (rounded up) keeps the cost proportional to the
-// weapon's actual capacity instead of a flat number, so a 6-round revolver-
-// style mag and a 30-round rifle mag both require a real commitment
-// relative to their own size. Adjustable here if this threshold feels
-// wrong at the table - it's a balance call, not a rule pulled from either
-// the corebook or the homebrew doc, neither of which track ammo at all.
+// Tracked weapons must have at least half their capacity to offer Full Auto.
 const FULL_AUTO_MIN_FRACTION = 0.5
 
 // Fixed name so repeated rolls reuse (not duplicate) the same condition -
@@ -173,16 +160,15 @@ function buildCaliberSelect(currentValue) {
 // weapon-tags.js's own reload/salvage logic below AND by damage-application.js/
 // opposing-roll-trigger.js at hit-resolution time (via getLoadedAmmoType/
 // getAmmoDamageBonus, exported at the bottom of this section) - not by any
-// roll-time dialog or situational modifier. Armor-Piercing and the
-// Dragon's Breath/Wood on-hit conditions are read directly by key rather
-// than through a generic "bonuses" list, since neither is a dice modifier.
+// roll-time dialog or situational modifier. Special on-hit effects are
+// handled by ammo type in the opposed-roll resolver.
 const AMMO_TYPES = {
   '': { label: 'Comum', blurb: 'Sem efeito especial.' },
-  hollowPoint: { label: 'Ponta Oca', blurb: '+1 de dano ao atingir.' },
+  hollowPoint: { label: 'Ponta Oca (regra da casa)', blurb: '+1 de dano ao atingir. Não existe nos livros da V5: regra da casa opcional deste módulo.' },
   armorPiercing: { label: 'Perfurante', blurb: "Reduz em 2 o Valor de Armadura equipado pelo alvo (regras originais, Segunda Inquisição, p. 72)." },
-  dragonsBreath: { label: "Sopro do Dragão", blurb: 'Cartucho incendiário de espingarda: ao atingir, deixa o alvo em Chamas (-2 dados) até o fim do próximo turno dele.' },
-  wood: { label: 'Madeira/Estaca', blurb: 'Ao atingir um vampiro, pode causar Torpor (-3 dados) até a estaca ser removida. Não afeta outros alvos.' },
-  whitePhosphorus: { label: 'Fósforo Branco', blurb: 'Ao atingir, impõe -3 dados a todas as paradas (simplificação das paradas que dependem da visão) até o Narrador ou jogador remover o efeito. Segunda Inquisição, p. 73: não inclui anulação de contato visual para Dominação nem resistência à Presença.' }
+  dragonsBreath: { label: 'Sopro de Dragão', blurb: '+0 de dano. O dano do ataque é Agravado também contra vampiros e o alvo pega fogo: 1 de dano Agravado por rodada até o fogo ser apagado (Livro Básico, p. 380, redação inglesa; a edição PT-BR diz "por projétil").' },
+  wood: { label: 'Madeira/Estaca', blurb: 'Dano +0, como uma estaca. Contra vampiro, um ataque localizado no coração (declarado antes da rolagem, -2 sucessos) que cause 5 ou mais de dano o paralisa (Livro Básico, p. 302–304). Sem ataque localizado, é um golpe comum.' },
+  whitePhosphorus: { label: 'Fósforo Branco', blurb: '-3 dados nas paradas que dependem da visão (marque a opção na rolagem quando se aplicar). Torna ineficaz a Dominação por contato visual e dá +2 dados para resistir à Presença. Segunda Inquisição, p. 73.' }
 }
 
 // Same pattern as buildCaliberSelect - fixed vocabulary, with an "unlisted"
@@ -494,12 +480,7 @@ export function registerWeaponTags() {
   // Ammo consumption + temp-condition cleanup, reacting to the roll
   // rollWeaponAttack (below) actually produced - reuses findWeaponForRoll,
   // the same weapon-roll detector opposing-roll-trigger.js and
-  // damage-application.js already rely on. Whether Full Auto actually got
-  // toggled on is read back off the completed roll itself
-  // (roll.options.activeModifiers, populated by wod5e's own dialog from
-  // whichever .mod-checkbox elements were checked - see system-rolls.js)
-  // rather than anything we tracked ourselves, so this works identically
-  // regardless of which client's dialog produced the roll.
+  // damage-application.js already rely on.
   Hooks.on('createChatMessage', async (message) => {
     const roll = message.rolls?.[0]
     if (!roll || !roll.systemRoll) return
@@ -521,17 +502,8 @@ export function registerWeaponTags() {
     const staleCondition = actor.items.find((i) => isConditionNamed(i, TEMP_MODIFIER_CONDITION_NAME))
     if (staleCondition) await actor.deleteEmbeddedDocuments('Item', [staleCondition.id]).catch(() => {})
 
-    const activeModifierLabels = (roll.options?.activeModifiers ?? []).map((m) => m.label)
-    const usedFullAuto = activeModifierLabels.includes(FULL_AUTO_LABEL)
-
-    if (usedFullAuto) {
-      if (weapon.system.uses?.enabled) await weapon.update({ 'system.uses.current': 0 })
-      return
-    }
-
     // Generic ammo consumption - any ranged weapon with tracking enabled
-    // loses 1 use per attack roll, unless the block above already drained
-    // it to 0 via Full Auto.
+    // loses 1 use per attack roll.
     if (weapon.system.weaponType === 'ranged' && weapon.system.uses?.enabled) {
       const current = weapon.system.uses.current ?? 0
       if (current > 0) await weapon.update({ 'system.uses.current': current - 1 })
@@ -584,13 +556,10 @@ export async function rollWeaponAttack(actor, item) {
 
   const selector = getWeaponSkillSelector(item)
   const bonusEntries = []
-  // Full Auto is only offered as an option at all once there's a
-  // meaningful amount of ammo to burn - see FULL_AUTO_MIN_FRACTION above.
-  // Untracked weapons (uses.enabled false, e.g. a GM not bothering with an
-  // NPC mook's ammo) skip this gate entirely since there's nothing to check.
+  // Untracked weapons skip the minimum ammo check for Full Auto.
   const meetsFullAutoMinimum = !isRangedTracked ||
     item.system.uses.current >= Math.max(1, Math.ceil((item.system.uses.max ?? 0) * FULL_AUTO_MIN_FRACTION))
-  if (tags.fullAuto && meetsFullAutoMinimum) bonusEntries.push({ source: FULL_AUTO_LABEL, value: '2', displayWhenInactive: true, activeWhen: OFF_BY_DEFAULT })
+  if (tags.fullAuto && meetsFullAutoMinimum) bonusEntries.push({ source: FULL_AUTO_LABEL, value: '1', displayWhenInactive: true, activeWhen: OFF_BY_DEFAULT })
   // Auto-derived from equip state (2026-07-28) rather than a manually-toggled
   // checkbox - a Two-Handed weapon only avoids the penalty when it's
   // actually equipped in Both Hands (equip.js's slotOptionsFor only ever
