@@ -49,7 +49,7 @@ const WEAPON_TAGS = {
   concealed: { label: 'Oculta', blurb: '+1 dado para esconder esta arma durante uma revista.' },
   silent: { label: 'Silenciosa', blurb: 'Produz pouco som.' },
   brawl: { label: 'Briga', blurb: 'Usa a Perícia Briga.' },
-  firearm: { label: 'Arma de Fogo', blurb: 'Usa a Perícia Armas de Fogo; é barulhenta, exceto se for Silenciosa.' },
+  firearm: { label: 'Arma de Fogo', blurb: 'Usa a Perícia Armas de Fogo; é barulhenta, exceto se for Silenciosa. Em um tiroteio, a parada padrão é Autocontrole + Armas de Fogo; em corpo a corpo, use Força + Armas de Fogo (Livro Básico, p. 301–302).' },
   protection: { label: 'Proteção', blurb: "Anula a desvantagem do alcance desta arma ao se defender." },
   taser: { label: 'Taser', blurb: 'Ao ser atingido, o alvo testa Autocontrole + Determinação e precisa igualar ou superar o dano registrado (já reduzido à metade, quando Superficial), ou não poderá agir no próximo turno. Segunda Inquisição, p. 71.' },
   incendiary: { label: 'Incendiária', blurb: 'Causa dano Agravado a todos os alvos, inclusive vampiros (fogo), substituindo a regra de Afiada que afeta apenas mortais. Segunda Inquisição, p. 70.' },
@@ -58,11 +58,19 @@ const WEAPON_TAGS = {
 }
 
 const FULL_AUTO_LABEL = 'Superioridade de fogo (+1, opcional)'
+const OUT_OF_RANGE_LABEL = 'Além do alcance efetivo (-2)'
+const SHOOTING_OUT_OF_MELEE_LABEL = 'Atirando para fora de um corpo a corpo (-2)'
+const LONG_GUN_IN_MELEE_LABEL = 'Arma maior que pistola em corpo a corpo (-2)'
+export const CALLED_SHOT_LABEL = 'Ataque localizado (-2 sucessos)'
 const ONE_HANDED_LABEL = 'Usando com Uma Mão (-2)'
 const UNWIELDY_LABEL = 'Desajeitada (-1)'
 const REACH_ADVANTAGE_LABEL = 'Vantagem de Alcance (+1)'
 const BROKEN_LABEL = 'Quebrada (-2, precisa de reparo)'
 const WORN_LABEL = 'Desgastada (-1, reparada muitas vezes)'
+const ATTACK_MODIFIER_LABELS = new Set([
+  FULL_AUTO_LABEL, OUT_OF_RANGE_LABEL, SHOOTING_OUT_OF_MELEE_LABEL, LONG_GUN_IN_MELEE_LABEL,
+  CALLED_SHOT_LABEL, ONE_HANDED_LABEL, UNWIELDY_LABEL, REACH_ADVANTAGE_LABEL, BROKEN_LABEL, WORN_LABEL
+])
 
 // A condition-item bonus that's INCLUDED in wod5e's roll dialog (shown as a
 // checkbox) but OFF by default, using the same mechanism wod5e's own
@@ -231,26 +239,7 @@ export const WEAPON_ROLL_ACTOR_SHEET_HOOKS = [
   'renderWerewolfActorSheet'
 ]
 
-// Takes the whole item (not just its weaponTags flag) since Reach lives in
-// its own separate numeric flag, not the tag checkbox list - see
-// buildWeaponTagsSection.
-function hasFunctionalTags(item) {
-  const tags = item.getFlag(MODULE_ID, 'weaponTags') ?? {}
-  const reachValue = item.getFlag(MODULE_ID, 'reachValue') ?? 0
-  return !!(tags.fullAuto || tags.twoHanded || tags.unwieldy || (tags.balanced && tags.throwable) || reachValue > 0)
-}
-
-// Intercepts the native "roll this weapon" click (equipment.hbs's
-// .rollable-item, data-action="rollItem", wired to wod5e's own _onRollItem
-// in wod-actor-base.js) ONLY for weapons carrying a roll-time-functional
-// tag - every other item's click is left completely untouched, native
-// behavior all the way through. Items are resolved from actor.items (a
-// synchronous, already-loaded collection) at RENDER time, not inside the
-// click handler - deciding whether to intercept has to happen
-// synchronously, before any await, or stopPropagation() fires too late to
-// actually stop wod5e's own delegated handler from also running (an event
-// listener's stopPropagation() call after an internal await has no effect,
-// since the event has already finished dispatching by the time that await resolves).
+// Bind synchronously so the native weapon action doesn't also run.
 function bindWeaponRollInterception(app, html) {
   const actor = app.actor
   if (!actor) return
@@ -260,7 +249,6 @@ function bindWeaponRollInterception(app, html) {
     const itemId = element.closest('[data-item-id]')?.dataset.itemId
     const item = itemId ? actor.items.get(itemId) : null
     if (!item || item.type !== 'weapon') return
-    if (!hasFunctionalTags(item)) return
 
     if (element.dataset.vtm5eAutomationBound) return
     element.dataset.vtm5eAutomationBound = 'true'
@@ -514,9 +502,7 @@ export function registerWeaponTags() {
 /**
  * Shared entry point for rolling a weapon - both the native character sheet
  * interception and the Argon HUD's weapon button call this instead of
- * reaching into wod5e's _rollItem directly, so both behave identically.
- * Weapons with none of the roll-time-functional tags pass straight through
- * to _rollItem completely unmodified.
+ * reaching into wod5e's _rollItem directly, so both offer attack modifiers.
  *
  * Full Auto/Two-Handed/Unwieldy need no dialog of our own at all - they
  * become temporary, togglable situational-modifier entries wod5e's own
@@ -538,13 +524,16 @@ export async function rollWeaponAttack(actor, item) {
   const isEmpty = isRangedTracked && (item.system.uses.current ?? 0) <= 0
 
   const tags = item.getFlag(MODULE_ID, 'weaponTags') ?? {}
-  const isThrowable = !!tags.balanced && !!tags.throwable
+  const canCallShot = !(tags.throwable && tags.flashbang)
+  const optional = (source, value) => ({ source, value, displayWhenInactive: true, activeWhen: OFF_BY_DEFAULT })
+  const calledShot = optional(CALLED_SHOT_LABEL, '0')
 
-  if (isThrowable) {
+  if (tags.balanced && tags.throwable) {
     const mode = await confirmAttackMode(item)
     if (!mode) return
     if (mode === 'thrown') {
-      await rollThrown(actor, item, 1)
+      await setAttackModifiers(actor, 'athletics', canCallShot ? [calledShot] : [])
+      await rollThrown(actor, item, 1, canCallShot)
       return
     }
   }
@@ -559,7 +548,11 @@ export async function rollWeaponAttack(actor, item) {
   // Untracked weapons skip the minimum ammo check for Full Auto.
   const meetsFullAutoMinimum = !isRangedTracked ||
     item.system.uses.current >= Math.max(1, Math.ceil((item.system.uses.max ?? 0) * FULL_AUTO_MIN_FRACTION))
-  if (tags.fullAuto && meetsFullAutoMinimum) bonusEntries.push({ source: FULL_AUTO_LABEL, value: '1', displayWhenInactive: true, activeWhen: OFF_BY_DEFAULT })
+  if (tags.fullAuto && meetsFullAutoMinimum) bonusEntries.push(optional(FULL_AUTO_LABEL, '1'))
+  if (item.system.weaponType === 'ranged' && !tags.throwable) bonusEntries.push(optional(OUT_OF_RANGE_LABEL, '-2'))
+  if (tags.firearm) bonusEntries.push(optional(SHOOTING_OUT_OF_MELEE_LABEL, '-2'))
+  if (tags.firearm && tags.twoHanded) bonusEntries.push(optional(LONG_GUN_IN_MELEE_LABEL, '-2'))
+  if (canCallShot) bonusEntries.push(calledShot)
   // Auto-derived from equip state (2026-07-28) rather than a manually-toggled
   // checkbox - a Two-Handed weapon only avoids the penalty when it's
   // actually equipped in Both Hands (equip.js's slotOptionsFor only ever
@@ -573,26 +566,25 @@ export async function rollWeaponAttack(actor, item) {
   const reachBonus = await computeReachBonus(item)
   if (reachBonus) bonusEntries.push(reachBonus)
 
-  // Merged with (not replacing) any bonuses already on the temp condition -
-  // readyWeapon (below) can leave a readying penalty sitting there from
-  // earlier this turn, and applyStatusCondition's update path overwrites
-  // system.bonuses wholesale. Without this merge, rolling Full Auto after
-  // readying the same weapon would silently wipe the readying penalty
-  // instead of stacking with it.
+  await setAttackModifiers(actor, selector, bonusEntries)
+
+  const { _rollItem } = await import('/systems/wod5e/system/actor/scripts/item-roll.js')
+  await _rollItem(actor, item)
+}
+
+async function setAttackModifiers(actor, selector, bonusEntries) {
   const existingCondition = actor.items.find((i) => isConditionNamed(i, TEMP_MODIFIER_CONDITION_NAME))
-  const existingBonuses = existingCondition?.system?.bonuses ?? []
+  // Keep readying penalties and replace modifiers left by a canceled attack.
+  const existingBonuses = (existingCondition?.system?.bonuses ?? []).filter((entry) => !ATTACK_MODIFIER_LABELS.has(entry.source))
   const newBonuses = bonusEntries.map((entry) => ({ ...entry, paths: selector ? [selector] : ['all'] }))
 
-  if (existingBonuses.length > 0 || newBonuses.length > 0) {
+  if (existingCondition || newBonuses.length > 0) {
     await applyStatusCondition(actor, {
       name: TEMP_MODIFIER_CONDITION_NAME,
       note: '<p><em>Gerenciado automaticamente por vtm5e-automation: é removido após o próximo teste com arma. Se permanecer, pode ser excluído manualmente.</em></p>',
       bonuses: [...existingBonuses, ...newBonuses]
     })
   }
-
-  const { _rollItem } = await import('/systems/wod5e/system/actor/scripts/item-roll.js')
-  await _rollItem(actor, item)
 }
 
 /**
@@ -1076,15 +1068,18 @@ function getWeaponSkillSelector(item) {
   return null
 }
 
-// Bypasses _rollItem entirely - same raw WOD5E.api.Roll approach
-// rollWeaponDefense (opposing-roll-trigger.js) and rollResistance
-// (discipline-resistance.js) already use. quickRoll: true since our own
-// dialog above already served as the confirmation step.
-async function rollThrown(actor, item, balancedBonus) {
+// Throwing a balanced weapon uses a separate pool with the balanced bonus.
+async function rollThrown(actor, item, balancedBonus, canCallShot) {
   const valuePaths = ['attributes.dexterity.value', 'skills.athletics.value']
-  const basicDiceRaw = await WOD5E.api.getBasicDice({ valuePaths, flatMod: balancedBonus, actor })
+  const selectors = ['attributes', 'dexterity', 'attributes.dexterity', 'skills', 'athletics', 'skills.athletics']
+  let flatMod = balancedBonus
+  if (canCallShot) {
+    const { getActiveModifiers } = await import('/systems/wod5e/system/scripts/rolls/situational-modifiers.js')
+    flatMod += (await getActiveModifiers({ actor, selectors })).totalValue
+  }
+  const basicDiceRaw = await WOD5E.api.getBasicDice({ valuePaths, flatMod, actor })
   const advancedDiceRaw = await WOD5E.api.getAdvancedDice({ actor })
-  const { basicDice, advancedDice } = splitAdvancedDice(basicDiceRaw, advancedDiceRaw, actor)
+  const { basicDice, advancedDice } = splitAdvancedDice(Math.max(basicDiceRaw, 0), advancedDiceRaw, actor)
 
   await WOD5E.api.Roll({
     basicDice,
@@ -1092,7 +1087,8 @@ async function rollThrown(actor, item, balancedBonus) {
     actor,
     data: actor.system,
     title: item.name,
-    quickRoll: true
+    selectors,
+    quickRoll: !canCallShot
   })
 }
 

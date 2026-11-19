@@ -60,6 +60,7 @@ const CONDITION_LABELS = {
   'On Fire (Thermite)': 'Em Chamas (termita)',
   'Phosphorus-Blinded': 'Cego (fósforo)',
   'Staked (Torpor Risk)': 'Estaqueado (risco de Torpor)',
+  'Staked (Paralyzed)': 'Estaqueado (paralisado)',
   'Stunned (Taser)': 'Atordoado (taser)',
   Frenzy: 'Frenesi',
   Resilience: 'Resiliência',

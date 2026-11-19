@@ -4,12 +4,22 @@ import { getRoutingTargets } from './socket-routing.js'
 import { computeDamageBreakdown } from './damage-application.js'
 import { rollCompulsion, buildCompulsionHTML } from './compulsion.js'
 import { applyStatusCondition } from './condition-application.js'
-import { getLoadedAmmoType, getAmmoDamageBonus, getWeaponDamageValue, OFF_BY_DEFAULT } from './weapon-tags.js'
+import { CALLED_SHOT_LABEL, getLoadedAmmoType, getAmmoDamageBonus, getWeaponDamageValue, OFF_BY_DEFAULT } from './weapon-tags.js'
 import { performPrivilegedWrite, performPrivilegedDamage } from './privileged-write-relay.js'
 import { markBroken } from './repair.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 const DODGE_TITLE_MARKER = 'DODGE::'
+const STATIONARY_TITLE_MARKER = 'STATIONARY::'
+const STATIONARY_LABEL = 'Alvo parado (Dificuldade 1)'
+const STATIONARY_TITLE = 'Alvo parado: Dificuldade 1'
+const COVER_OPTIONS = [
+  [-2, 'Nenhuma cobertura'],
+  [-1, 'Apenas ocultação (arbustos, árvore pequena contra rifle)'],
+  [0, 'Cobertura rígida (bloco de motor, esquina de concreto)'],
+  [1, 'Entrincheiramento (sacos de areia, casamata)'],
+  [2, 'Ameia (fenda de disparo de veículo militar)']
+]
 // Separate from weapon-tags.js's TEMP_MODIFIER_CONDITION_NAME on purpose -
 // that one lives on the ATTACKER for Full Auto/Two-Handed/Unwieldy/Reach,
 // this one lives on the DEFENDER for Cover/Defensive. Keeping them
@@ -21,10 +31,9 @@ const TEMP_DEFENSE_CONDITION_NAME = 'Defense Modifier (temporary)'
 // Tracks weapon-attack opposed rolls in flight, keyed by defender actor ID.
 // Only populated on the attacker's own client - chat message document sync
 // means the attacker's client naturally sees the defender's roll arrive
-// regardless of which client's dialog produced it. Whether the defender
-// chose Dodge is read back off the completed roll's title marker rather
-// than needing to sync that choice cross-client separately.
+// regardless of who rolled the defense. Title markers carry the defense choice.
 const pendingWeaponOpposedRolls = new Map()
+const bilateralDamageClicks = new WeakMap()
 
 export function registerOpposingRollTrigger() {
   // createChatMessage fires exactly once, at real creation time - avoids
@@ -51,8 +60,7 @@ export function registerOpposingRollTrigger() {
     if (defenderId && pendingWeaponOpposedRolls.has(defenderId)) {
       const pending = pendingWeaponOpposedRolls.get(defenderId)
       pendingWeaponOpposedRolls.delete(defenderId)
-      const isDodge = (roll.options?.title ?? '').startsWith(DODGE_TITLE_MARKER)
-      await resolveWeaponOpposedRoll(pending, message.speakerActor, roll, isDodge, message.id, await renderRollCardHTML(message), message.author?.id)
+      await resolveWeaponOpposedRoll(pending, message.speakerActor, roll, message.id, await renderRollCardHTML(message), message.author?.id)
       return
     }
 
@@ -78,9 +86,18 @@ export function registerOpposingRollTrigger() {
 
     await promptWeaponDefense(message, roll, weapon, targetActor, mode)
   })
+
+  Hooks.on('renderChatMessageHTML', (message, html) => {
+    if (message.rolls?.[0]?.options?.title === `${STATIONARY_TITLE_MARKER}${STATIONARY_TITLE}`) {
+      const label = html.querySelector('.roll-label')
+      if (label) label.textContent = STATIONARY_TITLE
+    }
+    renderBilateralDamageButtons(message, html)
+  })
 }
 
 async function promptWeaponDefense(originalMessage, attackerRoll, weapon, targetActor, mode) {
+  const isFlashbang = !!weapon.getFlag(MODULE_ID, 'weaponTags')?.flashbang
   pendingWeaponOpposedRolls.set(targetActor.id, {
     attackerActorId: originalMessage.speakerActor.id,
     attackerName: originalMessage.speakerActor?.name ?? 'Atacante',
@@ -101,7 +118,8 @@ async function promptWeaponDefense(originalMessage, attackerRoll, weapon, target
     isFragile: !!weapon.getFlag(MODULE_ID, 'weaponTags')?.fragile,
     isTaser: !!weapon.getFlag(MODULE_ID, 'weaponTags')?.taser,
     isIncendiary: !!weapon.getFlag(MODULE_ID, 'weaponTags')?.incendiary,
-    isFlashbang: !!weapon.getFlag(MODULE_ID, 'weaponTags')?.flashbang,
+    isFlashbang,
+    isCalledShot: !isFlashbang && !!attackerRoll.options?.activeModifiers?.some?.((modifier) => modifier.label === CALLED_SHOT_LABEL),
     isThermite: !!weapon.getFlag(MODULE_ID, 'weaponTags')?.thermite,
     // Special ammo (weapon-tags.js) - a property of whatever's currently
     // chambered, not the weapon's own tags, so it's captured separately
@@ -152,6 +170,14 @@ async function openWeaponDefenseDialog(actor, weaponName, weaponType) {
   const attributeOptions = WOD5E.Attributes.getList({})
   const skillOptions = WOD5E.Skills.getList({})
   const defenseTagEntries = getDefenseTagEntries(actor, weaponType)
+  const coverFieldHTML = weaponType === 'ranged'
+    ? `<div class="form-group">
+        <label for="weaponDefenseCover">Cobertura</label>
+        <select id="weaponDefenseCover" name="coverSelect">
+          ${COVER_OPTIONS.map(([value, label]) => `<option value="${value}"${value === 0 ? ' selected' : ''}>${label}</option>`).join('')}
+        </select>
+      </div>`
+    : ''
 
   const defenseTagFieldsHTML = defenseTagEntries.length > 0
     ? `<div class="form-group">${defenseTagEntries.map((entry, index) => `<label><input type="checkbox" name="defenseTag${index}" checked /> ${entry.source}</label>`).join('<br>')}</div>`
@@ -162,6 +188,7 @@ async function openWeaponDefenseDialog(actor, weaponName, weaponType) {
       <p><b>${weaponName}</b> está atacando <b>${actor.name}</b>.</p>
       <p style="font-size:0.85em; color:#666;">Esquiva sempre usa Destreza + Atletismo e não causa dano ao atacante, mesmo em caso de vitória. Para contra-atacar, escolha uma parada personalizada.</p>
       ${defenseTagFieldsHTML}
+      ${coverFieldHTML}
       <div class="form-group">
         <label>Atributo Personalizado</label>
         <select name="attributeSelect">
@@ -188,7 +215,11 @@ async function openWeaponDefenseDialog(actor, weaponName, weaponType) {
         icon: 'fas fa-person-running',
         label: 'Esquiva (Destreza + Atletismo)',
         default: true,
-        callback: (_event, _button, dialog) => ({ isDodge: true, checkedTagIndexes: readCheckedDefenseTags(dialog, defenseTagEntries) })
+        callback: (_event, _button, dialog) => ({
+          isDodge: true,
+          checkedTagIndexes: readCheckedDefenseTags(dialog, defenseTagEntries),
+          cover: readCover(dialog)
+        })
       },
       {
         action: 'custom',
@@ -200,16 +231,29 @@ async function openWeaponDefenseDialog(actor, weaponName, weaponType) {
             isDodge: false,
             attributeSelect: html.querySelector('[name="attributeSelect"]')?.value,
             skillSelect: html.querySelector('[name="skillSelect"]')?.value,
-            checkedTagIndexes: readCheckedDefenseTags(dialog, defenseTagEntries)
+            checkedTagIndexes: readCheckedDefenseTags(dialog, defenseTagEntries),
+            cover: readCover(dialog)
           }
         }
       },
+      { action: 'stationary', icon: 'fas fa-person', label: STATIONARY_LABEL, callback: () => 'stationary' },
       { action: 'cancel', icon: 'fas fa-times', label: 'Cancelar' }
     ],
     classes: ['wod5e']
   })
 
   if (!result || result === 'cancel') return
+  if (result === 'stationary') {
+    await WOD5E.api.Roll({
+      basicDice: 1,
+      advancedDice: 0,
+      actor,
+      data: actor.system,
+      title: `${STATIONARY_TITLE_MARKER}${STATIONARY_TITLE}`,
+      quickRoll: true
+    })
+    return
+  }
 
   let valuePaths, title
   if (result.isDodge) {
@@ -236,7 +280,7 @@ async function openWeaponDefenseDialog(actor, weaponName, weaponType) {
   const chosenEntries = defenseTagEntries.filter((_, index) => result.checkedTagIndexes?.includes(index))
   await applyDefenseTagBonus(actor, chosenEntries)
 
-  await rollWeaponDefense(actor, valuePaths, title)
+  await rollWeaponDefense(actor, valuePaths, title, result.cover)
 }
 
 // Auto mode for the opposing-roll step: no dialog, resolves straight to
@@ -289,6 +333,10 @@ function readCheckedDefenseTags(dialog, entries) {
     .filter((index) => html.querySelector(`[name="defenseTag${index}"]`)?.checked)
 }
 
+function readCover(dialog) {
+  return Number(dialog.element.querySelector('[name="coverSelect"]')?.value ?? 0)
+}
+
 // paths: ['all'] rather than a specific skill selector - unlike weapon-tags.js's
 // attack-side bonuses (scoped to the weapon's own Skill), Cover/Defensive
 // need to apply no matter which pool the defender ends up rolling (Dodge,
@@ -310,22 +358,22 @@ async function applyDefenseTagBonus(actor, chosenEntries) {
   })
 }
 
-async function rollWeaponDefense(actor, valuePaths, title) {
+async function rollWeaponDefense(actor, valuePaths, title, extraMod = 0) {
   const { getActiveModifiers } = await import('/systems/wod5e/system/scripts/rolls/situational-modifiers.js')
   // Attribute modifiers use the pool path without its value suffix.
   const selectors = valuePaths.map(path => path.replace(/\.value$/, ''))
   const activeModifiers = await getActiveModifiers({ actor, selectors })
 
-  const basicDiceRaw = await WOD5E.api.getBasicDice({ valuePaths, flatMod: activeModifiers.totalValue, actor })
+  const basicDiceRaw = await WOD5E.api.getBasicDice({ valuePaths, flatMod: activeModifiers.totalValue + extraMod, actor })
   const advancedDiceRaw = await WOD5E.api.getAdvancedDice({ actor })
-  const { basicDice, advancedDice } = splitAdvancedDice(basicDiceRaw, advancedDiceRaw, actor)
+  const { basicDice, advancedDice } = splitAdvancedDice(Math.max(basicDiceRaw, 0), advancedDiceRaw, actor)
 
   await WOD5E.api.Roll({
     basicDice,
     advancedDice,
     actor,
     data: actor.system,
-    title,
+    title: extraMod === 0 ? title : `${title}, cobertura ${extraMod > 0 ? '+' : '−'}${Math.abs(extraMod)}`,
     quickRoll: true
   })
 }
@@ -336,7 +384,7 @@ function buildOptionTags(options) {
     .join('')
 }
 
-async function resolveWeaponOpposedRoll(pending, defenderActor, defenderRoll, isDodge, defenderMessageId, defenderRollHTML, defenderUserId) {
+async function resolveWeaponOpposedRoll(pending, defenderActor, defenderRoll, defenderMessageId, defenderRollHTML, defenderUserId) {
   // Cleanup for applyDefenseTagBonus's temp condition - opportunistic, same
   // as weapon-tags.js's own equivalent, rather than tracked via a flag that
   // could go stale across a page reload or a cancelled dialog. Relayed
@@ -350,87 +398,87 @@ async function resolveWeaponOpposedRoll(pending, defenderActor, defenderRoll, is
     await performPrivilegedWrite(defenderActor, 'deleteConditionByName', { name: TEMP_DEFENSE_CONDITION_NAME })
   }
 
-  const defenderTotal = defenderRoll.total
-  const margin = pending.attackerTotal - defenderTotal
+  const defenseTitle = defenderRoll.options?.title ?? ''
+  const isDodge = defenseTitle.startsWith(DODGE_TITLE_MARKER)
+  const isStationary = defenseTitle.startsWith(STATIONARY_TITLE_MARKER)
+  const defenderTotal = isStationary ? 1 : defenderRoll.total
+  const attackerTotal = pending.isCalledShot ? Math.max(pending.attackerTotal - 2, 0) : pending.attackerTotal
+  const margin = attackerTotal - defenderTotal
   const attackerActor = game.actors.get(pending.attackerActorId)
-  const defenseLabel = isDodge ? 'Esquiva (Destreza + Atletismo)' : 'Parada Personalizada'
+  const defenseLabel = isStationary ? STATIONARY_LABEL : isDodge ? 'Esquiva (Destreza + Atletismo)' : 'Parada Personalizada'
+  const canCounterAttack = !isDodge && !isStationary && !pending.isFlashbang
+  const isBilateralTie = margin === 0 && canCounterAttack
+  const attackerWon = margin > 0
+  const weaponHit = !pending.isFlashbang && (attackerWon || isBilateralTie)
 
   let resultLine
-  let loserToken = null
-  let loserName = null
-  let loserUserId = null
-  let damageAmount = 0
-  let weaponDamageValue = 0
-  let ammoBonus = 0
-  // The attacker's weapon can change severity; a defender's counter-attack
-  // uses a different, untracked pool and remains Superficial.
-  let damageSeverity = 'superficial'
-
+  const hits = []
   if (pending.isFlashbang) {
-    resultLine = margin > 0
+    resultLine = attackerWon
       ? `${pending.attackerName} acerta com margem ${margin}.`
       : margin < 0
         ? `${defenderActor?.name} vence a disputa com margem ${Math.abs(margin)}.`
         : 'Empate: a disputa favorece quem defende.'
-  } else if (margin <= 0) {
-    // Defender wins or ties (ties go to the defender per the rulebook).
-    // Dodge specifically forfeits counter-damage even on a win - that's
-    // the whole tradeoff for choosing it over a custom pool.
-    if (isDodge) {
-      resultLine = `${defenderActor?.name} se esquiva com sucesso. Nenhum dano.`
-    } else if (margin < 0) {
-      const absMargin = Math.abs(margin)
-      resultLine = `${defenderActor?.name} contra-ataca com margem ${absMargin}.`
-      loserToken = attackerActor?.getActiveTokens()[0]
-      loserName = attackerActor?.name
-      loserUserId = pending.attackerUserId
-      damageAmount = absMargin
-    } else {
-      resultLine = 'Empate: quem defende evita o dano.'
-    }
-  } else {
+  } else if (isBilateralTie) {
+    resultLine = 'Empate em conflito bilateral: os dois causam dano como margem 1 (Livro Básico, p. 125).'
+  } else if (attackerWon) {
     resultLine = `${pending.attackerName} acerta com margem ${margin}.`
-    loserToken = defenderActor?.getActiveTokens()[0]
-    loserName = defenderActor?.name
-    loserUserId = defenderUserId
-    weaponDamageValue = pending.weaponDamageValue
-    ammoBonus = getAmmoDamageBonus(pending.loadedAmmoType)
-    damageAmount = margin + weaponDamageValue + ammoBonus
-    // Incendiary (fire) is Aggravated to EVERY target including vampires -
-    // unlike Sharp, which the corebook restricts to mortals only. Checked
-    // first/independently so it can't be masked by Sharp's narrower rule.
-    if (pending.isIncendiary || pending.loadedAmmoType === 'dragonsBreath') damageSeverity = 'aggravated'
-    // Firearms deal Aggravated to non-vampires, except Tasers (SI p. 71).
-    else if ((pending.isSharp || (pending.isFirearm && !pending.isTaser)) && defenderActor?.system?.gamesystem !== 'vampire') damageSeverity = 'aggravated'
+  } else if (canCounterAttack) {
+    resultLine = `${defenderActor?.name} contra-ataca com margem ${Math.abs(margin)}.`
+  } else if (isStationary) {
+    resultLine = `${defenderActor?.name} permanece ileso. Nenhum dano.`
+  } else {
+    resultLine = `${defenderActor?.name} se esquiva com sucesso. Nenhum dano.`
   }
 
-  // Hit effects apply only on a hit; flash-bang affects either outcome.
-  const onHitNoteHTML = margin > 0
-    ? await applyOnHitTagEffects(pending, defenderActor, damageAmount)
-    : ''
+  let onHitNoteHTML = ''
+  if (weaponHit) {
+    const hitMargin = isBilateralTie ? 1 : margin
+    const weaponDamageValue = pending.weaponDamageValue
+    const ammoBonus = getAmmoDamageBonus(pending.loadedAmmoType)
+    const damageAmount = hitMargin + weaponDamageValue + ammoBonus
+    const isFireDamage = pending.isIncendiary || pending.loadedAmmoType === 'dragonsBreath'
+    const isLethalToMortals = pending.isSharp || (pending.isFirearm && !pending.isTaser)
+    const isAggravated = isFireDamage || (isLethalToMortals && defenderActor?.system?.gamesystem !== 'vampire')
+    hits.push({
+      actor: defenderActor,
+      token: defenderActor?.getActiveTokens()[0],
+      controllingUserId: defenderUserId,
+      damageAmount,
+      damageSeverity: isAggravated ? 'aggravated' : 'superficial',
+      hitMargin,
+      weaponDamageValue,
+      ammoBonus,
+      isTaser: !!pending.isTaser,
+      isArmorPiercingAmmo: pending.loadedAmmoType === 'armorPiercing'
+    })
+    onHitNoteHTML = await applyOnHitTagEffects(pending, defenderActor, damageAmount)
+  }
+  if (canCounterAttack && margin <= 0) {
+    const hitMargin = isBilateralTie ? 1 : Math.abs(margin)
+    hits.push({
+      actor: attackerActor,
+      token: attackerActor?.getActiveTokens()[0],
+      controllingUserId: pending.attackerUserId,
+      damageAmount: hitMargin,
+      damageSeverity: 'superficial',
+      hitMargin,
+      isArmorPiercingAmmo: false
+    })
+  }
+
   const flashbangNoteHTML = pending.isFlashbang && defenderActor
-    ? await applyFlashbangEffect(defenderActor, margin > 0)
+    ? await applyFlashbangEffect(defenderActor, attackerWon)
     : ''
   // Fragile is checked independently of hit/miss (a fumble, not a win) -
   // see applyFragileFumble below.
   const fragileNoteHTML = await applyFragileFumble(attackerActor, pending)
   const onHitTagNoteHTML = flashbangNoteHTML + onHitNoteHTML + fragileNoteHTML
 
-  // Losing the contest IS "failing the roll" for Bestial Failure purposes -
-  // margin<=0 means the attacker didn't beat the defender (a failure for
-  // the attacker regardless of whether the defender actually did damage
-  // back), margin>0 means the defender lost outright. Once we know this,
-  // wod5e's own "Possible Bestial Failure" hedge on each embedded card can
-  // be resolved definitively either way - see adjustBestialFailureLabel.
-  const attackerFailed = margin <= 0
-  const defenderFailed = margin > 0
-  const attackerWon = margin > 0
-  const defenderWon = margin <= 0
-
-  const attackerBestialFailure = isBestialFailure(pending.attackerRoll, attackerActor, attackerFailed)
-  const defenderBestialFailure = isBestialFailure(defenderRoll, defenderActor, defenderFailed)
-  const attackerMessyCritical = isMessyCritical(pending.attackerRoll, attackerActor, attackerWon)
-  const defenderMessyCritical = isMessyCritical(defenderRoll, defenderActor, defenderWon)
+  const attackerBestialFailure = isBestialFailure(pending.attackerRoll, attackerActor, !attackerWon && !isBilateralTie)
+  const defenderBestialFailure = !isStationary && isBestialFailure(defenderRoll, defenderActor, attackerWon)
+  const attackerMessyCritical = isMessyCritical(pending.attackerRoll, attackerActor, attackerWon || isBilateralTie)
+  const defenderMessyCritical = !isStationary && isMessyCritical(defenderRoll, defenderActor, !attackerWon)
 
   let attackerRollHTML = adjustBestialFailureLabel(pending.attackerRollHTML, attackerBestialFailure)
   let adjustedDefenderRollHTML = adjustBestialFailureLabel(defenderRollHTML, defenderBestialFailure)
@@ -446,18 +494,6 @@ async function resolveWeaponOpposedRoll(pending, defenderActor, defenderRoll, is
 
   const sourceMessageIds = [pending.attackerMessageId, defenderMessageId, pending.promptMessageId].filter(Boolean)
 
-  // Only the ATTACKER's own hit (margin > 0) can reduce armor (Armor-
-  // Piercing ammo, RAW: "-2 Armor Value", Second Inquisition p.72) - a
-  // defender's counter (margin < 0) uses an untracked generic pool, not
-  // pending's weapon/ammo at all, same gating as Sharp above. Armor
-  // conversion (see postWeaponResolutionCard) still applies in
-  // both directions - it's based on whoever's actually receiving the
-  // damage's own equipped armor, not on which side attacked.
-  const isArmorPiercingAmmo = margin > 0 && pending.loadedAmmoType === 'armorPiercing'
-  // Same gating as Sharp/Armor-Piercing above - Taser is a property of the
-  // ATTACKER's own weapon, so it only ever triggers on their hit landing.
-  const isTaser = margin > 0 && !!pending.isTaser
-
   await postWeaponResolutionCard({
     weaponName: pending.weaponName,
     attackerName: pending.attackerName,
@@ -469,16 +505,10 @@ async function resolveWeaponOpposedRoll(pending, defenderActor, defenderRoll, is
     defenseLabel,
     attackerWon,
     resultLine,
-    loserToken,
-    loserName,
-    loserUserId,
-    damageAmount,
-    damageSeverity,
+    hits,
     margin,
-    weaponDamageValue,
-    ammoBonus,
-    isArmorPiercingAmmo,
-    isTaser,
+    isCalledShot: pending.isCalledShot,
+    isBilateralTie,
     onHitTagNoteHTML,
     sourceMessageIds
   })
@@ -553,11 +583,23 @@ async function applyOnHitTagEffects(pending, defenderActor, damageAmount) {
     noteHTML += `<p class="vtm5e-automation-recap-narrative">${defenderActor.name} está cego pelo fósforo (-3 nas paradas que dependem da visão).</p>`
   }
 
-  // The GM verifies the called shot before applying paralysis.
   if (pending.loadedAmmoType === 'wood' && defenderActor?.system?.gamesystem === 'vampire') {
-    noteHTML += damageAmount >= 5
-      ? `<p class="vtm5e-automation-recap-narrative">Estaca: se este ataque foi localizado no coração (declarado antes da rolagem, -2 sucessos), ${defenderActor.name} fica paralisado (Livro Básico, p. 304). Narrador: aplique a paralisia manualmente.</p>`
-      : '<p class="vtm5e-automation-recap-narrative">Estaca: dano menor que 5, não paralisa mesmo se tiver acertado o coração (Livro Básico, p. 304).</p>'
+    let result
+    if (!pending.isCalledShot) {
+      result = 'Estaca sem ataque localizado: golpe comum, sem paralisia (marque "Ataque localizado" para mirar no coração).'
+    } else if (damageAmount < 5) {
+      result = 'Estaca no coração, mas com menos de 5 de dano: não paralisa (Livro Básico, p. 304).'
+    } else {
+      await performPrivilegedWrite(defenderActor, 'applyStatusCondition', {
+        spec: {
+          name: 'Staked (Paralyzed)',
+          note: '<p>Estaca no coração: o vampiro fica paralisado até a estaca ser retirada (Livro Básico, p. 304). Narrador: remova a condição quando a estaca sair.</p>',
+          bonuses: []
+        }
+      })
+      result = `${defenderActor.name} foi estaqueado no coração e está paralisado.`
+    }
+    noteHTML += `<p class="vtm5e-automation-recap-narrative">${result}</p>`
   }
 
   return noteHTML
@@ -589,29 +631,24 @@ async function applyFlashbangEffect(defenderActor, attackerWon) {
   return `<p class="vtm5e-automation-recap-narrative">${result}</p>`
 }
 
-// Single recap card per opposed roll instead of a separate roll message per
-// side plus a separate "who won"/"apply damage" message - embeds each side's
-// actual roll card (dice faces and all) so nothing is lost, then deletes the
-// originals via sourceMessageIds once this card is live.
-async function postWeaponResolutionCard({ weaponName, attackerName, attackerRollHTML, attackerCompulsionHTML, defenderName, defenderRollHTML, defenderCompulsionHTML, defenseLabel, attackerWon, resultLine, loserToken, loserName, loserUserId, damageAmount, damageSeverity, margin, weaponDamageValue, ammoBonus, isArmorPiercingAmmo, isTaser, onHitTagNoteHTML, sourceMessageIds }) {
-  // Looked up per the actor actually taking the damage - an NPC's damage can
-  // apply automatically while a player's still waits for a click, or vice versa.
-  const mode = loserToken?.actor ? getStepSetting('damageApplication', loserToken.actor) : 'prompt'
-  const willAutoApply = mode === 'auto' && loserToken && damageAmount > 0
+async function renderHit(hit, shotNote, isBilateralTie) {
+  const { actor, token, controllingUserId, damageAmount, damageSeverity, hitMargin, weaponDamageValue, ammoBonus, isArmorPiercingAmmo, isTaser } = hit
+  const loserName = actor?.name
+  const mode = token?.actor ? getStepSetting('damageApplication', token.actor) : 'prompt'
+  const willAutoApply = mode === 'auto' && token && damageAmount > 0
   const armorOptions = { reduceByArmor: true, armorPiercingAmmo: isArmorPiercingAmmo }
 
-  // Calculate the display locally before the possibly relayed write.
-  const breakdown = computeDamageBreakdown(loserToken?.actor, damageAmount, damageSeverity, armorOptions)
+  const breakdown = computeDamageBreakdown(token?.actor ?? (isBilateralTie ? actor : undefined), damageAmount, damageSeverity, armorOptions)
   const displayDamageAmount = breakdown.total
   if (willAutoApply) {
-    await performPrivilegedDamage(loserToken, damageAmount, damageSeverity, armorOptions)
+    await performPrivilegedDamage(token, damageAmount, damageSeverity, armorOptions)
   }
 
   // Taser threshold uses the actual damage shown on the card.
   let taserNoteHTML = ''
-  if (isTaser && displayDamageAmount > 0 && loserToken?.actor) {
+  if (isTaser && displayDamageAmount > 0 && token?.actor) {
     const threshold = displayDamageAmount
-    await performPrivilegedWrite(loserToken.actor, 'applyStatusCondition', {
+    await performPrivilegedWrite(token.actor, 'applyStatusCondition', {
       spec: {
         name: 'Stunned (Taser)',
         note: `<p>Atingido por um taser: role Autocontrole + Determinação; são necessários ${threshold} ou mais sucessos para agir normalmente no próximo turno. Com menos sucessos, não pode agir no próximo turno. Narrador ou jogador: remova esta condição após a resolução.</p>`,
@@ -621,25 +658,18 @@ async function postWeaponResolutionCard({ weaponName, attackerName, attackerRoll
     taserNoteHTML = `<p class="vtm5e-automation-recap-narrative">${loserName} está atordoado pelo taser e precisa de ${threshold} ou mais sucessos em Autocontrole + Determinação para agir no próximo turno.</p>`
   }
 
-  // Damage cases get a plain "who's taking it" heading instead of the full
-  // sentence - the number below already says how much. No-damage cases
-  // (dodge, tie) keep the sentence since there's no actor to head instead.
-  // Manual/prompt mode's Superficial/Aggravated buttons (buildDamageButtonRow
-  // in roll-utils.js) always offer BOTH regardless of damageSeverity here -
-  // same pre-existing limitation already noted in discipline-resistance.js,
-  // not solved by this change either.
   const damageLabel = breakdown.aggravated && breakdown.superficial
     ? `${breakdown.aggravated} Agravado + ${breakdown.superficial} Superficial à Vitalidade`
-    : `Dano ${breakdown.aggravated ? 'Agravado' : 'Superficial'} à Vitalidade`
-  let calculation = `Margem ${Math.abs(margin)}`
-  if (margin > 0 && weaponDamageValue > 0) calculation += ` + arma ${weaponDamageValue}`
-  if (margin > 0 && ammoBonus > 0) calculation += ` + munição ${ammoBonus}`
+    : `Dano ${breakdown.aggravated || (isBilateralTie && displayDamageAmount === 0 && damageSeverity === 'aggravated') ? 'Agravado' : 'Superficial'} à Vitalidade`
+  let calculation = `${shotNote}Margem ${hitMargin}`
+  if (weaponDamageValue > 0) calculation += ` + arma ${weaponDamageValue}`
+  if (ammoBonus > 0) calculation += ` + munição ${ammoBonus}`
   calculation += ` = ${damageAmount} de dano bruto (${damageSeverity === 'aggravated' ? 'Agravado' : 'Superficial'}).`
   if (breakdown.converted > 0) calculation += ` Armadura ${breakdown.armor} converteu ${breakdown.converted} em Superficial.`
   if (breakdown.superficialRaw > 0 && breakdown.toughness > 0) calculation += ` Tenacidade −${breakdown.toughness}: Superficial ${breakdown.superficialRaw} → ${breakdown.superficialAfterToughness}.`
   if (breakdown.superficialRaw > 0) calculation += ` Superficial ${breakdown.superficialAfterToughness} ÷ 2 = ${breakdown.superficialHalved}.`
   if (breakdown.total < breakdown.aggravatedRaw + breakdown.superficialHalved) calculation += ' Limitado pela trilha de Vitalidade.'
-  const bottomSection = displayDamageAmount > 0
+  const damageHTML = displayDamageAmount > 0 || isBilateralTie
     ? `
       <p class="vtm5e-automation-recap-name">${loserName}</p>
       <div class="vtm5e-automation-recap-damage">
@@ -648,16 +678,47 @@ async function postWeaponResolutionCard({ weaponName, attackerName, attackerRoll
         <div class="vtm5e-automation-recap-calc" style="font-size:0.85em;opacity:0.8">${calculation}</div>
       </div>
     `
-    : damageAmount > 0
-      ? `<p class="vtm5e-automation-recap-result">A trilha de Vitalidade de ${loserName} já está cheia.</p>`
-      : `<p class="vtm5e-automation-recap-result">${resultLine}</p>`
+    : `<p class="vtm5e-automation-recap-result">A trilha de Vitalidade de ${loserName} já está cheia.</p>`
+  const pendingDamage = !willAutoApply && token && damageAmount > 0
+    ? { actorId: token.actor?.id, amount: damageAmount, controllingUserId, track: 'health', applyOptions: armorOptions }
+    : null
 
-  // Bottom banner naming who actually won the contest (attackerWon, computed
-  // above alongside resultLine) - same "ties go to the defender" rule
-  // resultLine already follows. Sits above bottomSection so the outcome
-  // (who + what) reads as one unit, matching Jake's ask for a clear
-  // win banner instead of having to infer the winner from resultLine text.
+  return { damageHTML, taserNoteHTML, pendingDamage }
+}
+
+// One recap embeds both rolls and all resulting damage.
+async function postWeaponResolutionCard({ weaponName, attackerName, attackerRollHTML, attackerCompulsionHTML, defenderName, defenderRollHTML, defenderCompulsionHTML, defenseLabel, attackerWon, resultLine, hits, margin, isCalledShot, isBilateralTie, onHitTagNoteHTML, sourceMessageIds }) {
+  const shotNote = isCalledShot ? 'Ataque localizado: −2 sucessos. ' : ''
+  const damageSections = []
+  const taserNotes = []
+  const bilateralDamage = []
+  let pendingDamage = null
+  for (const [index, hit] of hits.entries()) {
+    if (!isBilateralTie && hit.damageAmount <= 0) continue
+    const rendered = await renderHit(hit, index === 0 ? shotNote : '', isBilateralTie)
+    damageSections.push(rendered.damageHTML)
+    if (rendered.taserNoteHTML) taserNotes.push(rendered.taserNoteHTML)
+    if (isBilateralTie && rendered.pendingDamage) {
+      bilateralDamage.push({
+        ...rendered.pendingDamage,
+        hitIndex: index,
+        tokenId: hit.token.id,
+        sceneId: hit.token.scene?.id,
+        severity: hit.damageSeverity
+      })
+    } else if (!isBilateralTie) {
+      pendingDamage = rendered.pendingDamage
+    }
+  }
+
   const winnerName = attackerWon ? attackerName : defenderName
+  const outcome = isBilateralTie ? resultLine : `${winnerName} vence`
+  const bottomSection = damageSections.length > 0
+    ? damageSections.join('')
+    : `<p class="vtm5e-automation-recap-result">${resultLine}</p>`
+  const standaloneCalculation = shotNote && !bottomSection.includes(shotNote)
+    ? `<div class="vtm5e-automation-recap-calc" style="font-size:0.85em;opacity:0.8">${shotNote}Margem ${margin}.</div>`
+    : ''
 
   const content = `
     <div class="vtm5e-automation-recap">
@@ -674,19 +735,57 @@ async function postWeaponResolutionCard({ weaponName, attackerName, attackerRoll
         ${defenderCompulsionHTML}
       </div>
       <hr>
-      <p class="vtm5e-automation-recap-outcome">${winnerName} vence</p>
+      <p class="vtm5e-automation-recap-outcome">${outcome}</p>
+      ${standaloneCalculation}
       ${bottomSection}
       ${onHitTagNoteHTML || ''}
-      ${taserNoteHTML}
+      ${taserNotes.join('')}
     </div>
   `
 
-  const pendingDamage = !willAutoApply && loserToken && damageAmount > 0
-    ? { actorId: loserToken.actor?.id, amount: damageAmount, controllingUserId: loserUserId, track: 'health', applyOptions: armorOptions }
-    : null
-
   await ChatMessage.create({
     content,
-    flags: { [MODULE_ID]: { sourceMessageIds, pendingDamage } }
+    flags: { [MODULE_ID]: { sourceMessageIds, pendingDamage, ...(bilateralDamage.length > 0 ? { bilateralDamage } : {}) } }
   })
+}
+
+function renderBilateralDamageButtons(message, html) {
+  const pendingHits = message.getFlag(MODULE_ID, 'bilateralDamage')
+  if (!pendingHits?.length) return
+
+  const damageSections = html.querySelectorAll('.vtm5e-automation-recap-damage')
+  const handled = bilateralDamageClicks.get(message) ?? new Set()
+  bilateralDamageClicks.set(message, handled)
+
+  for (const hit of pendingHits) {
+    const section = damageSections[hit.hitIndex]
+    if (!section || section.querySelector('.vtm5e-automation-damage-buttons')) continue
+
+    const scene = hit.sceneId ? game.scenes.get(hit.sceneId) : canvas.scene
+    const token = scene?.tokens.get(hit.tokenId)?.object
+    if (!token?.actor) continue
+    const isEligible = hit.controllingUserId ? game.user.id === hit.controllingUserId : token.actor.isOwner
+    if (!game.user.isGM && !isEligible) continue
+
+    const row = document.createElement('div')
+    row.classList.add('vtm5e-automation-damage-buttons')
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.textContent = `Aplicar dano a ${token.actor.name}`
+    button.disabled = handled.has(hit.hitIndex)
+    button.addEventListener('click', async () => {
+      if (handled.has(hit.hitIndex)) return
+      handled.add(hit.hitIndex)
+      button.disabled = true
+      try {
+        await performPrivilegedDamage(token, hit.amount, hit.severity, hit.applyOptions)
+      } catch (error) {
+        handled.delete(hit.hitIndex)
+        button.disabled = false
+        throw error
+      }
+    })
+    row.appendChild(button)
+    section.appendChild(row)
+  }
 }
