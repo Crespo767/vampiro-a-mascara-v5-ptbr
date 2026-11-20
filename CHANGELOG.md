@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.7.1 — Botões de dano no empate bilateral
+
+- **Empate bilateral:** o dano aplicado pelos botões fica registrado na mensagem; recarregar a página não permite aplicá-lo de novo. Cada botão fica sob o personagem certo, mesmo quando um dos lados já tem a trilha toda Agravada. Os botões não somem mais ao recarregar a página.
+
 ## 1.7.0 — Combate pelas regras dos livros e compêndio de Equipamentos revisto
 
 - **Dano de armas:** o valor da arma entra no dano (margem + valor + bônus da munição). A armadura converte dano Agravado em Superficial, 1 por ponto, em vez de subtrair dano. O dano Superficial de ataques é dividido por 2, arredondando para cima. Armas de fogo e afiadas causam Agravado a mortais; a pistola de choque é exceção.

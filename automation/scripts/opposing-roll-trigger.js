@@ -699,7 +699,9 @@ async function postWeaponResolutionCard({ weaponName, attackerName, attackerRoll
   for (const [index, hit] of hits.entries()) {
     if (!isBilateralTie && hit.damageAmount <= 0) continue
     const rendered = await renderHit(hit, index === 0 ? shotNote : '', isBilateralTie)
-    damageSections.push(rendered.damageHTML)
+    damageSections.push(isBilateralTie
+      ? `<div class="vtm5e-automation-recap-hit" data-hit-index="${index}">${rendered.damageHTML}</div>`
+      : rendered.damageHTML)
     if (rendered.taserNoteHTML) taserNotes.push(rendered.taserNoteHTML)
     if (isBilateralTie && rendered.pendingDamage) {
       bilateralDamage.push({
@@ -756,32 +758,52 @@ function renderBilateralDamageButtons(message, html) {
   const pendingHits = message.getFlag(MODULE_ID, 'bilateralDamage')
   if (!pendingHits?.length) return
 
-  const damageSections = html.querySelectorAll('.vtm5e-automation-recap-damage')
+  // Cards from before data-hit-index existed fall back to section order.
+  const legacySections = html.querySelectorAll('.vtm5e-automation-recap-damage')
+  // Clicks are kept in memory (instant, per client) and, when this user can
+  // edit the message, in its flags too - so a page reload or another client
+  // does not offer the same damage again.
   const handled = bilateralDamageClicks.get(message) ?? new Set()
   bilateralDamageClicks.set(message, handled)
+  for (const index of message.getFlag(MODULE_ID, 'bilateralApplied') ?? []) handled.add(index)
 
   for (const hit of pendingHits) {
-    const section = damageSections[hit.hitIndex]
+    const wrapper = html.querySelector(`.vtm5e-automation-recap-hit[data-hit-index="${hit.hitIndex}"]`)
+    const section = wrapper
+      ? (wrapper.querySelector('.vtm5e-automation-recap-damage') ?? wrapper)
+      : legacySections[hit.hitIndex]
     if (!section || section.querySelector('.vtm5e-automation-damage-buttons')) continue
 
     const scene = hit.sceneId ? game.scenes.get(hit.sceneId) : canvas.scene
-    const token = scene?.tokens.get(hit.tokenId)?.object
-    if (!token?.actor) continue
-    const isEligible = hit.controllingUserId ? game.user.id === hit.controllingUserId : token.actor.isOwner
+    // The chat log renders before the canvas on a page load, so the button
+    // only needs the TokenDocument; the placeable is looked up on click.
+    const tokenDocument = scene?.tokens.get(hit.tokenId)
+    if (!tokenDocument?.actor) continue
+    const isEligible = hit.controllingUserId ? game.user.id === hit.controllingUserId : tokenDocument.actor.isOwner
     if (!game.user.isGM && !isEligible) continue
 
     const row = document.createElement('div')
     row.classList.add('vtm5e-automation-damage-buttons')
     const button = document.createElement('button')
     button.type = 'button'
-    button.textContent = `Aplicar dano a ${token.actor.name}`
+    button.textContent = `Aplicar dano a ${tokenDocument.actor.name}`
     button.disabled = handled.has(hit.hitIndex)
     button.addEventListener('click', async () => {
       if (handled.has(hit.hitIndex)) return
       handled.add(hit.hitIndex)
       button.disabled = true
       try {
+        const token = tokenDocument.object
+        if (!token) {
+          ui.notifications.warn(`O token de ${tokenDocument.actor.name} não está na cena ativa; abra a cena para aplicar o dano.`)
+          throw new Error(`${MODULE_ID} | token ${hit.tokenId} sem objeto no canvas`)
+        }
         await performPrivilegedDamage(token, hit.amount, hit.severity, hit.applyOptions)
+        if (message.isOwner) {
+          const applied = new Set(message.getFlag(MODULE_ID, 'bilateralApplied') ?? [])
+          applied.add(hit.hitIndex)
+          await message.setFlag(MODULE_ID, 'bilateralApplied', [...applied])
+        }
       } catch (error) {
         handled.delete(hit.hitIndex)
         button.disabled = false
