@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.7.3 — Ícones pintados
+
+- **Ícones:** os 96 ícones desenhados da 1.7.2 foram trocados por 95 ícones pintados no estilo dos ícones do Foundry (equipamentos, pastas de Vantagens e Defeitos, Tipos de Predador, Potência do Sangue, Folhas de História, Oblivion e Cerimônias de Oblivion). Lança-chamas, lança-granadas e lançador incendiário descartável usam ícones do próprio Foundry. São 299 itens atualizados.
+- Itens já arrastados para fichas mantêm o ícone antigo; arraste de novo do compêndio para atualizar.
+
 ## 1.7.2 — Ícones próprios nos compêndios
 
 - **Ícones:** 347 itens que usavam um ícone genérico (o padrão do sistema, o de Disciplina, o de Sangue-Ralo fora dos Sangues-Ralos ou a caveira do Foundry) ganharam ícone próprio. São 96 ícones originais no mesmo estilo: equipamentos, pastas de Vantagens e Defeitos, Tipos de Predador, níveis de Potência do Sangue, Folhas de História, Oblivion e Cerimônias de Oblivion. Outros 34 equipamentos usam ícones do próprio Foundry. As Vantagens e Defeitos de Sangue-Ralo do Guia do Jogador usam o símbolo de Sangue-Ralo.
