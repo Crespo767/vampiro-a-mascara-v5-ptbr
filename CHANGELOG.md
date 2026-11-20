@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.7.2 — Ícones próprios nos compêndios
+
+- **Ícones:** 347 itens que usavam um ícone genérico (o padrão do sistema, o de Disciplina, o de Sangue-Ralo fora dos Sangues-Ralos ou a caveira do Foundry) ganharam ícone próprio. São 96 ícones originais no mesmo estilo: equipamentos, pastas de Vantagens e Defeitos, Tipos de Predador, níveis de Potência do Sangue, Folhas de História, Oblivion e Cerimônias de Oblivion. Outros 34 equipamentos usam ícones do próprio Foundry. As Vantagens e Defeitos de Sangue-Ralo do Guia do Jogador usam o símbolo de Sangue-Ralo.
+- **Caitiff:** o símbolo do clã era um WebP salvo como .png; o arquivo agora tem a extensão certa.
+- Itens já arrastados para fichas mantêm o ícone antigo; arraste de novo do compêndio para atualizar.
+
 ## 1.7.1 — Botões de dano no empate bilateral
 
 - **Empate bilateral:** o dano aplicado pelos botões fica registrado na mensagem; recarregar a página não permite aplicá-lo de novo. Cada botão fica sob o personagem certo, mesmo quando um dos lados já tem a trilha toda Agravada. Os botões não somem mais ao recarregar a página.
