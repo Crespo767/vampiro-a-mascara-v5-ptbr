@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.7.12 — Layout e instruções da Criação de Personagem
+
+- O assistente ocupa toda a largura da janela após a remoção do painel Registro da Criação. O cabeçalho exibe os nomes das etapas centralizados, sem números, e se reorganiza em duas linhas em larguras menores.
+- Instruções revisadas em Qualidades, Defeitos e Antecedentes, Pilares e Convicções e Toques Finais. A lista Adquiridos exibe as bolinhas de pontos gratuitos em vermelho.
+
 ## 1.7.11 — Pontos de Qualidades, Defeitos e Antecedentes
 
 - Na Criação de Personagem, os itens de custo fixo exibem bolinhas que marcam ou desmarcam o custo inteiro com um clique. Itens de nível variável continuam permitindo escolher o nível.

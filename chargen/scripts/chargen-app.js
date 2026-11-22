@@ -142,8 +142,8 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       resizable: true
     },
     position: {
-      width: 900,
-      height: 720
+      width: 820,
+      height: 620
     },
     actions: {
       goToStep: ChargenApp.#onGoToStep,
@@ -205,7 +205,6 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     // itself, not the nav). Not persisted across a close/reopen, same as
     // stepIndex itself.
     this.maxStepIndex = 0
-    this.log = []
     this.clanItems = null
     this.predatorItems = null
     this.meritsFlawsItems = null
@@ -306,7 +305,6 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
 
     const steps = STEPS.map((s, i) => ({
       ...s,
-      num: i + 1,
       active: i === this.stepIndex,
       done: i < this.stepIndex && (s.id !== 'clan' || actor.items.some(item => item.type === 'clan')) && (s.id !== 'predator' || actor.items.some(item => item.type === 'predatorType')),
       locked: i > Math.max(this.stepIndex, this.maxStepIndex)
@@ -390,8 +388,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       willpower,
       humanity: actor.system.humanity?.value ?? 7,
       bloodPotency: actor.system.blood?.potency ?? 0,
-      hunger: actor.system.hunger?.value ?? 1,
-      log: this.log
+      hunger: actor.system.hunger?.value ?? 1
     }
   }
 
@@ -890,7 +887,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       name: clanItem.name,
       sourceLabel: `Clã: ${clanItem.name}`,
       grants: clanCreationGrants(clanItem)
-    }, this.log)
+    })
   }
 
   async #applyPendingPredatorGrants () {
@@ -902,7 +899,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       name: predItem.name,
       sourceLabel: `Tipo de Predador: ${predItem.name}`,
       grants: predItem.flags?.['vampiro-a-mascara-v5-ptbr']?.grants ?? []
-    }, this.log)
+    })
   }
 
   static async #onGoToStep (event, target) {
@@ -1148,7 +1145,6 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     const itemId = target.dataset.itemId
     const item = this.actor.items.get(itemId)
     if (!item) return
-    this.log.push(`<b>Qualidades e Defeitos</b>: removeu <b>${item.name}</b>`)
     this.#preserveScroll()
     await this.actor.deleteEmbeddedDocuments('Item', [itemId])
     this.render()
@@ -1185,7 +1181,6 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     try {
       if (existing) {
         await this.actor.deleteEmbeddedDocuments('Item', [existing.id])
-        this.log.push(`<b>${kindLabel} de Sangue-Ralo</b>: removeu <b>${doc.name}</b>`)
       } else {
         const data = doc.toObject()
         delete data._id
@@ -1194,7 +1189,6 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
         // one is a presence/absence toggle, not a rated purchase.
         data.system.points = 0
         await this.actor.createEmbeddedDocuments('Item', [data])
-        this.log.push(`<b>${kindLabel} de Sangue-Ralo</b>: adquiriu <b>${doc.name}</b>`)
       }
       this.#preserveScroll()
       this.render()
@@ -1287,13 +1281,10 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
         data.system.points = nextValue
         foundry.utils.setProperty(data, 'flags.vampiro-a-mascara-v5-ptbr.grantedPoints', 0)
         await this.actor.createEmbeddedDocuments('Item', [data])
-        this.log.push(`<b>Qualidades e Defeitos</b>: adquiriu <b>${doc.name}</b> (${'•'.repeat(nextValue)})`)
       } else if (nextValue <= 0 && grantedPoints <= 0) {
         await this.actor.deleteEmbeddedDocuments('Item', [existing.id])
-        this.log.push(`<b>Qualidades e Defeitos</b>: removeu <b>${doc.name}</b>`)
       } else {
         await existing.update({ 'system.points': nextValue })
-        this.log.push(`<b>Qualidades e Defeitos</b>: definiu <b>${doc.name}</b> em ${'•'.repeat(nextValue)}`)
       }
       this.#preserveScroll()
       this.render()
@@ -1316,7 +1307,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     if (failures.length === 0) return
 
     ui.notifications.warn(`Seu Tipo de Predador (${predItem.name}) não é mais compatível com seu Clã: ${failures.join(' ')} Ele foi removido; escolha outro.`)
-    await clearTrackedGrants(this.actor, 'predator', this.log)
+    await clearTrackedGrants(this.actor, 'predator')
     await this.actor.deleteEmbeddedDocuments('Item', [predItem.id])
   }
 

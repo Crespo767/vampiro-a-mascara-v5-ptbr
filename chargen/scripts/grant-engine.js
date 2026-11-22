@@ -1,10 +1,8 @@
 // Applies flags.vampiro-a-mascara-v5-ptbr.grants entries (see vtm5e-predatortypes /
 // vtm5e-clans / vtm5e-meritsflaws for where that data lives) onto an
 // actor. Anything with a `choices` array pauses on a DialogV2 prompt;
-// anything without one applies immediately. Every application - automatic
-// or chosen - gets pushed onto `log` (an array the caller renders/persists)
-// AND posted as a chat message, so the player always has a durable record
-// of what happened, not just a toast that can be missed.
+// anything without one applies immediately. The wizard announces grants
+// in chat, and the automatic generator collects them in its summary log.
 
 import { getClanKey } from '../../clans/scripts/clan-key.js'
 
@@ -344,7 +342,7 @@ function dots (n) {
 }
 
 async function logAndAnnounce (actor, log, text) {
-  log.push(text)
+  log?.push(text)
   if (pickerFor(actor)) return
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
@@ -799,7 +797,7 @@ export async function applyTrackedGrants (actor, { slot, pickLabel, name, source
     await clearTrackedGrants(actor, slot, log)
   }
 
-  log.push(`<b>${pickLabel}</b>: escolheu <b>${name}</b>`)
+  log?.push(`<b>${pickLabel}</b>: escolheu <b>${name}</b>`)
   const entries = []
   try {
     await applyGrants(actor, grants, sourceLabel, log, entries)
