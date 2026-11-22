@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.7.10 — Criação de Personagem
+
+- **Atributos e Habilidades** — Começam zerados em fichas novas para permitir a distribuição dos pontos. O assistente também corrige rascunhos antigos com pontos pré-marcados fora dos limites de distribuição.
+- **Habilidades** — Os cartões mostram os níveis em números, e a seção de Especializações gratuitas explica como preencher os campos com exemplos.
+- **Clã e Tipo de Predador** — Instruções simplificadas. Os cartões de Tipo de Predador agora centralizam as imagens e ajustam os títulos à largura disponível.
+
 ## 1.7.9 — Controles das abas e saldo de Experiência
 
 - **Rolagens Personalizadas** — A lupa encontra itens nos compêndios acessíveis, o lápis abre a edição e alterações atualizam apenas a lista.

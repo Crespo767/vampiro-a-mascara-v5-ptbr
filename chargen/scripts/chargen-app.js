@@ -1,4 +1,4 @@
-import { applyTrackedGrants, clearTrackedGrants, checkRestrictions, checkConflicts, getRatingCap, clanCreationGrants, chargenPurchaseBlock, featureCategory, REQUIRED_SPECIALTY_SKILLS, applyFreeSpecialties, applyDerivedTrackers, extraAdvantagePoints, baseSkillValue } from './grant-engine.js'
+import { applyTrackedGrants, clearTrackedGrants, checkRestrictions, checkConflicts, getRatingCap, clanCreationGrants, chargenPurchaseBlock, featureCategory, REQUIRED_SPECIALTY_SKILLS, applyFreeSpecialties, applyDerivedTrackers, extraAdvantagePoints, baseSkillValue, grantedSkillDots } from './grant-engine.js'
 import { getClanKey } from '../../clans/scripts/clan-key.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
@@ -89,17 +89,17 @@ export const ATTRIBUTE_RATING_QUOTA = { 4: 1, 3: 3, 2: 4, 1: 1 }
 export const SKILL_DISTRIBUTIONS = {
   jackOfAllTrades: {
     label: 'Pau pra Toda Obra',
-    description: 'Uma Habilidade em •••, oito Habilidades em •• e dez Habilidades em •.',
+    description: '1 habilidade com 3 pontos, 8 habilidades com 2 pontos e 10 habilidades com 1 ponto.',
     quota: { 3: 1, 2: 8, 1: 10 }
   },
   balanced: {
     label: 'Equilibrado',
-    description: 'Três Habilidades em •••, cinco Habilidades em •• e sete Habilidades em •.',
+    description: '3 habilidades com 3 pontos, 5 habilidades com 2 pontos e 7 habilidades com 1 ponto.',
     quota: { 3: 3, 2: 5, 1: 7 }
   },
   specialist: {
     label: 'Especialista',
-    description: 'Uma Habilidade em ••••, três Habilidades em •••, três Habilidades em •• e três Habilidades em •.',
+    description: '1 habilidade com 4 pontos, 3 habilidades com 3 pontos, 3 habilidades com 2 pontos e 3 habilidades com 1 ponto.',
     quota: { 4: 1, 3: 3, 2: 3, 1: 3 }
   }
 }
@@ -257,28 +257,48 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       const pack = game.packs.get('vampiro-a-mascara-v5-ptbr.meritsflaws')
       this.meritsFlawsItems = pack ? await pack.getDocuments() : []
     }
-    await this.#ensureAttributeBaseline()
   }
 
-  // wod5e's Attribute schema defaults every Attribute's value to 1 (a
-  // generic Foundry-template fallback, not a V5 rule - Skills correctly
-  // default to 0). Left alone, that means all 9 Attributes on a brand
-  // new actor already read as "1 dot filled" before the player has done
-  // anything, which would blow the corebook's 1-Attribute-at-dot-1 quota
-  // immediately. Zero them out exactly once (tracked by a flag so it can
-  // never re-fire and wipe a player's progress) so every dot the quota
-  // counts - including the first - is one the player actually chose.
-  async #ensureAttributeBaseline () {
-    if (this.actor.flags?.['vampiro-a-mascara-v5-ptbr']?.attributesInitialized) return
-    const ids = Object.values(ATTRIBUTE_GROUPS).flat()
-    const updates = {}
-    for (const id of ids) updates[`system.attributes.${id}.value`] = 0
+  async #ensureTraitBaselines () {
+    const flags = this.actor.flags?.[MODULE_ID]
+    if (flags?.traitBaselinesInitialized || flags?.wizardCompleted) return
+
+    const updates = {
+      [`flags.${MODULE_ID}.attributesInitialized`]: true,
+      [`flags.${MODULE_ID}.traitBaselinesInitialized`]: true
+    }
+    const attributeIds = Object.values(ATTRIBUTE_GROUPS).flat()
+    const attributeCounts = this.#ratingCounts('attributes', attributeIds)
+    // Older drafts can already have the flag and still show a full row of
+    // default ratings. Preserve partial allocations when the flag is set.
+    if (Object.keys(attributeCounts).every(rating => rating === '1') &&
+        (!flags?.attributesInitialized || attributeCounts[1] === attributeIds.length)) {
+      for (const id of attributeIds) {
+        if (this.actor.system.attributes?.[id]?.value === 1) updates[`system.attributes.${id}.value`] = 0
+      }
+    }
+
+    const skillIds = Object.values(SKILL_GROUPS).flat()
+    const skillCounts = this.#ratingCounts('skills', skillIds)
+    const maxSingleDotSkills = Math.max(...Object.values(SKILL_DISTRIBUTIONS).map(def => def.quota[1]))
+
+    // No points can be assigned here before choosing a distribution. Also
+    // repair older drafts with only single dots that exceed every preset.
+    if (Object.keys(skillCounts).every(rating => rating === '1') &&
+        (!flags?.skillDistribution || skillCounts[1] > maxSingleDotSkills)) {
+      for (const id of skillIds) {
+        if (baseSkillValue(this.actor, id) > 0) {
+          updates[`system.skills.${id}.value`] = grantedSkillDots(this.actor, id)
+        }
+      }
+    }
+
     await this.actor.update(updates)
-    await this.actor.setFlag('vampiro-a-mascara-v5-ptbr', 'attributesInitialized', true)
   }
 
   async _prepareContext (_options) {
     await this.#ensureCompendiumData()
+    await this.#ensureTraitBaselines()
 
     const actor = this.actor
     const currentClan = actor.items.find(i => i.type === 'clan')

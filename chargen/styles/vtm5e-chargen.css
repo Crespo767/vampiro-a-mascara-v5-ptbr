@@ -344,6 +344,22 @@
   color: var(--vtm5e-cs-text);
 }
 
+.vtm5e-chargen-card[data-predator-id] {
+  container-type: inline-size;
+}
+
+.vtm5e-chargen-card[data-predator-id] > img {
+  display: block;
+  margin-inline: auto;
+}
+
+.vtm5e-chargen-card[data-predator-id] > .vtm5e-chargen-card-name {
+  font-size: clamp(9px, 10.5cqi, 11px);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
 .vtm5e-chargen-card.unavailable {
   opacity: 0.4;
   filter: grayscale(1);

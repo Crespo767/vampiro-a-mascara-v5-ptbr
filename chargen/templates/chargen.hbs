@@ -64,7 +64,7 @@
     {{#if stepFlags.isSkills}}
     <section class="vtm5e-chargen-step">
       <h2>Habilidades</h2>
-      <p class="vtm5e-chargen-hint">Escolha uma distribuição e atribua as Habilidades. Preencha as Especializações gratuitas para Erudição, Ofícios, Performance e Ciência que tiverem pontos, e escolha mais uma Especialização livre.</p>
+      <p class="vtm5e-chargen-hint">Escolha uma distribuição e distribua os pontos entre as habilidades. Para cada uma destas habilidades em que você colocou pontos, escolha uma especialização gratuita: Erudição, Ofícios, Performance e Ciência. Depois, escolha uma especialização livre em qualquer habilidade com pelo menos 1 ponto.</p>
 
       <div class="vtm5e-chargen-skill-dist-grid">
         {{#each skillBudget.distributions}}
@@ -107,6 +107,8 @@
       </div>
       <div class="vtm5e-chargen-specialties">
         <h3>Especializações gratuitas</h3>
+        <p class="vtm5e-chargen-hint">Uma especialização indica o que seu personagem domina dentro de uma habilidade. Digite um tema específico em cada campo exibido. Por exemplo, em Erudição, digite <strong>História Medieval</strong>.</p>
+        <p class="vtm5e-chargen-hint">Para a especialização livre, escolha uma habilidade com pontos no menu e digite o tema no campo abaixo. Por exemplo, escolha Investigação e digite <strong>Cenas de Crime</strong>.</p>
         {{#each specialties.required}}
           <label>{{this.label}} <input type="text" value="{{this.value}}" data-field="flags.vampiro-a-mascara-v5-ptbr.freeSpecialties.{{this.id}}" /></label>
         {{/each}}
@@ -124,8 +126,7 @@
     {{#if stepFlags.isClan}}
     <section class="vtm5e-chargen-step">
       <h2>Clã</h2>
-      <p class="vtm5e-chargen-hint">Clique em um clã para ler sua descrição. Ao avançar, escolha duas Disciplinas: uma recebe 2 pontos e outra recebe 1 ponto. Sangues-Ralos não recebem Disciplinas intrínsecas.</p>
-      {{#if currentClan}}<p class="vtm5e-chargen-hint">Escolha atual: <b>{{currentClan.name}}</b>. Escolher outro clã substitui o atual.</p>{{/if}}
+      <p class="vtm5e-chargen-hint">Clique em um clã para ler sua descrição. Ao avançar, escolha 2 Disciplinas: 1 recebe 2 pontos e a outra recebe 1 ponto. Sangues-ralos não recebem disciplinas intrínsecas.</p>
       <div class="vtm5e-chargen-card-grid">
         {{#each clans}}
           <div class="vtm5e-chargen-card {{#if this.selected}}selected{{/if}}" data-clan-id="{{this.id}}">
@@ -147,8 +148,7 @@
     {{#if stepFlags.isPredator}}
     <section class="vtm5e-chargen-step">
       <h2>Tipo de Predador</h2>
-      <p class="vtm5e-chargen-hint">Clique em um Tipo de Predador para ler sua descrição abaixo. Seus benefícios são aplicados ao clicar em Avançar; nesse momento, você também poderá fazer as escolhas necessárias (Disciplina, Especialização etc.).</p>
-      {{#if currentPredator}}<p class="vtm5e-chargen-hint">Escolha atual: <b>{{currentPredator.name}}</b>. Escolher outro substitui o atual. Se você já avançou além desta etapa, os benefícios da escolha anterior NÃO são desfeitos automaticamente; confira antes de trocar.</p>{{/if}}
+      <p class="vtm5e-chargen-hint">Clique em um Tipo de Predador para ler sua descrição abaixo. Ao clicar em <strong>Avançar</strong>, faça as escolhas solicitadas, como Disciplina ou Especialização. Os benefícios serão aplicados à ficha.</p>
       <div class="vtm5e-chargen-card-grid">
         {{#each predators}}
           <div class="vtm5e-chargen-card {{#if this.selected}}selected{{/if}} {{#if this.unavailable}}unavailable{{/if}}" data-predator-id="{{this.id}}" {{#if this.unavailable}}title="Indisponível: {{this.unavailableReason}}"{{/if}}>
