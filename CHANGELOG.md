@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.7.4 — Correções no cabeçalho da ficha de Vampiro
+
+- **Clã e Tipo de Predador:** os seletores abrem os compêndios correspondentes e adicionam à ficha o item confirmado. Clicar no nome de um item já preenchido abre a ficha dele.
+- **Perdição do Clã:** o cabeçalho reconhece nomes traduzidos como Malkavianos e Ministério e orienta a selecionar um clã quando o campo está vazio.
+- **Compulsão:** o seletor volta a mostrar a seta de abertura e exibe a compulsão ativa, com a opção Nenhuma para limpá-la.
+
 ## 1.7.3 — Ícones pintados
 
 - **Ícones:** os 96 ícones desenhados da 1.7.2 foram trocados por 95 ícones pintados no estilo dos ícones do Foundry (equipamentos, pastas de Vantagens e Defeitos, Tipos de Predador, Potência do Sangue, Folhas de História, Oblivion e Cerimônias de Oblivion). Lança-chamas, lança-granadas e lançador incendiário descartável usam ícones do próprio Foundry. São 299 itens atualizados.

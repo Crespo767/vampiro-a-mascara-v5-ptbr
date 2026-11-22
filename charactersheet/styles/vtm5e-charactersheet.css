@@ -129,7 +129,7 @@
 
 /* Ghoul header's Domitor field - same position/typography as the Vampire
    header's Clan/Predator subtitle line (cs-header-subtitle above), but an
-   editable text input instead of a clickable item-search span. */
+   editable text input instead of item selection buttons. */
 .actor.sheet.vampire:not(.spc):not(.group) .cs-domitor-field {
   margin-left: 92px;
   margin-top: -25px;
@@ -169,27 +169,30 @@
   color: var(--vtm5e-cs-red-bright);
 }
 
-.actor.sheet.vampire:not(.spc):not(.group) .cs-clan-name {
+.actor.sheet.vampire:not(.spc):not(.group) button.cs-header-choice {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  box-shadow: none;
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) .cs-header-choice:enabled {
   cursor: pointer;
 }
 
-.actor.sheet.vampire:not(.spc):not(.group) .cs-clan-name.cs-clan-none {
+.actor.sheet.vampire:not(.spc):not(.group) .cs-header-choice-empty {
   opacity: 0.7;
 }
 
-.actor.sheet.vampire:not(.spc):not(.group) .cs-clan-name:hover {
-  text-decoration: underline;
-}
-
-.actor.sheet.vampire:not(.spc):not(.group) .cs-predator-name {
-  cursor: pointer;
-}
-
-.actor.sheet.vampire:not(.spc):not(.group) .cs-predator-name.cs-predator-none {
-  opacity: 0.7;
-}
-
-.actor.sheet.vampire:not(.spc):not(.group) .cs-predator-name:hover {
+.actor.sheet.vampire:not(.spc):not(.group) .cs-header-choice:enabled:hover {
   text-decoration: underline;
 }
 
@@ -275,8 +278,8 @@
 }
 
 .actor.sheet.vampire:not(.spc):not(.group) .cs-bc-select {
-  appearance: none;
-  -webkit-appearance: none;
+  appearance: auto;
+  color-scheme: dark;
   flex: 1 1 auto;
 }
 

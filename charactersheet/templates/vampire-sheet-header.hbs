@@ -4,16 +4,17 @@
         <div class="cs-header-identity">
             {{> "systems/wod5e/display/shared/actors/parts/header-profile.hbs"}}
             <div class="cs-header-subtitle">
-                {{#if clan}}
-                    <span class="cs-clan-name clickable" data-action="searchItem" data-type="clan" data-tooltip-html="{{clanDescription}}" data-tooltip-direction="DOWN" title="Pesquisar">{{clan.name}}</span>
-                {{else}}
-                    <span class="cs-clan-name cs-clan-none clickable" data-action="searchItem" data-type="clan" title="Pesquisar">Selecionar Clã</span>
-                {{/if}}
-                {{#if predator}}
-                    &bull; <span class="cs-predator-name clickable" data-action="searchItem" data-type="predatorType" data-tooltip-html="{{predatorDescription}}" data-tooltip-direction="DOWN" title="Pesquisar">{{predator.name}}</span>
-                {{else}}
-                    &bull; <span class="cs-predator-name cs-predator-none clickable" data-action="searchItem" data-type="predatorType" title="Pesquisar">Selecionar Predador</span>
-                {{/if}}
+                <button type="button" class="cs-header-choice{{#unless clan}} cs-header-choice-empty{{/unless}}"
+                    data-action="chooseHeaderItem" data-type="clan" {{#unless canChooseHeaderItem}}disabled{{/unless}}
+                    {{#if clan}}data-tooltip-html="{{clanDescription}}" data-tooltip-direction="DOWN"{{/if}}>
+                    {{#if clan}}{{clan.name}}{{else}}Selecionar Clã{{/if}}
+                </button>
+                &bull;
+                <button type="button" class="cs-header-choice{{#unless predator}} cs-header-choice-empty{{/unless}}"
+                    data-action="chooseHeaderItem" data-type="predatorType" {{#unless canChooseHeaderItem}}disabled{{/unless}}
+                    {{#if predator}}data-tooltip-html="{{predatorDescription}}" data-tooltip-direction="DOWN"{{/if}}>
+                    {{#if predator}}{{predator.name}}{{else}}Selecionar Predador{{/if}}
+                </button>
             </div>
         </div>
 
@@ -22,14 +23,16 @@
                 <div class="cs-bc-line">
                     <span class="cs-bc-label">{{localize "WOD5E.VTM.ClanBane"}}:</span>
                     {{#if baneName}}
-                        <span class="cs-bc-value" data-tooltip-html="{{bane}}" data-tooltip-direction="DOWN">{{baneName}}</span>
+                        <span class="cs-bc-value{{#unless bane}} cs-bc-none{{/unless}}" {{#if bane}}data-tooltip-html="{{bane}}" data-tooltip-direction="DOWN"{{/if}}>{{baneName}}</span>
                     {{else}}
-                        <span class="cs-bc-value cs-bc-none">Nenhuma</span>
+                        <span class="cs-bc-value cs-bc-none">{{#if clan}}Não cadastrada{{else}}Selecione um clã{{/if}}</span>
                     {{/if}}
                 </div>
                 <div class="cs-bc-line">
                     <span class="cs-bc-label">Compulsão:</span>
-                    <select class="cs-bc-select" name="flags.vampiro-a-mascara-v5-ptbr.compulsion" data-tooltip-html="{{compulsionText}}" data-tooltip-direction="DOWN">
+                    <select class="cs-bc-select" name="flags.vampiro-a-mascara-v5-ptbr.compulsion" aria-label="Compulsão"
+                        {{#unless canChooseHeaderItem}}disabled{{/unless}}
+                        {{#if compulsionText}}data-tooltip-html="{{compulsionText}}" data-tooltip-direction="DOWN"{{/if}}>
                         <option value="">Nenhuma</option>
                         {{#each compulsionOptions as |opt|}}
                             <option value="{{opt.value}}"{{#if opt.selected}} selected{{/if}}>{{opt.label}}</option>

@@ -14,8 +14,18 @@ import {
 } from './shared-context.js'
 // [vtm5e-ptbr] nome em português e texto do livro das Compulsões (mesma fonte da automação)
 import { COMPULSION_BY_NAME } from '../../automation/scripts/compulsion.js'
+import { checkRestrictions } from '../../chargen/scripts/grant-engine.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
+const HEADER_CHOICES = new Map([
+  ['clan', { pack: 'clans', title: 'Selecionar Clã' }],
+  ['predatorType', { pack: 'predatortypes', title: 'Selecionar Predador' }]
+])
+const CLAN_NAME_ALIASES = new Map([
+  ['malkavianos', 'malkavian'],
+  ['ministério', 'ministry'],
+  ['sangues-ralos', 'thin-blooded']
+])
 
 // Compulsion NAMES only (not the full corebook/Player's Guide flavor text) -
 // enough to populate a picker. Kept in sync by hand with the authoritative
@@ -51,6 +61,7 @@ const CLAN_COMPULSION_NAMES = {
 // this isn't a picker - it's just looked up from the actor's clan.
 const CLAN_BANE_NAMES = {
   caitiff: 'Nenhuma Perdição Comum',
+  'thin-blooded': 'Nenhuma Perdição Comum',
   brujah: 'Temperamento Violento',
   gangrel: 'Características Bestiais',
   malkavian: 'Perspectiva Fraturada',
@@ -132,6 +143,8 @@ const CLAN_DESCRIPTION_TEXT = {
 }
 
 export class CharacterSheetVampireActorSheet extends VampireActorSheet {
+  #choosingHeaderItem = false
+
   // wod5e's base sheet defaults to a cramped 1000x800 window (WoDActorBase.
   // DEFAULT_OPTIONS) - the reference screenshots were clearly captured from
   // a much wider window (~1500px+), which is a big part of why every dot
@@ -144,6 +157,9 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
     actions: {
       toggleExpandRow: onToggleExpandRow,
       addExperience: onSpendOrAddExperience,
+      chooseHeaderItem: function (_event, target) {
+        return this.#chooseHeaderItem(target.dataset.type)
+      },
       openChargenWizard: function () {
         game.modules.get(MODULE_ID).api.openChargenWizard(this.document)
       }
@@ -253,6 +269,7 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
 
     switch (partId) {
       case 'header':
+        context.canChooseHeaderItem = this.isEditable
         return this.prepareHeaderContext(context, this.actor)
       case 'stats':
         return decorateStatsTooltips(context)
@@ -269,6 +286,59 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
     return context
   }
 
+  async #chooseHeaderItem (type) {
+    const choice = HEADER_CHOICES.get(type)
+    if (!choice || !this.isEditable || this.#choosingHeaderItem) return
+
+    const actor = this.actor
+    const existingItem = actor.items.find(item => item.type === type)
+    if (existingItem) return existingItem.sheet.render(true)
+
+    this.#choosingHeaderItem = true
+    try {
+      const pack = game.packs.get(`${MODULE_ID}.${choice.pack}`)
+      const items = (await pack?.getDocuments() ?? []).filter(item => item.type === type)
+      if (!items.length) {
+        ui.notifications.warn(`${choice.title}: nenhum item disponível no compêndio.`)
+        return
+      }
+
+      items.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'))
+      const options = items.map(item => new Option(item.name, item.id).outerHTML).join('')
+      const selectedId = await foundry.applications.api.DialogV2.wait({
+        window: { title: choice.title },
+        content: `<select name="itemId" aria-label="${choice.title}">
+          <option value="" selected disabled>Escolha uma opção</option>${options}
+        </select>`,
+        modal: true,
+        rejectClose: false,
+        buttons: [
+          { action: 'select', label: 'Selecionar', default: true, callback: (_event, button) => button.form.elements.itemId.value },
+          { action: 'cancel', label: 'Cancelar', callback: () => null }
+        ]
+      })
+
+      const item = items.find(item => item.id === selectedId)
+      if (!item || !this.isEditable || actor.items.some(item => item.type === type)) return
+
+      const failures = checkRestrictions(actor, item.getFlag(MODULE_ID, 'restrictions'))
+      if (failures.length) {
+        ui.notifications.warn(`Não é possível escolher ${item.name}: ${failures.join(' ')}`)
+        return
+      }
+
+      const data = item.toObject()
+      delete data._id
+      delete data.ownership
+      await actor.createEmbeddedDocuments('Item', [data])
+    } catch (error) {
+      console.error(`${MODULE_ID} | ${choice.title}`, error)
+      ui.notifications.error(`${choice.title}: não foi possível concluir a seleção.`)
+    } finally {
+      this.#choosingHeaderItem = false
+    }
+  }
+
   async prepareHeaderContext (context, actor) {
     const actorData = actor.system
 
@@ -279,26 +349,28 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
     context.resonance = resonanceFilter[0]
     context.resonanceDescription = context.resonance?.system?.description || ''
     context.predator = predatorFilter[0]
-    context.baneName = this.getBaneName(context.clan)
     context.bane = this.getBaneText(context.clan)
+    context.baneName = this.getBaneName(context.clan) || (context.bane ? 'Ver descrição' : '')
     context.clanDescription = this.getClanDescription(context.clan)
     context.predatorDescription = context.predator?.system?.description || ''
-    context.compulsion = actor.getFlag(MODULE_ID, 'compulsion') || ''
+    const activeCompulsion = actor.getFlag(MODULE_ID, 'compulsion')
+    const compulsionNames = this.getCompulsionOptions(context.clan)
+    const compulsion = Object.hasOwn(COMPULSION_BY_NAME, activeCompulsion) ? activeCompulsion : ''
+    if (compulsion && !compulsionNames.includes(compulsion)) compulsionNames.push(compulsion)
     // [vtm5e-ptbr] o valor gravado continua em inglês; a tela mostra o nome
     // em português e o texto do livro (COMPULSION_BY_NAME, compulsion.js).
-    context.compulsionOptions = this.getCompulsionOptions(context.clan).map((value) => ({
+    context.compulsionOptions = compulsionNames.map((value) => ({
       value,
-      label: COMPULSION_BY_NAME[value]?.label ?? value,
-      selected: value === context.compulsion
+      label: COMPULSION_BY_NAME[value].label,
+      selected: value === compulsion
     }))
-    context.compulsionText = COMPULSION_BY_NAME[context.compulsion]?.text ?? ''
+    context.compulsionText = COMPULSION_BY_NAME[compulsion]?.text ?? ''
 
     return context
   }
 
   getCompulsionOptions (clan) {
-    const clanName = enName(clan)
-    const clanCompulsion = clanName ? CLAN_COMPULSION_NAMES[clanName.toLowerCase()] : null
+    const clanCompulsion = getClanEntry(CLAN_COMPULSION_NAMES, clan)
     return [...GENERIC_COMPULSION_NAMES, ...(clanCompulsion ? [clanCompulsion] : [])]
   }
 
@@ -306,21 +378,18 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
   // offers a choice) - looked up rather than stored as a flag, so it can
   // never drift out of sync with the actor's actual clan.
   getBaneName (clan) {
-    const clanName = enName(clan)
-    return (clanName ? CLAN_BANE_NAMES[clanName.toLowerCase()] : null) || ''
+    return getClanEntry(CLAN_BANE_NAMES, clan) ?? ''
   }
 
   getBaneText (clan) {
-    const clanName = enName(clan)
-    const text = clanName ? CLAN_BANE_TEXT[clanName.toLowerCase()] : null
+    const text = getClanEntry(CLAN_BANE_TEXT, clan) ?? clan?.system?.bane?.trim()
     if (!text) return ''
     // [vtm5e-ptbr] textos do livro já vêm em <p>
     return text.startsWith('<p>') ? text : `<p>${text}</p>`
   }
 
   getClanDescription (clan) {
-    const clanName = enName(clan)
-    const text = clanName ? CLAN_DESCRIPTION_TEXT[clanName.toLowerCase()] : null
+    const text = getClanEntry(CLAN_DESCRIPTION_TEXT, clan)
     return text ? `<p>${text}</p>` : ''
   }
 
@@ -349,7 +418,13 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
   }
 }
 
-// [vtm5e-ptbr] nome original em ingles de um item traduzido pelo Babele (ou o nome atual, se nao houver)
-function enName (doc) {
-  return doc?.flags?.babele?.originalName ?? doc?.originalName ?? doc?.name
+function getClanKey (clan) {
+  const name = clan?.flags?.babele?.originalName || clan?.originalName || clan?.name
+  const key = name?.trim().toLocaleLowerCase('pt-BR')
+  return CLAN_NAME_ALIASES.get(key) ?? key
+}
+
+function getClanEntry (entries, clan) {
+  const key = getClanKey(clan)
+  return Object.hasOwn(entries, key) ? entries[key] : undefined
 }
