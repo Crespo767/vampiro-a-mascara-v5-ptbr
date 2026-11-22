@@ -5,12 +5,15 @@ import { CharacterSheetHunterActorSheet } from './hunter-actor-sheet.js'
 import { CharacterSheetWerewolfActorSheet } from './werewolf-actor-sheet.js'
 import { onFeed, registerResonanceExpiry } from './feed.js'
 import { bindTraitDecrement } from './shared-context.js'
+import { CONDITION_ROWS_TEMPLATE } from './condition-picker.js'
+import { registerLocalizedSheetRefresh } from './sheet-refresh.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
 Hooks.once('init', () => {
   console.log(`${MODULE_ID} | Initializing`)
   registerResonanceExpiry()
+  registerLocalizedSheetRefresh()
 
   foundry.applications.apps.DocumentSheetConfig.registerSheet(Actor, 'wod5e', CharacterSheetVampireActorSheet, {
     types: ['vampire'],
@@ -49,7 +52,8 @@ Hooks.once('init', () => {
   // hand or the include silently fails to resolve. Same reason wod5e's own
   // system preloads every one of its sub-partials in scripts/templates.js.
   foundry.applications.handlebars.loadTemplates([
-    `modules/${MODULE_ID}/charactersheet/templates/renown.hbs`
+    `modules/${MODULE_ID}/charactersheet/templates/renown.hbs`,
+    CONDITION_ROWS_TEMPLATE
   ])
 
   // Public API, same pattern vtm5e-automation uses to expose its own

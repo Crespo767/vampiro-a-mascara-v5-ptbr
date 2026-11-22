@@ -12,7 +12,8 @@ import {
   onToggleExpandRow,
   onSpendOrAddExperience
 } from './shared-context.js'
-import { onSearchConditions } from './condition-picker.js'
+import { onCreateCondition, onSearchConditions, withConditionDrop } from './condition-picker.js'
+import { withLocalizedSheetRefresh } from './sheet-refresh.js'
 import { onRouseCheck, onTestFrenzy } from './vampire-quick-rolls.js'
 import { onEditResonance } from './feed.js'
 // [vtm5e-ptbr] nome em português e texto do livro das Compulsões (mesma fonte da automação)
@@ -113,7 +114,7 @@ const CLAN_DESCRIPTION_TEXT = {
   tzimisce: 'Alcunhas: Dragões, O Velho Clã, Voivodes. Disciplinas do Clã: Animalismo, Dominação, Proteanismo. Uma força intimidadora em qualquer grupo social, em boa parte pela postura: um Tzimisce considera uma coterie, seis quarteirões ou uma propriedade inteira simplesmente seus. <em>(tradução não oficial)</em>'
 }
 
-export class CharacterSheetVampireActorSheet extends VampireActorSheet {
+export class CharacterSheetVampireActorSheet extends withLocalizedSheetRefresh(withConditionDrop(VampireActorSheet)) {
   #choosingHeaderItem = false
   #headerTrackUpdate = Promise.resolve()
 
@@ -128,6 +129,7 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
     position: { width: 1400, height: 900 },
     actions: {
       searchConditions: onSearchConditions,
+      createCondition: onCreateCondition,
       toggleExpandRow: onToggleExpandRow,
       addExperience: onSpendOrAddExperience,
       rouseCheck: onRouseCheck,

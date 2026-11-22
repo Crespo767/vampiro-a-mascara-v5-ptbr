@@ -1,10 +1,94 @@
 import { getImpairmentKey } from '../../automation/scripts/impairment-conditions.js'
+import { formatDataItemId } from '/systems/wod5e/system/actor/scripts/format-data-item-id.js'
+
+const CONDITIONS_PACK = 'wod5e.conditions'
+const CONDITION_LIST_SELECTOR = '[data-condition-rows]'
+export const CONDITION_ROWS_TEMPLATE = 'modules/vampiro-a-mascara-v5-ptbr/charactersheet/templates/condition-rows.hbs'
+
+export async function refreshConditionRows (sheet) {
+  const list = sheet.element?.querySelector(CONDITION_LIST_SELECTOR)
+  if (!list) return
+  const conditions = sheet.actor.items
+    .filter(item => item.type === 'condition')
+    .sort((a, b) => a.sort - b.sort)
+    .map(item => ({ id: item.id, uuid: item.uuid, name: item.name, img: item.img, system: { suppressed: item.system.suppressed } }))
+  const html = await foundry.applications.handlebars.renderTemplate(CONDITION_ROWS_TEMPLATE, { conditions })
+  if (!list.isConnected) return
+
+  list.innerHTML = html
+  if (!sheet.isEditable) return
+  const dragStart = sheet._onDragStart.bind(sheet)
+  for (const row of list.querySelectorAll('[data-drag]')) {
+    row.draggable = true
+    row.addEventListener('dragstart', dragStart)
+  }
+}
+
+async function createCondition (sheet, data) {
+  if (!sheet.isEditable) return
+  await sheet.actor.createEmbeddedDocuments('Item', [data])
+}
+
+async function importCondition (sheet, condition) {
+  const impairment = getImpairmentKey(condition)
+  if (impairment && sheet.actor.items.some(item => getImpairmentKey(item) === impairment)) {
+    ui.notifications.warn('O personagem já tem esta condição de debilitação.')
+    return
+  }
+
+  const data = condition.toObject()
+  delete data._id
+  delete data.ownership
+  await createCondition(sheet, data)
+}
+
+export async function onCreateCondition (event, target) {
+  event.preventDefault()
+  if (!this.isEditable || target.dataset.creating) return
+
+  target.dataset.creating = 'true'
+  try {
+    const name = game.i18n.format('WOD5E.NewString', { string: game.i18n.localize('TYPES.Item.condition') })
+    await createCondition(this, { name, type: 'condition', flags: { wod5e: { dataItemId: `condition-${formatDataItemId(name)}` } } })
+  } catch (error) {
+    console.error('Falha ao criar Condição.', error)
+    ui.notifications.error('Não foi possível criar a Condição.')
+  } finally {
+    delete target.dataset.creating
+  }
+}
+
+export function withConditionDrop (BaseSheet) {
+  return class ConditionDropSheet extends BaseSheet {
+    async _onDrop (event) {
+      const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event)
+      if (!this.isEditable || data.type !== 'Item') return super._onDrop(event)
+
+      const item = await Item.implementation.fromDropData(data)
+      if (item?.type !== 'condition' || item.parent?.uuid === this.actor.uuid) return super._onDrop(event)
+      try {
+        await importCondition(this, item)
+      } catch (error) {
+        console.error('Falha ao importar Condição.', error)
+        ui.notifications.error('Não foi possível adicionar a Condição.')
+      }
+    }
+  }
+}
 
 export async function onSearchConditions (_event, target) {
   if (!this.isEditable || target.disabled) return
 
   target.disabled = true
   try {
+    const nativePack = game.packs.get(CONDITIONS_PACK)
+    if (nativePack?.visible) {
+      const PackApplication = nativePack.applicationClass
+      const app = nativePack.apps.find(candidate => candidate instanceof PackApplication) ?? new PackApplication({ collection: nativePack })
+      await app.render({ force: true })
+      return
+    }
+
     const packs = Array.from(game.packs.values()).filter(pack => pack.visible && pack.documentName === 'Item')
     const results = await Promise.allSettled(packs.map(async pack => {
       const index = await pack.getIndex({ fields: ['type'] })
@@ -48,17 +132,7 @@ export async function onSearchConditions (_event, target) {
     }
     if (!this.isEditable) return
 
-    const actor = this.actor
-    const impairment = getImpairmentKey(condition)
-    if (impairment && actor.items.some(item => getImpairmentKey(item) === impairment)) {
-      ui.notifications.warn('O personagem já tem esta condição de debilitação.')
-      return
-    }
-
-    const data = condition.toObject()
-    delete data._id
-    delete data.ownership
-    await actor.createEmbeddedDocuments('Item', [data])
+    await importCondition(this, condition)
   } catch (error) {
     console.error('vampiro-a-mascara-v5-ptbr | Falha ao importar Condição', error)
     ui.notifications.error('Não foi possível adicionar a Condição do compêndio.')

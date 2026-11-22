@@ -14,11 +14,12 @@ import {
   onToggleExpandRow,
   onSpendOrAddExperience
 } from './shared-context.js'
-import { onSearchConditions } from './condition-picker.js'
+import { onCreateCondition, onSearchConditions, withConditionDrop } from './condition-picker.js'
+import { withLocalizedSheetRefresh } from './sheet-refresh.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
-export class CharacterSheetGhoulActorSheet extends GhoulActorSheet {
+export class CharacterSheetGhoulActorSheet extends withLocalizedSheetRefresh(withConditionDrop(GhoulActorSheet)) {
   static DEFAULT_OPTIONS = {
     // wod5e's own GhoulActorSheet only tags itself 'vampire' (no separate
     // 'ghoul' class) - it never needed to distinguish itself from a true
@@ -29,6 +30,7 @@ export class CharacterSheetGhoulActorSheet extends GhoulActorSheet {
     position: { width: 1400, height: 900 },
     actions: {
       searchConditions: onSearchConditions,
+      createCondition: onCreateCondition,
       toggleExpandRow: onToggleExpandRow,
       addExperience: onSpendOrAddExperience
     }

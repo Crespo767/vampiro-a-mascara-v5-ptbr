@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.7.8 — Compêndio de Condições e atualização localizada da ficha
+
+- **Compêndio de Condições** — A lupa abre a janela nativa de Condições do wod5e. Arraste um item do compêndio para a ficha ou use o botão + para criar uma condição em branco.
+- **Atualização da ficha** — Adicionar, editar ou remover uma condição atualiza sua lista. Quando a condição afeta outra parte da ficha, essa parte também é atualizada.
+- **Outros elementos** — Mudanças em itens como poderes, Vantagens e Equipamento atualizam apenas as respectivas seções, preservando as outras abas.
+
 ## 1.7.7 — Ajustes nos cliques das trilhas de Vampiro
 
 - **Vitalidade e Força de Vontade** — Clique direito em uma caixa vermelha remove uma caixa da trilha. Em uma caixa com dano, o clique direito cura a marca.
