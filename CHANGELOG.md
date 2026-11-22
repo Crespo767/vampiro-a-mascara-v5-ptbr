@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.7.11 — Pontos de Qualidades, Defeitos e Antecedentes
+
+- Na Criação de Personagem, os itens de custo fixo exibem bolinhas que marcam ou desmarcam o custo inteiro com um clique. Itens de nível variável continuam permitindo escolher o nível.
+- A lista de Adquiridos também exibe os pontos como bolinhas preenchidas e distingue os pontos gratuitos, que permanecem bloqueados.
+
 ## 1.7.10 — Criação de Personagem
 
 - **Atributos e Habilidades** — Começam zerados em fichas novas para permitir a distribuição dos pontos. O assistente também corrige rascunhos antigos com pontos pré-marcados fora dos limites de distribuição.

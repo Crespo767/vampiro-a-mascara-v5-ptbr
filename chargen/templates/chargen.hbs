@@ -222,7 +222,13 @@
           {{#each meritsFlaws.owned}}
             <li class="{{#if this.isFlaw}}flaw{{/if}}" title="{{this.description}}">
               <span class="vtm5e-chargen-mf-owned-name">{{this.name}}</span>
-              <span class="vtm5e-chargen-mf-owned-dots">{{this.dotsDisplay}}</span>
+              {{#if this.dots.length}}
+                <span class="vtm5e-chargen-dots vtm5e-chargen-mf-owned-dots" role="img" aria-label="Pontos: {{this.value}}">
+                  {{#each this.dots}}
+                    <span class="vtm5e-chargen-dot filled{{#if this.locked}} locked{{/if}}" aria-hidden="true"></span>
+                  {{/each}}
+                </span>
+              {{/if}}
               {{#if this.isGranted}}<span class="vtm5e-chargen-mf-owned-tag">gratuito</span>{{/if}}
               {{#if this.removable}}
                 {{#if this.compendiumId}}
@@ -256,9 +262,10 @@
                       {{#if this.unavailable}}<span class="vtm5e-chargen-mf-unavailable-tag">indisponível</span>{{/if}}
                     </span>
                     {{#if this.fixedCost}}
-                      <button type="button" class="vtm5e-chargen-mf-fixed-btn {{#if this.owned}}taken{{/if}} {{#if this.lockedFixed}}locked{{/if}}" data-action="adjustMeritFlaw" data-mf-id="{{this.id}}" data-n="{{this.fixedCost}}" {{#if this.lockedFixed}}disabled{{/if}} {{#if this.unavailable}}disabled{{/if}} title="{{#if this.lockedFixed}}Concedido gratuitamente; não pode ser alterado aqui{{else if this.unavailable}}Indisponível: {{this.unavailableReason}}{{else}}Custo em pontos: {{this.fixedCost}}{{/if}}">
-                        <span class="vtm5e-chargen-mf-fixed-btn-dots">{{this.fixedCostDots}}</span>
-                        <span class="vtm5e-chargen-mf-fixed-btn-num">({{this.fixedCost}})</span>
+                      <button type="button" class="vtm5e-chargen-dots vtm5e-chargen-mf-fixed-btn" data-action="adjustMeritFlaw" data-mf-id="{{this.id}}" data-n="{{this.fixedCost}}" aria-label="{{this.name}} ({{this.fixedCost}})" aria-pressed="{{#if this.fixedSelected}}true{{else}}false{{/if}}" {{#if this.lockedFixed}}disabled{{else if this.unavailable}}disabled{{/if}} title="{{#if this.lockedFixed}}Concedido gratuitamente; não pode ser alterado aqui{{else if this.unavailable}}Indisponível: {{this.unavailableReason}}{{else}}Custo em pontos: {{this.fixedCost}}{{/if}}">
+                        {{#each this.dots}}
+                          <span class="vtm5e-chargen-dot{{#if this.filled}} filled{{/if}}{{#if this.locked}} locked{{/if}}" aria-hidden="true"></span>
+                        {{/each}}
                       </button>
                     {{else}}
                       <span class="vtm5e-chargen-dots">

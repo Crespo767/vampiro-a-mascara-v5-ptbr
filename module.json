@@ -2,7 +2,7 @@
   "id": "vampiro-a-mascara-v5-ptbr",
   "title": "Vampiro a Máscara v5 PT-BR",
   "description": "Compêndios de Vampiro: A Máscara 5ª Edição em português — Manual Básico e Guia do Jogador (Clãs, Disciplinas com Oblívio, Cerimônias, Rituais e Fórmulas, Tipos de Predador, Potência de Sangue, Vantagens e Defeitos, Folhas de História, Coterie) — e ferramentas para o sistema wod5e: criação de personagem, loja de XP, automação, ficha de personagem, cartões de rolagem e coterie. Baseado nos módulos VtM5e Tools (Harbl) e Vampire: The Masquerade 5e Compendium (Clownf1sh).",
-  "version": "1.7.10",
+  "version": "1.7.11",
   "compatibility": {
     "minimum": "13",
     "verified": "13.350"
@@ -21,7 +21,7 @@
   ],
   "url": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr",
   "manifest": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr/releases/latest/download/module.json",
-  "download": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr/releases/download/v1.7.10/module.zip",
+  "download": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr/releases/download/v1.7.11/module.zip",
   "readme": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr#readme",
   "bugs": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr/issues",
   "changelog": "https://github.com/Crespo767/vampiro-a-mascara-v5-ptbr/blob/main/CHANGELOG.md",

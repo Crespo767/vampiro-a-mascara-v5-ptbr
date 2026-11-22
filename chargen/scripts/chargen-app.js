@@ -637,7 +637,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
 
       // Most compendium entries have a fixed canonical rating baked into
       // system.points (e.g. Iron Will is always 2 dots, never 1 or 3) -
-      // those render as a single priced toggle, not a free 1-5 slider.
+      // their dots act as a single toggle at that rating.
       // A handful (mostly Backgrounds, whose description spells out what
       // each dot level means) are stored with points:0 to mean "player
       // picks the level" - those keep the slider.
@@ -678,20 +678,20 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
         value,
         grantedPoints,
         fixedCost,
-        fixedCostDots: fixedCost ? '•'.repeat(fixedCost) : null,
-        owned: value > 0,
+        fixedSelected: !!fixedCost && value >= fixedCost,
         lockedFixed: !!fixedCost && grantedPoints >= fixedCost,
         unavailable: unavailableReasons.length > 0,
         unavailableReason: unavailableReasons.join(' '),
-        dots: fixedCost
-          ? null
-          : [1, 2, 3, 4, 5].map(n => ({
-              n,
-              filled: n <= value,
-              locked: n <= grantedPoints,
-              capped: ratingCap != null && n > ratingCap && n > grantedPoints,
-              capReason: ratingCapReason
-            }))
+        dots: Array.from({ length: fixedCost ?? 5 }, (_, index) => {
+          const n = index + 1
+          return {
+            n,
+            filled: n <= value,
+            locked: n <= grantedPoints,
+            capped: ratingCap != null && n > ratingCap && n > grantedPoints,
+            capReason: ratingCapReason
+          }
+        })
       })
     }
 
@@ -707,7 +707,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
         return {
           name: i.name,
           value,
-          dotsDisplay: '•'.repeat(Math.max(value, 0)),
+          dots: Array.from({ length: value }, (_, index) => ({ locked: index < grantedPoints })),
           isGranted: grantedPoints > 0,
           isFlaw: featuretype === 'flaw',
           description: plainDesc.length > 220 ? plainDesc.slice(0, 217) + '…' : plainDesc,
@@ -1231,10 +1231,8 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     const fixedCost = doc.system.points || null
     let nextValue
     if (fixedCost) {
-      // Fixed-rating item (single canonical level, e.g. Iron Will is
-      // always 2) - the template renders one priced button, not a 1-5
-      // slider, so a click is a plain on/off toggle at that exact cost.
-      nextValue = currentValue >= fixedCost ? 0 : fixedCost
+      // Clicking the dots toggles the fixed rating. The remove button sends 0.
+      nextValue = clickedN === 0 || currentValue >= fixedCost ? 0 : fixedCost
     } else {
       // Same click convention as adjustAttribute/adjustSkill: clicking the
       // current top dot reduces by one, clicking any other dot sets to it.

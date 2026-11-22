@@ -545,9 +545,9 @@
   color: #ff8a8a;
 }
 
-.vtm5e-chargen-mf-owned-dots {
-  color: var(--vtm5e-cs-red-bright);
-  letter-spacing: 1px;
+.vtm5e-chargen-mf-owned-dots .vtm5e-chargen-dot {
+  cursor: default;
+  box-shadow: none;
 }
 
 .vtm5e-chargen-mf-owned-tag {
@@ -579,42 +579,26 @@
 }
 
 .vtm5e-chargen-mf-fixed-btn {
-  display: flex;
   align-items: center;
-  gap: 6px;
-  background: var(--vtm5e-cs-bg);
-  border: 1px solid var(--vtm5e-cs-red-mid);
-  color: var(--vtm5e-cs-text-dim);
-  border-radius: 3px;
-  padding: 3px 10px;
+  flex: 0 0 auto;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
   cursor: pointer;
-  font-size: 12px;
 }
 
-.vtm5e-chargen-mf-fixed-btn:hover {
-  border-color: var(--vtm5e-cs-red-bright);
-  color: var(--vtm5e-cs-text);
+.vtm5e-chargen-mf-fixed-btn:hover:not(:disabled) {
+  background: transparent;
+  box-shadow: none;
 }
 
-.vtm5e-chargen-mf-fixed-btn .vtm5e-chargen-mf-fixed-btn-dots {
-  color: var(--vtm5e-cs-red-bright);
-  letter-spacing: 1px;
-}
-
-.vtm5e-chargen-mf-fixed-btn.taken {
-  background: var(--vtm5e-cs-red-dark);
-  border-color: var(--vtm5e-cs-red-bright);
-  color: var(--vtm5e-cs-text);
-  box-shadow: 0 0 6px rgba(224, 39, 44, 0.5);
-}
-
-.vtm5e-chargen-mf-fixed-btn.locked {
+.vtm5e-chargen-mf-fixed-btn:disabled .vtm5e-chargen-dot {
   cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.vtm5e-chargen-mf-fixed-btn.locked .vtm5e-chargen-mf-fixed-btn-dots {
-  color: var(--vtm5e-cs-text-dim);
+  box-shadow: none;
 }
 
 #vtm5e-chargen-mf-search {
