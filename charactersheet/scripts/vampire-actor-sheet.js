@@ -12,48 +12,18 @@ import {
   onToggleExpandRow,
   onSpendOrAddExperience
 } from './shared-context.js'
+import { onRouseCheck, onTestFrenzy } from './vampire-quick-rolls.js'
+import { onEditResonance } from './feed.js'
 // [vtm5e-ptbr] nome em português e texto do livro das Compulsões (mesma fonte da automação)
-import { COMPULSION_BY_NAME } from '../../automation/scripts/compulsion.js'
+import { COMPULSION_BY_NAME, getCompulsionsForClan } from '../../automation/scripts/compulsion.js'
 import { checkRestrictions } from '../../chargen/scripts/grant-engine.js'
+import { getClanKey } from '../../clans/scripts/clan-key.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 const HEADER_CHOICES = new Map([
   ['clan', { pack: 'clans', title: 'Selecionar Clã' }],
   ['predatorType', { pack: 'predatortypes', title: 'Selecionar Predador' }]
 ])
-const CLAN_NAME_ALIASES = new Map([
-  ['malkavianos', 'malkavian'],
-  ['ministério', 'ministry'],
-  ['sangues-ralos', 'thin-blooded']
-])
-
-// Compulsion NAMES only (not the full corebook/Player's Guide flavor text) -
-// enough to populate a picker. Kept in sync by hand with the authoritative
-// copy (names + full text) in vtm5e-automation/scripts/compulsion.js's
-// GENERIC_COMPULSIONS/CLAN_COMPULSIONS; duplicated here rather than
-// cross-imported so this sheet still works if vtm5e-automation is ever
-// disabled.
-const GENERIC_COMPULSION_NAMES = ['Hunger', 'Dominance', 'Harm', 'Paranoia']
-const CLAN_COMPULSION_NAMES = {
-  brujah: 'Rebellion',
-  gangrel: 'Feral Impulses',
-  malkavian: 'Delusion',
-  nosferatu: 'Cryptophilia',
-  toreador: 'Obsession',
-  tremere: 'Perfectionism',
-  ventrue: 'Arrogance',
-  'banu haqim': 'Judgment',
-  hecata: 'Morbidity',
-  lasombra: 'Ruthlessness',
-  ministry: 'Transgression',
-  ravnos: 'Tempting Fate',
-  salubri: 'Affective Empathy',
-  tzimisce: 'Covetousness'
-}
-
-// [vtm5e-ptbr] Os textos das Compulsões vêm de COMPULSION_BY_NAME
-// (automation/scripts/compulsion.js), com a redação do livro.
-
 // Official V5 Bane titles per clan, transcribed from the "Clan Sheet"
 // quick-reference spreads in the Player's Guide (pp. 11-13: each clan's
 // BANE/COMPULSION line), same short-title convention as Compulsion names
@@ -157,6 +127,12 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
     actions: {
       toggleExpandRow: onToggleExpandRow,
       addExperience: onSpendOrAddExperience,
+      rouseCheck: onRouseCheck,
+      resistFrenzy: onTestFrenzy,
+      editResonance: onEditResonance,
+      editHumanity: function (_event, target) {
+        return this.#editHumanity(target)
+      },
       chooseHeaderItem: function (_event, target) {
         return this.#chooseHeaderItem(target.dataset.type)
       },
@@ -269,7 +245,7 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
 
     switch (partId) {
       case 'header':
-        context.canChooseHeaderItem = this.isEditable
+        context.canEditHeader = this.isEditable
         return this.prepareHeaderContext(context, this.actor)
       case 'stats':
         return decorateStatsTooltips(context)
@@ -284,6 +260,39 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
     }
 
     return context
+  }
+
+  async #editHumanity (target) {
+    if (!this.isEditable || target.disabled) return
+    const actor = this.actor
+    const { value, stains } = actor.system.humanity
+    target.disabled = true
+    try {
+      const result = await foundry.applications.api.DialogV2.prompt({
+        window: { title: 'Humanidade e Máculas' },
+        content: `<div class="form-group"><label for="humanityValue">Humanidade</label>
+          <input id="humanityValue" type="number" name="humanity" min="0" max="10" value="${value}"></div>
+          <div class="form-group"><label for="humanityStains">Máculas</label>
+          <input id="humanityStains" type="number" name="stains" min="0" max="10" value="${stains}"></div>`,
+        rejectClose: false,
+        ok: {
+          label: 'Salvar',
+          callback: (_event, button) => ({
+            value: button.form.elements.humanity.valueAsNumber,
+            stains: button.form.elements.stains.valueAsNumber
+          })
+        }
+      })
+      if (!result || !this.isEditable) return
+      if (!Number.isInteger(result.value) || !Number.isInteger(result.stains) ||
+        result.value < 0 || result.stains < 0 || result.value + result.stains > 10) {
+        ui.notifications.warn('Preencha Humanidade e Máculas com números inteiros que juntos ocupem até 10 caixas.')
+        return
+      }
+      await actor.update({ 'system.humanity.value': result.value, 'system.humanity.stains': result.stains })
+    } finally {
+      target.disabled = false
+    }
   }
 
   async #chooseHeaderItem (type) {
@@ -309,7 +318,7 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
         window: { title: choice.title },
         content: `<select name="itemId" aria-label="${choice.title}">
           <option value="" selected disabled>Escolha uma opção</option>${options}
-        </select>`,
+        </select><p>Para aplicar os benefícios de criação, use o assistente Criação de Personagem no menu da ficha.</p>`,
         modal: true,
         rejectClose: false,
         buttons: [
@@ -325,6 +334,15 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
       if (failures.length) {
         ui.notifications.warn(`Não é possível escolher ${item.name}: ${failures.join(' ')}`)
         return
+      }
+
+      if (type === 'clan') {
+        const predator = actor.items.find(item => item.type === 'predatorType')
+        const conflicts = checkRestrictions(actor, predator?.getFlag(MODULE_ID, 'restrictions'), item)
+        if (conflicts.length) {
+          ui.notifications.warn(`${item.name} é incompatível com o Tipo de Predador ${predator.name}. ${conflicts.join(' ')} Use Criação de Personagem para alterar a escolha.`)
+          return
+        }
       }
 
       const data = item.toObject()
@@ -354,7 +372,7 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
     context.clanDescription = this.getClanDescription(context.clan)
     context.predatorDescription = context.predator?.system?.description || ''
     const activeCompulsion = actor.getFlag(MODULE_ID, 'compulsion')
-    const compulsionNames = this.getCompulsionOptions(context.clan)
+    const compulsionNames = getCompulsionsForClan(context.clan).map(compulsion => compulsion.name)
     const compulsion = Object.hasOwn(COMPULSION_BY_NAME, activeCompulsion) ? activeCompulsion : ''
     if (compulsion && !compulsionNames.includes(compulsion)) compulsionNames.push(compulsion)
     // [vtm5e-ptbr] o valor gravado continua em inglês; a tela mostra o nome
@@ -367,11 +385,6 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
     context.compulsionText = COMPULSION_BY_NAME[compulsion]?.text ?? ''
 
     return context
-  }
-
-  getCompulsionOptions (clan) {
-    const clanCompulsion = getClanEntry(CLAN_COMPULSION_NAMES, clan)
-    return [...GENERIC_COMPULSION_NAMES, ...(clanCompulsion ? [clanCompulsion] : [])]
   }
 
   // Bane has exactly one canonical name per clan (unlike Compulsion, which
@@ -416,12 +429,6 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
 
     return context
   }
-}
-
-function getClanKey (clan) {
-  const name = clan?.flags?.babele?.originalName || clan?.originalName || clan?.name
-  const key = name?.trim().toLocaleLowerCase('pt-BR')
-  return CLAN_NAME_ALIASES.get(key) ?? key
 }
 
 function getClanEntry (entries, clan) {

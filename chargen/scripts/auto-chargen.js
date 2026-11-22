@@ -1,5 +1,6 @@
 import { ChargenApp, ATTRIBUTE_GROUPS, SKILL_GROUPS, ATTRIBUTE_RATING_QUOTA, SKILL_DISTRIBUTIONS, GENERATION_INFO } from './chargen-app.js'
 import { withAutoPicker, applyTrackedGrants, checkRestrictions, checkConflicts, getRatingCap, clanCreationGrants, chargenPurchaseBlock, featureCategory, REQUIRED_SPECIALTY_SKILLS, applyFreeSpecialties, applyDerivedTrackers, extraAdvantagePoints, displayLabel } from './grant-engine.js'
+import { getClanKey } from '../../clans/scripts/clan-key.js'
 
 const ID = 'vampiro-a-mascara-v5-ptbr'
 const NAMES = ['Alex', 'Ariel', 'Cris', 'Dani', 'Jo', 'Lu', 'Neri', 'Sam']
@@ -38,7 +39,6 @@ export function randomRatings (groups, quota, pick) {
   return result
 }
 
-const originalName = doc => doc?.flags?.babele?.originalName ?? doc?.originalName ?? doc?.name
 const flags = doc => doc.flags?.[ID] ?? {}
 const allowed = (actor, doc) => !checkRestrictions(actor, flags(doc).restrictions ?? []).length && !checkConflicts(actor, doc.name, flags(doc).conflictsWith ?? []).length
 const copy = doc => { const data = doc.toObject(); delete data._id; delete data.ownership; return data }
@@ -109,7 +109,7 @@ export async function autoCreateCharacter ({ seed, name } = {}) {
     await withAutoPicker(actor, pick, async () => {
       const clan = pick(clans)
       await addPick(actor, clan, 'clan', log)
-      const thin = originalName(clan) === 'Thin-Blooded'
+      const thin = getClanKey(clan) === 'thin-blooded'
       const generation = pick(thin ? ['14th', '15th', '16th'] : ['12th', '13th'])
       const attrs = randomRatings(ATTRIBUTE_GROUPS, ATTRIBUTE_RATING_QUOTA, pick)
       const distribution = pick(Object.keys(SKILL_DISTRIBUTIONS))

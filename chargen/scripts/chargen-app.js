@@ -1,4 +1,5 @@
 import { applyTrackedGrants, clearTrackedGrants, checkRestrictions, checkConflicts, getRatingCap, clanCreationGrants, chargenPurchaseBlock, featureCategory, REQUIRED_SPECIALTY_SKILLS, applyFreeSpecialties, applyDerivedTrackers, extraAdvantagePoints, baseSkillValue } from './grant-engine.js'
+import { getClanKey } from '../../clans/scripts/clan-key.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
@@ -579,8 +580,8 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       }
       const predatorEntries = this.actor.flags?.[MODULE_ID]?.grantLedger?.predator?.entries ?? []
       if (predatorEntries.some(e => e.type === 'skillDot' && predatorEntries.some(o => o.type === 'specialty' && o.skill === e.skill))) failures.push('Tipo de Predador: concedeu ponto e especialização na mesma Habilidade.')
-      if (enName(clan) === 'Thin-Blooded' && Object.values(this.actor.system.disciplines ?? {}).some(d => d.value > 0)) failures.push('Clã: Sangue-Ralo recebeu Disciplina intrínseca.')
-      if (enName(clan) === 'Caitiff' && !clanEntries.some(e => e.type === 'meritFlaw' && e.name === 'Suspect' && e.amount === 1)) failures.push('Clã: falta o Defeito Suspeito concedido.')
+      if (getClanKey(clan) === 'thin-blooded' && Object.values(this.actor.system.disciplines ?? {}).some(d => d.value > 0)) failures.push('Clã: Sangue-Ralo recebeu Disciplina intrínseca.')
+      if (getClanKey(clan) === 'caitiff' && !clanEntries.some(e => e.type === 'meritFlaw' && e.name === 'Suspect' && e.amount === 1)) failures.push('Clã: falta o Defeito Suspeito concedido.')
       return failures
     } finally {
       this.stepIndex = previous
@@ -725,7 +726,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
   // any non-Thin-Blooded clan so the template can skip the section
   // entirely.
   #buildThinBloodView (currentClan) {
-    if (enName(currentClan) !== 'Thin-Blooded') return null
+    if (getClanKey(currentClan) !== 'thin-blooded') return null
 
     const merits = []
     const flaws = []
@@ -1385,9 +1386,4 @@ export function openChargenWizard (actor) {
     return
   }
   new ChargenApp(actor).render(true)
-}
-
-// [vtm5e-ptbr] nome original em ingles de um item traduzido pelo Babele (ou o nome atual, se nao houver)
-function enName (doc) {
-  return doc?.flags?.babele?.originalName ?? doc?.originalName ?? doc?.name
 }

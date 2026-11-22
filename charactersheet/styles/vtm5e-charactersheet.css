@@ -479,8 +479,38 @@
   height: 17px !important;
 }
 
+.actor.sheet.vampire:not(.spc):not(.group) .cs-header-dots {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin: 0;
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) .cs-header-dots button.cs-header-zero {
+  display: inline-grid !important;
+  place-items: center;
+  margin: 0 3px 0 0;
+  padding: 0;
+  min-height: 0;
+  line-height: 1;
+  font-size: 11px;
+  color: var(--vtm5e-cs-text);
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) :is(.cs-humanity-edit, .cs-resonance-value) {
+  min-height: 0;
+  width: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) :is(.cs-humanity-edit, .cs-resonance-value):enabled:hover {
+  text-decoration: underline;
+}
+
 .actor.sheet.vampire:not(.spc):not(.group) .cs-resonance-value {
-  cursor: default;
   color: var(--vtm5e-cs-red-bright);
   font-weight: 700;
   white-space: nowrap;
@@ -558,11 +588,7 @@
   text-overflow: ellipsis;
 }
 
-/* The "reset to 0" click-target dot that precedes every dot-tracker row -
-   real wod5e feature (present in every theme, not something we added).
-   Reference doesn't show it and Jake wants it gone outright rather than
-   just faded - removed everywhere on this sheet. Stats can still be reset
-   to 0 the normal way (click the currently-lowest filled dot). */
+/* Header counters use their own visible zero control. */
 .actor.sheet.vampire:not(.spc):not(.group) .resource-value-empty {
   display: none !important;
 }
@@ -655,6 +681,11 @@
 .actor.sheet.vampire:not(.spc):not(.group) .resource-counter .resource-counter-step {
   border: 1px solid var(--vtm5e-cs-border);
   background-color: var(--vtm5e-cs-bg-panel);
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) .cs-vampire-header :is(.cs-stat-health, .cs-stat-willpower) .resource-counter-step[data-state=""] {
+  background: var(--vtm5e-cs-red-bright) !important;
+  border-color: var(--vtm5e-cs-red-bright);
 }
 
 .actor.sheet.vampire:not(.spc):not(.group) .resource-counter .resource-counter-step[data-state="/"] {

@@ -1,3 +1,5 @@
+import { getClanKey } from '../../clans/scripts/clan-key.js'
+
 /**
  * Compulsions (VtM5e corebook, "Compulsions" p. 208): when a vampire
  * suffers a Bestial Failure, the Storyteller picks or randomly rolls one
@@ -109,25 +111,26 @@ const CLAN_COMPULSIONS = {
   }
 }
 
-function getClanName(actor) {
-  return actor?.items?.find((i) => i.type === 'clan')?.name ?? null
+export function getCompulsionsForClan (clan) {
+  const options = Object.values(GENERIC_COMPULSIONS)
+  const clanCompulsion = CLAN_COMPULSIONS[getClanKey(clan)]
+  if (clanCompulsion?.name) options.push(clanCompulsion)
+  return options
 }
 
 /**
  * Roll on the Compulsion table for an actor suffering a Bestial Failure.
- * Clan Compulsion (a roll of 0) looks up the actor's Clan item; Caitiff/
- * clanless actors re-roll automatically, matching the corebook's own
- * "re-roll for Caitiff or thin-blood" note (approximated here as "no Clan
- * item" - true thin-blood detection isn't wired up, a known simplification).
+ * Reroll 10 for Caitiff, thin-bloods and actors without a clan.
  */
 export async function rollCompulsion(actor) {
-  const clanName = getClanName(actor)
+  const clan = actor?.items?.find(item => item.type === 'clan')
+  const clanKey = getClanKey(clan)
 
   let result
   do {
     const roll = await new Roll('1d10').evaluate()
     result = roll.total === 10 ? 0 : roll.total
-  } while (result === 0 && !clanName)
+  } while (result === 0 && (!clanKey || clanKey === 'caitiff' || clanKey === 'thin-blooded'))
 
   let generic = null
   if (result >= 1 && result <= 3) generic = GENERIC_COMPULSIONS.hunger
@@ -141,17 +144,17 @@ export async function rollCompulsion(actor) {
   }
 
   // result === 0: Clan Compulsion
-  const clanCompulsion = CLAN_COMPULSIONS[(enName(actor?.items?.find((i) => i.type === 'clan')) ?? '').toLowerCase()]
-  if (clanCompulsion) {
+  const clanCompulsion = CLAN_COMPULSIONS[clanKey]
+  if (clanCompulsion?.name) {
     await setSheetCompulsion(actor, clanCompulsion.name)
-    return { name: `Compulsão de Clã (${clanName}): ${clanCompulsion.label ?? clanCompulsion.name}`, text: clanCompulsion.text }
+    return { name: `Compulsão de Clã (${clan.name}): ${clanCompulsion.label ?? clanCompulsion.name}`, text: clanCompulsion.text }
   }
 
-  // No write-up for this clan (e.g. Caitiff/thin-blood) - nothing matches a
+  // No write-up for this clan - nothing matches a
   // sheet picker option, so leave the sheet's Compulsion field alone and
   // let the chat message's improvise prompt stand on its own.
   return {
-    name: `Compulsão de Clã (${clanName})`,
+    name: `Compulsão de Clã (${clan.name})`,
     text: 'Este clã não tem uma descrição de Compulsão no livro básico. Consulte um suplemento que o apresente ou peça ao Narrador que improvise uma Compulsão que combine com o clã.'
   }
 }
@@ -173,11 +176,6 @@ export function buildCompulsionHTML(compulsion) {
       <p class="vtm5e-automation-compulsion-text">${compulsion.text}</p>
     </div>
   `
-}
-
-// [vtm5e-ptbr] nome original em ingles de um item traduzido pelo Babele (ou o nome atual, se nao houver)
-function enName (doc) {
-  return doc?.flags?.babele?.originalName ?? doc?.originalName ?? doc?.name
 }
 
 // [vtm5e-ptbr] Fonte única para a ficha de personagem (charactersheet):

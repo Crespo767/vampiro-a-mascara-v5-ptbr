@@ -1,17 +1,26 @@
 {{!-- VtM5e Character Sheet Reskin - Header --}}
-<header class="actor-header cs-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
+{{#*inline "vampireHeaderDots"}}
+    <div class="resource-value cs-header-dots" data-value="{{value}}" data-name="{{path}}">
+        <button type="button" class="resource-value-empty cs-header-zero{{#if isHunger}} hunger-value{{/if}}"
+            data-action="dotCounterEmpty" title="{{zeroLabel}}" aria-label="{{zeroLabel}}" {{#unless editable}}disabled{{/unless}}>0</button>
+        {{#numLoop max}}
+            <span class="resource-value-step{{#if ../isHunger}} hunger-value{{/if}}" data-action="dotCounterChange" data-index="{{this}}"></span>
+        {{/numLoop}}
+    </div>
+{{/inline}}
+<header class="actor-header cs-header cs-vampire-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
     <div class="cs-header-row">
         <div class="cs-header-identity">
             {{> "systems/wod5e/display/shared/actors/parts/header-profile.hbs"}}
             <div class="cs-header-subtitle">
                 <button type="button" class="cs-header-choice{{#unless clan}} cs-header-choice-empty{{/unless}}"
-                    data-action="chooseHeaderItem" data-type="clan" {{#unless canChooseHeaderItem}}disabled{{/unless}}
+                    data-action="chooseHeaderItem" data-type="clan" {{#unless canEditHeader}}disabled{{/unless}}
                     {{#if clan}}data-tooltip-html="{{clanDescription}}" data-tooltip-direction="DOWN"{{/if}}>
                     {{#if clan}}{{clan.name}}{{else}}Selecionar Clã{{/if}}
                 </button>
                 &bull;
                 <button type="button" class="cs-header-choice{{#unless predator}} cs-header-choice-empty{{/unless}}"
-                    data-action="chooseHeaderItem" data-type="predatorType" {{#unless canChooseHeaderItem}}disabled{{/unless}}
+                    data-action="chooseHeaderItem" data-type="predatorType" {{#unless canEditHeader}}disabled{{/unless}}
                     {{#if predator}}data-tooltip-html="{{predatorDescription}}" data-tooltip-direction="DOWN"{{/if}}>
                     {{#if predator}}{{predator.name}}{{else}}Selecionar Predador{{/if}}
                 </button>
@@ -31,7 +40,7 @@
                 <div class="cs-bc-line">
                     <span class="cs-bc-label">Compulsão:</span>
                     <select class="cs-bc-select" name="flags.vampiro-a-mascara-v5-ptbr.compulsion" aria-label="Compulsão"
-                        {{#unless canChooseHeaderItem}}disabled{{/unless}}
+                        {{#unless canEditHeader}}disabled{{/unless}}
                         {{#if compulsionText}}data-tooltip-html="{{compulsionText}}" data-tooltip-direction="DOWN"{{/if}}>
                         <option value="">Nenhuma</option>
                         {{#each compulsionOptions as |opt|}}
@@ -41,9 +50,10 @@
                 </div>
             </div>
             <div class="cs-quickrolls">
-                <button class="rollable rouse-button cs-roll-badge" data-action="roll" type="button" name="rouse"
+                <button class="rollable rouse-button cs-roll-badge" data-action="rouseCheck" type="button" name="rouse"
+                    {{#unless canEditHeader}}disabled{{/unless}}
                     data-disable-basic-dice="true" data-use-absolute-value="true" data-absolute-value="1"
-                    data-label="{{localize 'WOD5E.VTM.RousingBlood'}}" data-increase-hunger="true" data-difficulty="1"
+                    data-label="{{localize 'WOD5E.VTM.RousingBlood'}}" data-increase-hunger="true" data-difficulty="1" data-selectors="rouse"
                     title="{{localize 'WOD5E.VTM.RollRouse'}}"
                     data-tooltip="Faça uma Checagem de Sangue para ativar uma Disciplina ou despertar para a noite; em uma falha, ganhe 1 de Fome." data-tooltip-direction="DOWN">
                     <span class="cs-roll-badge-line1">Checagem</span>
@@ -51,6 +61,7 @@
                 </button>
                 {{#if frenzyActive}}
                     <button class="vampire-button end-frenzy cs-roll-badge" data-action="endFrenzy" type="button"
+                        {{#unless canEditHeader}}disabled{{/unless}}
                         name="endfrenzy" title="{{localize 'WOD5E.VTM.EndFrenzy'}}"
                         data-tooltip="Encerra o frenesi ativo depois que o motivo que o provocou passou." data-tooltip-direction="DOWN">
                         <span class="cs-roll-badge-line1">Encerrar</span>
@@ -58,6 +69,7 @@
                     </button>
                 {{else}}
                     <button class="vampire-button frenzy-roll cs-roll-badge" data-action="resistFrenzy" type="button"
+                        {{#unless canEditHeader}}disabled{{/unless}}
                         name="resistfrenzy" title="{{localize 'WOD5E.VTM.ResistFrenzy'}}"
                         data-tooltip="Teste para não perder o controle para a Besta quando provocado, faminto ou diante de fogo ou luz do sol." data-tooltip-direction="DOWN">
                         <span class="cs-roll-badge-line1">Testar</span>
@@ -83,15 +95,15 @@
                     {{localize "WOD5E.VTM.Humanity"}} <i class="fa-solid fa-dice-d10"></i>
                 </label>
                 {{> "systems/wod5e/display/vtm/actors/parts/humanity.hbs"}}
+                {{#if canEditHeader}}
+                    <button type="button" class="cs-humanity-edit" data-action="editHumanity" aria-label="Editar Humanidade e Máculas" title="Editar Humanidade e Máculas">
+                        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                    </button>
+                {{/if}}
             </div>
             <div class="cs-stat cs-stat-potency">
                 <label class="resource-label field-header" data-tooltip="A força e a idade da sua vitae; Potência do Sangue maior fortalece as Disciplinas, mas agrava a Perdição e o custo em Fome." data-tooltip-direction="DOWN">{{localize "WOD5E.VTM.BloodPotency"}}</label>
-                <div class="resource-value" data-value="{{blood.potency}}" data-name="system.blood.potency">
-                    <span class="resource-value-empty" data-action="dotCounterEmpty"></span>
-                    {{#numLoop 10}}
-                    <span class="resource-value-step" data-action="dotCounterChange" data-index="{{this}}"></span>
-                    {{/numLoop}}
-                </div>
+                {{> vampireHeaderDots value=blood.potency max=10 path="system.blood.potency" zeroLabel="Zerar Potência de Sangue" editable=canEditHeader}}
             </div>
         </div>
         <div class="cs-stat-row">
@@ -100,16 +112,16 @@
             </div>
             <div class="cs-stat cs-stat-hunger">
                 <label class="resource-label field-header" data-tooltip="O tamanho da sede de sangue da Besta; Fome maior põe mais dados de Fome nas rolagens e aumenta o risco de Falha Bestial." data-tooltip-direction="UP">{{localize "WOD5E.VTM.Hunger"}}</label>
-                {{> "systems/wod5e/display/vtm/actors/parts/hunger.hbs"}}
+                {{> vampireHeaderDots value=hunger.value max=hunger.max path="system.hunger.value" zeroLabel="Zerar Fome" editable=canEditHeader isHunger=true}}
             </div>
             <div class="cs-stat cs-stat-resonance">
                 <label class="resource-label field-header" data-tooltip="O sabor que a alimentação deixa em você; pode conceder um dado de bônus a uma Disciplina correspondente." data-tooltip-direction="UP">{{localize "WOD5E.VTM.BloodResonance"}}</label>
-                {{#if resonance}}
-                    <span class="cs-resonance-value"
-                        data-tooltip-html="{{resonanceDescription}}" data-tooltip-direction="UP">{{resonance.name}}</span>
-                {{else}}
-                    <span class="cs-resonance-value cs-resonance-none" data-tooltip="O sabor que a alimentação deixa em você; pode conceder um dado de bônus a uma Disciplina correspondente." data-tooltip-direction="UP">Nenhuma</span>
-                {{/if}}
+                <button type="button" class="cs-resonance-value{{#unless resonance}} cs-resonance-none{{/unless}}" data-action="editResonance"
+                    aria-label="Editar Ressonância do Sangue" title="Editar Ressonância do Sangue"
+                    {{#unless canEditHeader}}disabled{{/unless}}
+                    {{#if resonanceDescription}}data-tooltip-html="{{resonanceDescription}}" data-tooltip-direction="UP"{{/if}}>
+                    {{#if resonance}}{{resonance.name}}{{else}}Nenhuma{{/if}}
+                </button>
             </div>
         </div>
     </div>

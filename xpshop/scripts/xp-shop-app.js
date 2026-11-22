@@ -10,6 +10,8 @@ import {
   ADVANTAGE_COST_PER_DOT
 } from './cost-tables.js'
 import { commitCart } from './purchase-application.js'
+import { getClanKey } from '../../clans/scripts/clan-key.js'
+import { clanAppearanceBlock } from '../../chargen/scripts/grant-engine.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
@@ -212,7 +214,7 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
     if (disciplineId === 'alchemy' && this.#isThinBlooded()) return DISCIPLINE_MULTIPLIER.other
     const clanItem = this.actor.items.find(i => i.type === 'clan')
     if (!clanItem) return DISCIPLINE_MULTIPLIER.other // Ghouls own no Clan item at all
-    if (enName(clanItem) === 'Caitiff') return DISCIPLINE_MULTIPLIER.caitiff
+    if (getClanKey(clanItem) === 'caitiff') return DISCIPLINE_MULTIPLIER.caitiff
 
     const grants = clanItem.flags?.['vampiro-a-mascara-v5-ptbr']?.grants ?? []
     const disciplineDotGrant = grants.find(g => g.type === 'disciplineDot')
@@ -225,7 +227,7 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
   }
 
   #isThinBlooded () {
-    return enName(this.actor.items.find(i => i.type === 'clan')) === 'Thin-Blooded'
+    return getClanKey(this.actor.items.find(i => i.type === 'clan')) === 'thin-blooded'
   }
 
   // ---------- Context ----------
@@ -399,6 +401,8 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
         const conflicts = checkConflicts(this.actor, doc.name, doc.flags?.['vampiro-a-mascara-v5-ptbr']?.conflictsWith ?? [])
         if (conflicts.length > 0) unavailableReasons = [...unavailableReasons, `Conflita com ${conflicts.join(', ')}, que você já possui.`]
       }
+      const appearanceBlock = clanAppearanceBlock(this.actor, doc)
+      if (appearanceBlock) unavailableReasons.push(appearanceBlock)
 
       const ratingCap = fixedCost ? null : getRatingCap(this.actor, doc)
       const ratingCapReason = ratingCap != null ? checkRestrictions(this.actor, [doc.flags['vampiro-a-mascara-v5-ptbr'].ratingCap.unless]).join(' ') : null
@@ -618,6 +622,8 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
 
     if (nextDots > currentDots) {
       const restrictionFailures = checkRestrictions(this.actor, doc.flags?.['vampiro-a-mascara-v5-ptbr']?.restrictions ?? [])
+      const appearanceBlock = clanAppearanceBlock(this.actor, doc)
+      if (appearanceBlock) restrictionFailures.push(appearanceBlock)
       if (restrictionFailures.length > 0) {
         ui.notifications.error(`Não é possível adquirir ${doc.name}: ${restrictionFailures.join(' ')}`)
         return

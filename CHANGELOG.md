@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 1.7.5 — Trilhas, rolagens e regras da ficha de Vampiro
+
+- **Trilhas da ficha** — Caixas disponíveis de Vitalidade e Força de Vontade em vermelho, edição direta de Humanidade e Máculas e botão visível para zerar Fome e Potência de Sangue.
+- **Ressonância do Sangue** — Escolha de tipo e intensidade pelo cabeçalho, com opção para limpar. Ressonâncias intensas e agudas geradas pelo módulo expiram ao atingir a Fome máxima.
+- **Checagem de Sangue e Frenesi** — Checagem usa os modificadores correspondentes. O teste de Frenesi aceita cancelamento e oferece aos Brujah a opção de aplicar a Perdição ao resistir à fúria.
+- **Clãs e Tipos de Predador** — Correções nas restrições e concessões de criação, repetição da Compulsão de Clã para Caitiff e Sangues-Ralos e escolha de paradas alternativas de caça para seis Tipos de Predador. Cancelar uma escolha necessária no assistente reverte as concessões daquela tentativa.
+
 ## 1.7.4 — Correções no cabeçalho da ficha de Vampiro
 
 - **Clã e Tipo de Predador:** os seletores abrem os compêndios correspondentes e adicionam à ficha o item confirmado. Clicar no nome de um item já preenchido abre a ficha dele.

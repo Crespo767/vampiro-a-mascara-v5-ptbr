@@ -3,12 +3,13 @@ import { CharacterSheetGhoulActorSheet } from './ghoul-actor-sheet.js'
 import { CharacterSheetMortalActorSheet } from './mortal-actor-sheet.js'
 import { CharacterSheetHunterActorSheet } from './hunter-actor-sheet.js'
 import { CharacterSheetWerewolfActorSheet } from './werewolf-actor-sheet.js'
-import { onFeed } from './feed.js'
+import { onFeed, registerResonanceExpiry } from './feed.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
 Hooks.once('init', () => {
   console.log(`${MODULE_ID} | Initializing`)
+  registerResonanceExpiry()
 
   foundry.applications.apps.DocumentSheetConfig.registerSheet(Actor, 'wod5e', CharacterSheetVampireActorSheet, {
     types: ['vampire'],

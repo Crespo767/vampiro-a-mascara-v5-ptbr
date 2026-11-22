@@ -6,6 +6,8 @@
 // AND posted as a chat message, so the player always has a durable record
 // of what happened, not just a toast that can be missed.
 
+import { getClanKey } from '../../clans/scripts/clan-key.js'
+
 const MERITSFLAWS_PACK_ID = 'vampiro-a-mascara-v5-ptbr.meritsflaws'
 const DISCIPLINES_PACK_ID = 'vampiro-a-mascara-v5-ptbr.disciplines'
 
@@ -51,19 +53,20 @@ export function extraAdvantagePoints () {
 
 export function clanCreationGrants (clanItem) {
   const grants = clanItem?.flags?.[CHARGEN_ID]?.grants ?? []
-  const name = enName(clanItem)
-  if (name === 'Thin-Blooded') return grants.filter(g => g.type !== 'disciplineDot' && g.type !== 'clanDisciplines')
-  if (name === 'Caitiff') return [...grants.filter(g => g.type !== 'disciplineDot' && g.type !== 'clanDisciplines'), { type: 'clanDisciplines', choices: Object.keys(DISCIPLINE_BLURBS) }, { type: 'flaw', name: 'Suspect', rating: 1 }]
+  const name = getClanKey(clanItem)
+  if (name === 'thin-blooded') return grants.filter(g => g.type !== 'disciplineDot' && g.type !== 'clanDisciplines')
+  if (name === 'caitiff') return [...grants.filter(g => g.type !== 'disciplineDot' && g.type !== 'clanDisciplines'), { type: 'clanDisciplines', choices: Object.keys(DISCIPLINE_BLURBS) }, { type: 'flaw', name: 'Suspect', rating: 1 }]
   const dots = grants.filter(g => g.type === 'disciplineDot')
-  if (!dots.length) return grants
   const choices = dots.flatMap(g => g.choices ?? [])
   let inserted = false
-  return grants.flatMap(g => {
+  const resolved = grants.flatMap(g => {
     if (g.type !== 'disciplineDot') return [g]
     if (inserted) return []
     inserted = true
     return [{ type: 'clanDisciplines', choices }]
   })
+  if (name === 'nosferatu') resolved.push({ type: 'flaw', name: 'Repulsive', rating: 2, minimum: true })
+  return resolved
 }
 
 // Categoria de uma Vantagem/Defeito pela pasta do compêndio meritsflaws. Os nomes das
@@ -82,12 +85,23 @@ export function featureCategory (doc) {
 }
 
 export function chargenPurchaseBlock (actor, doc) {
-  const clan = enName(actor.items.find(i => i.type === 'clan'))
+  const clan = getClanKey(actor.items.find(i => i.type === 'clan'))
   const category = featureCategory(doc)
+  if (clan === 'ravnos' && enName(doc) === 'No Haven') return 'Ravnos não podem escolher o Defeito Nenhum Refúgio na criação.'
+  const appearanceBlock = clanAppearanceBlock(actor, doc)
+  if (appearanceBlock) return appearanceBlock
   if (category === 'thinBloodMerit' || category === 'thinBloodFlaw') return 'Qualidades e Defeitos de Sangue-Ralo são escolhidos na seção própria, só por sangues-ralos.'
-  if (category === 'caitiff' && clan !== 'Caitiff') return 'Somente personagens Caitiff podem escolher esta Vantagem ou Defeito.'
-  return clan === 'Caitiff' && doc.system?.featuretype === 'background' && enName(doc) === 'Status'
+  if (category === 'caitiff' && clan !== 'caitiff') return 'Somente personagens Caitiff podem escolher esta Vantagem ou Defeito.'
+  return clan === 'caitiff' && doc.system?.featuretype === 'background' && enName(doc) === 'Status'
     ? 'Caitiff não podem adquirir Status durante a criação de personagem.' : null
+}
+
+export function clanAppearanceBlock (actor, doc) {
+  const clan = getClanKey(actor.items.find(i => i.type === 'clan'))
+  if (clan === 'nosferatu' && ['Beautiful', 'Stunning'].includes(enName(doc))) {
+    return 'Nosferatu não podem adquirir Qualidades de Visual.'
+  }
+  return null
 }
 
 // O registro identifica somente os bônus inseridos aqui; outros bônus com o mesmo rótulo são preservados.
@@ -377,7 +391,7 @@ async function resolveChoice (grant, sourceLabel, actor) {
   let choices = grant.choices
   if (grant.type === 'disciplineDot' && actor) {
     const clanItem = actor.items.find(i => i.type === 'clan')
-    const clanName = enName(clanItem)?.toLowerCase()
+    const clanName = getClanKey(clanItem)
     const filtered = choices.filter(c => typeof c !== 'object' || !c.requiresClan || clanAllowed(c.requiresClan, clanName))
     if (filtered.length > 0) choices = filtered
   }
@@ -463,10 +477,12 @@ async function findCompendiumMeritFlaw (name) {
 // a shape revokeLedgerEntries() below knows how to reverse - see
 // applyTrackedGrants() for why that matters (switching a Clan/Predator Type
 // pick, or just reopening the wizard, must never re-stack the same grant).
-async function grantMeritOrFlaw (actor, name, rating, log, sourceLabel, entries) {
-  const source = await findCompendiumMeritFlaw(name)
-
+async function grantMeritOrFlaw (actor, name, rating, log, sourceLabel, entries, minimum = false) {
   const existing = actor.items.find(i => i.type === 'feature' && (i.name === name || enName(i) === name))
+  if (minimum) {
+    rating -= existing?.system.points ?? 0
+    if (rating <= 0) return
+  }
   if (existing) {
     const newRating = (existing.system.points || 0) + rating
     const newGranted = (existing.flags?.['vampiro-a-mascara-v5-ptbr']?.grantedPoints ?? 0) + rating
@@ -476,6 +492,7 @@ async function grantMeritOrFlaw (actor, name, rating, log, sourceLabel, entries)
     return
   }
 
+  const source = await findCompendiumMeritFlaw(name)
   const itemData = source
     ? {
         name: source.name,
@@ -530,7 +547,7 @@ async function grantBackgroundDots (actor, backgroundKey, amount, note, log, sou
 export async function applyGrant (actor, grant, sourceLabel, log, entries) {
   switch (grant.type) {
     case 'clanDisciplines': {
-      if (enName(actor.items.find(i => i.type === 'clan')) === 'Thin-Blooded') break
+      if (getClanKey(actor.items.find(i => i.type === 'clan')) === 'thin-blooded') break
       const identity = c => typeof c === 'string' ? c : c.discipline
       const first = await resolveChoice({ type: 'disciplineDot', choices: grant.choices }, `${sourceLabel} - 2 pontos`, actor)
       if (!first) throw new Error('Escolha a Disciplina que recebe 2 pontos.')
@@ -550,7 +567,7 @@ export async function applyGrant (actor, grant, sourceLabel, log, entries) {
     }
     case 'specialty': {
       const choice = await resolveChoice(grant, sourceLabel, actor)
-      if (!choice) return
+      if (!choice) throw new Error('Escolha a Especialização para concluir a etapa.')
       const specLabel = specialtyLabel(choice.label)
       const skillValue = actor._source?.system?.skills?.[choice.skill]?.value ?? actor.system.skills?.[choice.skill]?.value ?? 0
       if (skillValue <= 0) {
@@ -573,24 +590,25 @@ export async function applyGrant (actor, grant, sourceLabel, log, entries) {
       // them apply to a Thin-Blooded character. Skip before even prompting
       // for a choice, rather than granting then rejecting.
       const clanForDiscipline = actor.items.find(i => i.type === 'clan')
-      if (enName(clanForDiscipline) === 'Thin-Blooded') {
+      if (getClanKey(clanForDiscipline) === 'thin-blooded') {
         await logAndAnnounce(actor, log, `<b>${sourceLabel}</b>: nenhum ponto de Disciplina - personagens sangue-ralo não têm Disciplinas intrínsecas.`)
         break
       }
       const choice = await resolveChoice(grant, sourceLabel, actor)
-      if (!choice) return
+      if (!choice) throw new Error('Escolha a Disciplina para concluir a etapa.')
       // Os dados de concessão escrevem Feitiçaria de Sangue como "bloodsorcery"; a ficha usa "sorcery".
       const rawDisciplineId = typeof choice === 'string' ? choice : choice.discipline
       const disciplineId = DISCIPLINE_ID_ALIASES[rawDisciplineId] ?? rawDisciplineId
       if (typeof choice === 'object' && choice.requiresClan) {
         const clanItem = actor.items.find(i => i.type === 'clan')
-        if (!clanItem || !clanAllowed(choice.requiresClan, enName(clanItem).toLowerCase())) {
+        if (!clanAllowed(choice.requiresClan, getClanKey(clanItem))) {
           const clans = [].concat(choice.requiresClan).map(c => displayLabel(c)).join(' ou ')
           ui.notifications.warn(`${sourceLabel}: ${displayLabel(disciplineId)} requer o clã ${clans} - ignorado.`)
           return
         }
       }
       const current = actor.system.disciplines?.[disciplineId]?.value || 0
+      const previousVisible = actor.system.disciplines?.[disciplineId]?.visible ?? false
       const amount = grant.amount || 1
 
       // One power-pick prompt per new level gained (almost always just one
@@ -616,7 +634,7 @@ export async function applyGrant (actor, grant, sourceLabel, log, entries) {
 
       const powerNote = pickedPowerNames.length > 0 ? ` - aprendeu <b>${pickedPowerNames.join(', ')}</b>` : ''
       await logAndAnnounce(actor, log, `<b>${sourceLabel}</b>: +${amount} ponto${amount === 1 ? '' : 's'} em <b>${displayLabel(disciplineId)}</b> (agora ${dots(current + amount)})${powerNote}`)
-      entries?.push({ type: 'disciplineDot', discipline: disciplineId, amount, powerNames: pickedPowerNames })
+      entries?.push({ type: 'disciplineDot', discipline: disciplineId, amount, powerNames: pickedPowerNames, previousVisible })
       break
     }
 
@@ -624,7 +642,7 @@ export async function applyGrant (actor, grant, sourceLabel, log, entries) {
       let backgroundKey = grant.background
       if (grant.choices) {
         const choice = await resolveChoice(grant, sourceLabel, actor)
-        if (!choice) return
+        if (!choice) throw new Error('Escolha o Antecedente para concluir a etapa.')
         backgroundKey = choice
       }
       await grantBackgroundDots(actor, backgroundKey, grant.amount, grant.note, log, sourceLabel, entries)
@@ -633,7 +651,7 @@ export async function applyGrant (actor, grant, sourceLabel, log, entries) {
 
     case 'splitDots': {
       const allocation = await promptSplitDots(grant, sourceLabel, actor)
-      if (!allocation) return
+      if (!allocation) throw new Error('Distribua os pontos para concluir a etapa.')
       for (const [key, amt] of Object.entries(allocation)) {
         const amount = Number(amt)
         if (amount <= 0) continue
@@ -652,7 +670,7 @@ export async function applyGrant (actor, grant, sourceLabel, log, entries) {
       const next = Math.clamp(current + grant.amount, 0, 10)
       await actor.update({ 'system.humanity.value': next })
       await logAndAnnounce(actor, log, `<b>${sourceLabel}</b>: Humanidade ${grant.amount > 0 ? '+' : ''}${grant.amount} (agora ${next})`)
-      entries?.push({ type: 'humanity', amount: grant.amount })
+      entries?.push({ type: 'humanity', amount: next - current })
       break
     }
 
@@ -670,7 +688,7 @@ export async function applyGrant (actor, grant, sourceLabel, log, entries) {
       let target = grant
       if (grant.choices) {
         const choice = await resolveChoice(grant, sourceLabel, actor)
-        if (!choice) return
+        if (!choice) throw new Error('Escolha a Qualidade ou o Defeito para concluir a etapa.')
         target = choice
       }
       // `note` lets a grant point at a generic compendium item (e.g. the
@@ -679,7 +697,7 @@ export async function applyGrant (actor, grant, sourceLabel, log, entries) {
       // note only decorates the log/chat line, the actual Item stays
       // named after the real compendium entry so lookups keep working.
       const label = target.note ? `${sourceLabel} (${noteLabel(target.note)})` : sourceLabel
-      await grantMeritOrFlaw(actor, target.name, target.rating, log, label, entries)
+      await grantMeritOrFlaw(actor, target.name, target.rating, log, label, entries, target.minimum)
       break
     }
 
@@ -704,7 +722,11 @@ async function revokeLedgerEntries (actor, entries, log, oldSourceLabel) {
       case 'disciplineDot': {
         const current = actor.system.disciplines?.[entry.discipline]?.value || 0
         const next = Math.max(current - entry.amount, 0)
-        await actor.update({ [`system.disciplines.${entry.discipline}.value`]: next })
+        const update = { [`system.disciplines.${entry.discipline}.value`]: next }
+        if (next === 0 && entry.previousVisible !== undefined) {
+          update[`system.disciplines.${entry.discipline}.visible`] = entry.previousVisible
+        }
+        await actor.update(update)
 
         // Remove any Power items this same grant picked, or a re-pick
         // (switching Clan/Predator Type) leaves an orphaned power behind
@@ -737,8 +759,9 @@ async function revokeLedgerEntries (actor, entries, log, oldSourceLabel) {
       }
       case 'specialty': {
         const bonuses = foundry.utils.deepClone(actor.system.skills?.[entry.skill]?.bonuses || [])
-        const filtered = bonuses.filter(b => b.source !== entry.label)
-        await actor.update({ [`system.skills.${entry.skill}.bonuses`]: filtered })
+        const index = bonuses.findLastIndex(b => b.source === entry.label && b.value === 1 && b.paths?.includes(`skills.${entry.skill}`))
+        if (index >= 0) bonuses.splice(index, 1)
+        await actor.update({ [`system.skills.${entry.skill}.bonuses`]: bonuses })
         break
       }
       case 'humanity': {
@@ -773,15 +796,18 @@ export async function applyTrackedGrants (actor, { slot, pickLabel, name, source
   if (existingSlot && existingSlot.sourceLabel === sourceLabel) return false
 
   if (existingSlot) {
-    await revokeLedgerEntries(actor, existingSlot.entries, log, existingSlot.sourceLabel)
+    await clearTrackedGrants(actor, slot, log)
   }
 
   log.push(`<b>${pickLabel}</b>: escolheu <b>${name}</b>`)
   const entries = []
-  for (const grant of grants || []) {
-    await applyGrant(actor, grant, sourceLabel, log, entries)
+  try {
+    await applyGrants(actor, grants, sourceLabel, log, entries)
+    await actor.setFlag('vampiro-a-mascara-v5-ptbr', `grantLedger.${slot}`, { sourceLabel, entries })
+  } catch (error) {
+    await revokeLedgerEntries(actor, entries.reverse(), log, sourceLabel)
+    throw error
   }
-  await actor.setFlag('vampiro-a-mascara-v5-ptbr', `grantLedger.${slot}`, { sourceLabel, entries })
   return true
 }
 
@@ -797,17 +823,16 @@ export async function clearTrackedGrants (actor, slot, log) {
   await actor.unsetFlag('vampiro-a-mascara-v5-ptbr', `grantLedger.${slot}`)
 }
 
-export function checkRestrictions (actor, restrictions) {
+export function checkRestrictions (actor, restrictions, clan = actor.items.find(i => i.type === 'clan')) {
   const failures = []
+  const clanKey = getClanKey(clan)
   for (const r of restrictions || []) {
     if (r.type === 'excludeClan') {
-      const clanItem = actor.items.find(i => i.type === 'clan')
-      if (clanItem && r.clans.includes(enName(clanItem).toLowerCase())) {
-        failures.push(`Indisponível para o clã ${clanItem.name}.`)
+      if (clanKey && r.clans.includes(clanKey)) {
+        failures.push(`Indisponível para o clã ${clan.name}.`)
       }
     } else if (r.type === 'requireClan') {
-      const clanItem = actor.items.find(i => i.type === 'clan')
-      if (!clanItem || !r.clans.includes(enName(clanItem).toLowerCase())) {
+      if (!r.clans.includes(clanKey)) {
         failures.push(`Disponível apenas para o clã ${r.clans.map(displayLabel).join(' ou ')}.`)
       }
     } else if (r.type === 'ghoulOnly') {

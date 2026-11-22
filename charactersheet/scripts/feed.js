@@ -25,6 +25,40 @@
 
 import { getActiveModifiers } from '/systems/wod5e/system/scripts/rolls/situational-modifiers.js'
 
+// Alternate pools described in the Player's Guide predator entries.
+const PREDATOR_POOL_ALTERNATIVES = {
+  montero: { defaultLabel: 'Inteligência + Furtividade', paths: ['attributes.resolve', 'skills.stealth'], label: 'Determinação + Furtividade' },
+  extortionist: { defaultLabel: 'Manipulação + Intimidação', paths: ['attributes.strength', 'skills.intimidation'], label: 'Força + Intimidação' },
+  trapdoor: { defaultLabel: 'Carisma + Furtividade', paths: ['attributes.dexterity', 'skills.stealth'], label: 'Destreza + Furtividade' },
+  'grim reaper': { defaultLabel: 'Inteligência + Percepção', paths: ['attributes.intelligence', 'skills.medicine'], label: 'Inteligência + Medicina' },
+  pursuer: { defaultLabel: 'Inteligência + Investigação', paths: ['attributes.stamina', 'skills.stealth'], label: 'Vigor + Furtividade' },
+  graverobber: { defaultLabel: 'Determinação + Medicina', paths: ['attributes.manipulation', 'skills.insight'], label: 'Manipulação + Intuição' }
+}
+const PREDATOR_POOL_ALIASES = new Map([
+  ['extorsionista', 'extortionist'], ['alçapão', 'trapdoor'], ['ceifador', 'grim reaper'],
+  ['perseguidor', 'pursuer'], ['ladrão de túmulos', 'graverobber']
+])
+
+async function choosePredatorPool (predator) {
+  const dicepool = predator.system.dicepool ?? {}
+  const paths = Object.values(dicepool).map(entry => entry?.path).filter(Boolean)
+  const name = predator.flags?.babele?.originalName || predator.originalName || predator.name
+  const key = name.trim().toLocaleLowerCase('pt-BR')
+  const alternate = PREDATOR_POOL_ALTERNATIVES[PREDATOR_POOL_ALIASES.get(key) ?? key]
+  if (!paths.length || !alternate?.paths) return paths
+
+  return foundry.applications.api.DialogV2.wait({
+    window: { title: `Parada de Predador — ${predator.name}` },
+    content: '<p>Escolha a parada de acordo com a abordagem da caça.</p>',
+    rejectClose: false,
+    buttons: [
+      { action: 'defaultPool', label: alternate.defaultLabel, default: true, callback: () => paths },
+      { action: 'alternatePool', label: alternate.label, callback: () => alternate.paths },
+      { action: 'cancel', label: 'Cancelar', callback: () => null }
+    ]
+  })
+}
+
 // [vtm5e-ptbr] As Ressonâncias não existem no compêndio de Disciplinas deste
 // módulo (os itens do VtM5e Tools original se perderam na junção), então
 // o item é montado aqui. Chave = nome interno em inglês (RESONANCE_TABLE).
@@ -99,25 +133,40 @@ async function rollResonanceType () {
   return { name: row.name, roll }
 }
 
-async function clearExistingResonance (actor) {
-  const existing = actor.items.filter((i) => i.type === 'resonance')
-  if (existing.length > 0) {
-    await actor.deleteEmbeddedDocuments('Item', existing.map((i) => i.id))
-  }
+async function clearExistingResonance (actor, keepId) {
+  const existing = actor.items.filter(item => item.type === 'resonance' && item.id !== keepId)
+  if (existing.length) await actor.deleteEmbeddedDocuments('Item', existing.map(item => item.id))
 }
 
-async function applyResonance (actor, resonanceName, isAcute) {
+const RESONANCE_STRENGTHS = { fleeting: 'Efêmera', intense: 'Intensa', acute: 'Aguda' }
+const RESONANCE_MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
+
+export function registerResonanceExpiry () {
+  Hooks.on('updateActor', async (actor, changes, _options, userId) => {
+    if (userId !== game.user.id || actor.type !== 'vampire') return
+    if (!Object.hasOwn(changes, 'system.hunger.value') && !foundry.utils.hasProperty(changes, 'system.hunger.value')) return
+    const hunger = actor.system.hunger
+    if (!hunger || hunger.value < hunger.max) return
+
+    const expired = actor.items.filter(item => {
+      if (item.type !== 'resonance') return false
+      const flags = item.flags?.[RESONANCE_MODULE_ID]
+      return flags?.resonanceKey && flags.resonanceStrength !== 'fleeting'
+    })
+    if (expired.length) await actor.deleteEmbeddedDocuments('Item', expired.map(item => item.id))
+  })
+}
+
+async function applyResonance (actor, resonanceName, strength) {
   const def = RESONANCE_ITEMS[resonanceName]
   if (!def) {
     ui.notifications.error(`Ressonância desconhecida: "${resonanceName}".`)
     return null
   }
 
-  await clearExistingResonance(actor)
-
-  const strengthLabel = isAcute ? 'Aguda' : 'Intensa'
+  const strengthLabel = RESONANCE_STRENGTHS[strength]
   let description = def.description
-  if (isAcute) {
+  if (strength === 'acute') {
     description += '<p><b>Discrasia:</b> esta bolsa tinha uma Discrasia além do bônus da Ressonância aguda; pergunte ao Narrador qual é o efeito.</p>'
   }
 
@@ -127,7 +176,7 @@ async function applyResonance (actor, resonanceName, isAcute) {
     img: 'systems/wod5e/assets/icons/items/discipline.png',
     system: {
       description,
-      bonuses: [{
+      bonuses: strength === 'fleeting' ? [] : [{
         source: `Ressonância ${def.label}`,
         value: 1,
         paths: def.paths,
@@ -137,11 +186,65 @@ async function applyResonance (actor, resonanceName, isAcute) {
       }],
       source: { book: 'Livro Básico', page: '226-229' }
     },
-    flags: { 'vampiro-a-mascara-v5-ptbr': { resonanceKey: resonanceName } }
+    flags: { [RESONANCE_MODULE_ID]: { resonanceKey: resonanceName, resonanceStrength: strength } }
   }
 
   const [created] = await actor.createEmbeddedDocuments('Item', [itemData])
+  if (created) await clearExistingResonance(actor, created.id)
   return created
+}
+
+export async function onEditResonance (_event, target) {
+  if (!this.isEditable || target.disabled) return
+  const actor = this.actor
+  const current = actor.items.find(item => item.type === 'resonance')
+  const flags = current?.flags?.[RESONANCE_MODULE_ID]
+  const currentStrength = flags?.resonanceStrength ?? (current?.name?.endsWith(' (Aguda)') ? 'acute' : 'intense')
+  const choices = Object.entries(RESONANCE_ITEMS).map(([key, item]) =>
+    `<option value="${key}"${flags?.resonanceKey === key ? ' selected' : ''}>${item.label}</option>`
+  ).join('')
+  const strengths = Object.entries(RESONANCE_STRENGTHS).map(([key, label]) =>
+    `<option value="${key}"${currentStrength === key ? ' selected' : ''}>${label}</option>`
+  ).join('')
+
+  target.disabled = true
+  try {
+    const result = await foundry.applications.api.DialogV2.prompt({
+      window: { title: 'Ressonância do Sangue' },
+      content: `<div class="form-group"><label for="resonanceType">Ressonância</label>
+        <select id="resonanceType" name="type">
+          <option value="" disabled${flags?.resonanceKey ? '' : ' selected'}>Escolha uma Ressonância</option><option value="none">Nenhuma</option>${choices}
+        </select></div>
+        <div class="form-group"><label for="resonanceStrength">Intensidade</label>
+        <select id="resonanceStrength" name="strength">${strengths}</select></div>`,
+      rejectClose: false,
+      ok: {
+        label: 'Salvar',
+        callback: (_event, button) => ({
+          type: button.form.elements.type.value,
+          strength: button.form.elements.strength.value
+        })
+      }
+    })
+    if (!result || !this.isEditable) return
+    if (result.type === 'none') {
+      await clearExistingResonance(actor)
+      return
+    }
+    if (!Object.hasOwn(RESONANCE_ITEMS, result.type) || !Object.hasOwn(RESONANCE_STRENGTHS, result.strength)) return
+    if (result.type === 'Animal Blood' && result.strength === 'acute') {
+      ui.notifications.warn('Sangue animal não tem Ressonância aguda. Escolha Efêmera ou Intensa.')
+      return
+    }
+    const hunger = actor.system.hunger
+    if (result.strength !== 'fleeting' && hunger && hunger.value >= hunger.max) {
+      ui.notifications.warn('Ressonâncias intensas e agudas expiram ao atingir a Fome máxima.')
+      return
+    }
+    await applyResonance(actor, result.type, result.strength)
+  } finally {
+    target.disabled = false
+  }
 }
 
 function buildFeedResultHTML ({ title = 'Resultado da Alimentação', hungerLabel, hungerAmount, hungerBefore, hungerAfter, temperamentResult, resonanceResult, extraRows = [], skipResonance = false }) {
@@ -200,7 +303,7 @@ async function handleHumanFeed (actor) {
     resonanceResult = await rollResonanceType()
   } else {
     resonanceResult = await rollResonanceType()
-    await applyResonance(actor, resonanceResult.name, temperamentResult.temperament === 'acute')
+    await applyResonance(actor, resonanceResult.name, temperamentResult.temperament)
   }
 
   ChatMessage.create({
@@ -261,7 +364,7 @@ async function handleAnimalFeed (actor) {
     } else if (temperamentResult.temperament === 'fleeting') {
       await clearExistingResonance(actor)
     } else {
-      await applyResonance(actor, 'Animal Blood', false)
+      await applyResonance(actor, 'Animal Blood', 'intense')
     }
   } else {
     await clearExistingResonance(actor)
@@ -401,22 +504,15 @@ export async function onFeed (actor) {
     return
   }
 
-  const dicepool = predator.system.dicepool || {}
-  const valuePaths = []
-  let selectors = ['feeding']
-  for (const key in dicepool) {
-    const path = dicepool[key]?.path
-    if (!path) continue
-    selectors = selectors.concat(path.split('.'))
-    selectors.push(path)
-    valuePaths.push(`${path}.value`)
-  }
-
-  if (valuePaths.length === 0) {
+  const paths = await choosePredatorPool(predator)
+  if (!paths) return
+  if (!paths.length) {
     ui.notifications.warn(`${predator.name} não tem parada de caça definida; faça a rolagem de alimentação manualmente desta vez.`)
     return
   }
 
+  const selectors = ['feeding', ...paths.flatMap(path => [...path.split('.'), path])]
+  const valuePaths = paths.map(path => `${path}.value`)
   const activeModifiers = await getActiveModifiers({ actor, selectors })
 
   let basicDice = await WOD5E.api.getBasicDice({
