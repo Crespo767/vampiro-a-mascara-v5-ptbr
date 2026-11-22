@@ -4,6 +4,7 @@ import { CharacterSheetMortalActorSheet } from './mortal-actor-sheet.js'
 import { CharacterSheetHunterActorSheet } from './hunter-actor-sheet.js'
 import { CharacterSheetWerewolfActorSheet } from './werewolf-actor-sheet.js'
 import { onFeed, registerResonanceExpiry } from './feed.js'
+import { bindTraitDecrement } from './shared-context.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
@@ -74,6 +75,8 @@ function fitItemName (input) {
   }
 }
 Hooks.on('renderDocumentSheetV2', (app) => {
+  if (app.document instanceof Actor) bindTraitDecrement(app)
+
   // Item: campo de nome do wod5e. Ator: nome no cabeçalho das fichas do
   // módulo (.cs-header, até 230 px) e das fichas do wod5e (PdN, grupo: 250 px).
   const selector = app.document instanceof Item

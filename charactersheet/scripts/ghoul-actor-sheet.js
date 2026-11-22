@@ -14,6 +14,7 @@ import {
   onToggleExpandRow,
   onSpendOrAddExperience
 } from './shared-context.js'
+import { onSearchConditions } from './condition-picker.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
@@ -27,6 +28,7 @@ export class CharacterSheetGhoulActorSheet extends GhoulActorSheet {
     classes: ['wod5e', 'actor', 'sheet', 'vampire', 'ghoul'],
     position: { width: 1400, height: 900 },
     actions: {
+      searchConditions: onSearchConditions,
       toggleExpandRow: onToggleExpandRow,
       addExperience: onSpendOrAddExperience
     }

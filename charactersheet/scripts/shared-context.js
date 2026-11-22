@@ -7,6 +7,38 @@ import { _onAddExperience } from '/systems/wod5e/system/actor/scripts/experience
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
+const boundTraitSheets = new WeakSet()
+
+export function bindTraitDecrement (app) {
+  const root = app.element
+  if (!root?.querySelector('[data-decrease-trait]') || boundTraitSheets.has(root)) return
+
+  boundTraitSheets.add(root)
+  let pending = Promise.resolve()
+  root.addEventListener('contextmenu', event => {
+    const dot = event.target.closest('[data-decrease-trait] > .resource-value-step')
+    if (!dot || !app.isEditable) return
+
+    event.preventDefault()
+    const path = dot.parentElement.dataset.name
+    pending = pending.then(async () => {
+      if (!app.isEditable) return
+      const actor = app.document
+      if (actor.system.locked) {
+        ui.notifications.warn(game.i18n.format('WOD5E.Notifications.CannotModifyResourceString', { string: actor.name }))
+        return
+      }
+
+      const value = foundry.utils.getProperty(actor._source, path) ?? foundry.utils.getProperty(actor, path)
+      if (Number.isInteger(value) && value > 0) await actor.update({ [path]: value - 1 })
+    }).catch(error => {
+      console.error(`${MODULE_ID} | Falha ao reduzir Atributo ou Habilidade`, error)
+      ui.notifications.error('Não foi possível remover o ponto.')
+    })
+    return pending
+  })
+}
+
 // Intercepts only the Experience tab's "Spend" button (data-operation=
 // "spend") to open the vtm5e-xpshop module's cart/checkout app instead of
 // wod5e's stock dumb dialog (which just logs a +/- number, never touches

@@ -73,6 +73,17 @@ const IMPAIRMENT_DEFS = {
 
 let cachedConditionDocs = null
 
+export function getImpairmentKey (item) {
+  if (item?.type !== 'condition') return undefined
+  const managedKey = item.flags?.[MODULE_ID]?.impairmentKey
+  if (managedKey) return managedKey
+  const sourceKey = item.flags?.wod5e?.dataItemId ?? item.system?.dataItemId
+  return Object.keys(IMPAIRMENT_DEFS).find(key => {
+    const id = IMPAIRMENT_DEFS[key].compendiumDataItemId
+    return id && id === sourceKey
+  })
+}
+
 export function registerImpairmentConditions() {
   Hooks.on('updateActor', async (actor, changes) => {
     const touchesTrackedData = ['health', 'willpower', 'humanity'].some(
@@ -138,6 +149,11 @@ async function runReconcile(actor) {
     const matches = actor.items.filter(
       (i) => i.type === 'condition' && i.getFlag(MODULE_ID, 'impairmentKey') === key
     )
+    const manualMatch = actor.items.some(item => getImpairmentKey(item) === key && !matches.includes(item))
+    if (manualMatch) {
+      if (matches.length) await deleteItemsSafely(actor, matches)
+      continue
+    }
 
     if (shouldBeActive && matches.length === 0) {
       const itemData = await getConditionItemData(key, def)

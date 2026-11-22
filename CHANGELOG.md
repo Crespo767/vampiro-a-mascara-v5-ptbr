@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 1.7.6 — Controles da ficha e busca de Condições
+
+- **Condições** — A lupa lista itens de Condição nos compêndios acessíveis, incluindo o do wod5e. O botão de edição abre a condição aplicada. A debilitação importada e a automática não duplicam a penalidade.
+- **Atributos e Habilidades** — Clique direito em um círculo para retirar um ponto até chegar a zero.
+- **Fome e Potência de Sangue** — Clique direito em um círculo para retirar um ponto. O botão 0 zera a trilha.
+- **Vitalidade e Força de Vontade** — Clique esquerdo no nome aumenta a trilha em uma caixa. Clique direito diminui em uma. As caixas mantêm os controles de dano.
+
 ## 1.7.5 — Trilhas, rolagens e regras da ficha de Vampiro
 
 - **Trilhas da ficha** — Caixas disponíveis de Vitalidade e Força de Vontade em vermelho, edição direta de Humanidade e Máculas e botão visível para zerar Fome e Potência de Sangue.

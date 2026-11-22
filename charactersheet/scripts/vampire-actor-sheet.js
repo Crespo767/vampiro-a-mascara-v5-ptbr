@@ -12,6 +12,7 @@ import {
   onToggleExpandRow,
   onSpendOrAddExperience
 } from './shared-context.js'
+import { onSearchConditions } from './condition-picker.js'
 import { onRouseCheck, onTestFrenzy } from './vampire-quick-rolls.js'
 import { onEditResonance } from './feed.js'
 // [vtm5e-ptbr] nome em português e texto do livro das Compulsões (mesma fonte da automação)
@@ -114,6 +115,7 @@ const CLAN_DESCRIPTION_TEXT = {
 
 export class CharacterSheetVampireActorSheet extends VampireActorSheet {
   #choosingHeaderItem = false
+  #headerTrackUpdate = Promise.resolve()
 
   // wod5e's base sheet defaults to a cramped 1000x800 window (WoDActorBase.
   // DEFAULT_OPTIONS) - the reference screenshots were clearly captured from
@@ -125,11 +127,15 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
   static DEFAULT_OPTIONS = {
     position: { width: 1400, height: 900 },
     actions: {
+      searchConditions: onSearchConditions,
       toggleExpandRow: onToggleExpandRow,
       addExperience: onSpendOrAddExperience,
       rouseCheck: onRouseCheck,
       resistFrenzy: onTestFrenzy,
       editResonance: onEditResonance,
+      increaseHeaderTrack: function (_event, target) {
+        return this.#changeHeaderTrack(target.dataset.track, 1)
+      },
       editHumanity: function (_event, target) {
         return this.#editHumanity(target)
       },
@@ -140,6 +146,58 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
         game.modules.get(MODULE_ID).api.openChargenWizard(this.document)
       }
     }
+  }
+
+  async _onRender (context, options) {
+    await super._onRender(context, options)
+    this.element?.querySelector('.cs-vampire-header')?.addEventListener('contextmenu', this.#onHeaderContextMenu)
+  }
+
+  #onHeaderContextMenu = event => {
+    const size = event.target.closest('.cs-track-size')
+    const dots = event.target.closest('.resource-value-step')?.closest('.cs-header-dots')
+    const track = size?.dataset.track ?? dots?.dataset.track
+    if (!track) return
+
+    event.preventDefault()
+    return this.#changeHeaderTrack(track, -1)
+  }
+
+  #changeHeaderTrack (track, delta) {
+    this.#headerTrackUpdate = this.#headerTrackUpdate
+      .then(async () => {
+        const actor = this.actor
+        if (!this.isEditable) return
+        if (actor.system.locked && track !== 'hunger') {
+          ui.notifications.warn(game.i18n.format('WOD5E.Notifications.CannotModifyResourceString', { string: actor.name }))
+          return
+        }
+
+        if (track === 'hunger' || track === 'potency') {
+          const isHunger = track === 'hunger'
+          const value = isHunger ? actor.system.hunger.value : actor.system.blood.potency
+          const path = isHunger ? 'system.hunger.value' : 'system.blood.potency'
+          if (value > 0) await actor.update({ [path]: value - 1 })
+          return
+        }
+
+        if (track !== 'health' && track !== 'willpower') return
+        const { max, superficial, aggravated } = actor.system[track]
+        const nextMax = Math.max(0, max + delta)
+        if (max === nextMax) return
+        const nextSuperficial = Math.min(superficial, nextMax)
+        const nextAggravated = Math.min(aggravated, nextMax - nextSuperficial)
+        await actor.update({
+          [`system.${track}.max`]: nextMax,
+          [`system.${track}.superficial`]: nextSuperficial,
+          [`system.${track}.aggravated`]: nextAggravated
+        })
+      })
+      .catch(error => {
+        console.error(`${MODULE_ID} | Falha ao ajustar a trilha`, error)
+        ui.notifications.error('Não foi possível ajustar a trilha da ficha.')
+      })
+    return this.#headerTrackUpdate
   }
 
   _getHeaderControls () {

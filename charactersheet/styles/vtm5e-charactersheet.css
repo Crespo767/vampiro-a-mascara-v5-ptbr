@@ -472,9 +472,7 @@
 .actor.sheet.vampire:not(.spc):not(.group) .cs-stat-willpower .resource-counter-step,
 .actor.sheet.vampire:not(.spc):not(.group) .cs-stat-humanity .resource-counter-step,
 .actor.sheet.vampire:not(.spc):not(.group) .cs-stat-hunger .resource-value-step,
-.actor.sheet.vampire:not(.spc):not(.group) .cs-stat-hunger .resource-value-empty,
-.actor.sheet.vampire:not(.spc):not(.group) .cs-stat-potency .resource-value-step,
-.actor.sheet.vampire:not(.spc):not(.group) .cs-stat-potency .resource-value-empty {
+.actor.sheet.vampire:not(.spc):not(.group) .cs-stat-potency .resource-value-step {
   width: 17px !important;
   height: 17px !important;
 }
@@ -487,17 +485,30 @@
 }
 
 .actor.sheet.vampire:not(.spc):not(.group) .cs-header-dots button.cs-header-zero {
-  display: inline-grid !important;
+  display: inline-grid;
   place-items: center;
+  width: 17px;
+  min-width: 17px;
+  height: 17px;
   margin: 0 3px 0 0;
   padding: 0;
   min-height: 0;
+  border: 1px solid var(--vtm5e-cs-border);
+  border-radius: 50%;
+  background: var(--vtm5e-cs-bg-panel);
   line-height: 1;
   font-size: 11px;
   color: var(--vtm5e-cs-text);
 }
 
-.actor.sheet.vampire:not(.spc):not(.group) :is(.cs-humanity-edit, .cs-resonance-value) {
+.actor.sheet.vampire:not(.spc):not(.group) .cs-track-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) :is(.cs-track-size, .cs-willpower-roll, .cs-humanity-edit, .cs-resonance-value) {
+  height: auto;
   min-height: 0;
   width: auto;
   padding: 0;
@@ -506,7 +517,7 @@
   box-shadow: none;
 }
 
-.actor.sheet.vampire:not(.spc):not(.group) :is(.cs-humanity-edit, .cs-resonance-value):enabled:hover {
+.actor.sheet.vampire:not(.spc):not(.group) :is(.cs-track-size, .cs-humanity-edit, .cs-resonance-value):enabled:hover {
   text-decoration: underline;
 }
 
@@ -824,6 +835,18 @@
   padding: 8px 16px 16px;
   overflow-y: auto;
   max-height: 100%;
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) button.cs-condition-search {
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: none;
+  box-shadow: none;
 }
 
 .actor.sheet.vampire:not(.spc):not(.group) .cs-conditions-list .items-list,

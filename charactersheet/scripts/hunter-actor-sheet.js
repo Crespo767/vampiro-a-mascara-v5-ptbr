@@ -13,6 +13,7 @@ import {
   decorateStatsTooltips,
   onToggleExpandRow
 } from './shared-context.js'
+import { onSearchConditions } from './condition-picker.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
@@ -24,6 +25,7 @@ export class CharacterSheetHunterActorSheet extends HunterActorSheet {
     classes: ['wod5e', 'actor', 'sheet', 'hunter', 'vampire'],
     position: { width: 1400, height: 900 },
     actions: {
+      searchConditions: onSearchConditions,
       toggleExpandRow: onToggleExpandRow
     }
   }
