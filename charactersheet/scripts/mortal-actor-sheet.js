@@ -111,7 +111,7 @@ export class CharacterSheetMortalActorSheet extends withLocalizedSheetRefresh(wi
 
     switch (partId) {
       case 'stats':
-        return decorateStatsTooltips(context)
+        return decorateStatsTooltips(context, this.isEditable)
       case 'features':
         return prepareMeritsFlawsContext(context, this.actor, this.isEditable)
       case 'biography':

@@ -61,6 +61,12 @@
                             {{#each type as |skill key|}}
                                 <div class="skill">
                                     <div class="resource-label">
+                                        {{#if ../../canEditSkills}}
+                                            <button type="button" class="cs-row-icon cs-sheet-icon-button" data-action="editSkill" data-skill="{{skill.id}}"
+                                                aria-label="Editar {{skill.displayName}}" title="Editar {{skill.displayName}}">
+                                                <i class="fas fa-edit" aria-hidden="true"></i>
+                                            </button>
+                                        {{/if}}
                                         <label for="actor.system.skills.{{skill.id}}.value" class="rollable{{#if skill.bonuses}} specialty-available{{/if}}" data-action="roll" data-value-paths="skills.{{skill.id}}.value"
                                         data-skill="{{skill.id}}" data-select-dialog="true"
                                         data-use-flavor-path="true" data-flavor-path="skills.{{skill.id}}.description" data-macroid="{{skill.macroid}}"

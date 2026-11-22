@@ -6,12 +6,14 @@ import { CharacterSheetWerewolfActorSheet } from './werewolf-actor-sheet.js'
 import { onFeed, registerResonanceExpiry } from './feed.js'
 import { bindTraitDecrement } from './shared-context.js'
 import { registerLocalizedSheetRefresh, SHEET_ITEM_LIST_TEMPLATES } from './sheet-refresh.js'
+import { registerExperienceLedger } from './experience-ledger.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
 Hooks.once('init', () => {
   console.log(`${MODULE_ID} | Initializing`)
   registerResonanceExpiry()
+  registerExperienceLedger()
   registerLocalizedSheetRefresh()
 
   foundry.applications.apps.DocumentSheetConfig.registerSheet(Actor, 'wod5e', CharacterSheetVampireActorSheet, {

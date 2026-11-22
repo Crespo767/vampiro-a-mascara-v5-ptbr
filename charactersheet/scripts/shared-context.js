@@ -116,7 +116,8 @@ const DISCIPLINE_TOOLTIPS = {
 // objects already built by wod5e's own prepareStatsContext) with a
 // .tooltip field per leaf attribute/skill, for the Attributes & Skills tab
 // shared by every splat.
-export function decorateStatsTooltips (context) {
+export function decorateStatsTooltips (context, canEdit) {
+  context.canEditSkills = canEdit
   for (const group of Object.values(context.sortedAttributes ?? {})) {
     for (const attribute of Object.values(group)) {
       attribute.tooltip = ATTRIBUTE_TOOLTIPS[attribute.id] || ''

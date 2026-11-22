@@ -319,7 +319,7 @@ export class CharacterSheetVampireActorSheet extends withLocalizedSheetRefresh(w
         context.canEditHeader = this.isEditable
         return this.prepareHeaderContext(context, this.actor)
       case 'stats':
-        return decorateStatsTooltips(context)
+        return decorateStatsTooltips(context, this.isEditable)
       case 'disciplines':
         context.canEditDisciplines = this.isEditable
         return prepareDisciplinesFlatContext(context)

@@ -129,7 +129,7 @@ export class CharacterSheetGhoulActorSheet extends withLocalizedSheetRefresh(wit
       case 'header':
         return this.prepareHeaderContext(context, this.actor)
       case 'stats':
-        return decorateStatsTooltips(context)
+        return decorateStatsTooltips(context, this.isEditable)
       case 'disciplines':
         context.canEditDisciplines = this.isEditable
         return prepareDisciplinesFlatContext(context)

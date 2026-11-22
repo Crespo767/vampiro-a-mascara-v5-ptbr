@@ -1,3 +1,5 @@
+import { experienceEntryUpdates } from './experience-ledger.js'
+
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 const SHOP_ACTOR_TYPES = new Set(['vampire', 'ghoul'])
 
@@ -47,7 +49,7 @@ export async function onRecordExperience (event, target) {
       value: spend ? -result.points : result.points,
       timestamp: Date.now()
     }
-    await actor.update({ 'system.experiences': [...(actor.system.experiences ?? []), entry] })
+    await actor.update(experienceEntryUpdates([entry]))
   } finally {
     target.disabled = false
   }
@@ -76,9 +78,9 @@ export async function onRemoveExperienceEntry (event, target) {
     })
     if (!confirmed || !this.isEditable) return
 
-    const entries = actor.system.experiences ?? []
-    const remaining = entries.filter(experience => experience.id !== id)
-    if (remaining.length !== entries.length) await actor.update({ 'system.experiences': remaining })
+    if (actor.system.experiences?.some(experience => experience.id === id)) {
+      await actor.update(experienceEntryUpdates([{ id, removed: true }]))
+    }
   } finally {
     delete target.dataset.confirming
   }

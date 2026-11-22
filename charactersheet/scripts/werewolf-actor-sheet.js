@@ -135,7 +135,9 @@ export class CharacterSheetWerewolfActorSheet extends withLocalizedSheetRefresh(
 
     switch (partId) {
       case 'stats':
-        return decorateStatsTooltips(context)
+        return decorateStatsTooltips(context, this.isEditable)
+      case 'gifts':
+        return { ...context, canEditGifts: this.isEditable }
       case 'features':
         return prepareMeritsFlawsContext(context, this.actor, this.isEditable)
       case 'biography':

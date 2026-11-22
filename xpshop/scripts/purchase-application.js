@@ -1,3 +1,5 @@
+import { experienceEntryUpdates } from '../../charactersheet/scripts/experience-ledger.js'
+
 // Prepare all purchased documents before writing XP or actor changes.
 // Persist the cart in up to three Foundry operations:
 //   1. one actor.update() for every scalar delta (attributes/skills/
@@ -105,8 +107,7 @@ export async function commitCart (actor, cart) {
       timestamp: Date.now()
     })
   }
-  const existingExperiences = actor.system.experiences || []
-  scalarUpdates['system.experiences'] = [...existingExperiences, ...experienceEntries]
+  Object.assign(scalarUpdates, experienceEntryUpdates(experienceEntries))
 
   await actor.update(scalarUpdates)
   if (newItems.length > 0) await actor.createEmbeddedDocuments('Item', newItems)

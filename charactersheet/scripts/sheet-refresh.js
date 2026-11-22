@@ -6,6 +6,7 @@ import {
   _setupSquareCounters
 } from '/systems/wod5e/system/actor/scripts/counters.js'
 import { ActorUX } from '/systems/wod5e/system/actor/scripts/actor-ux.js'
+import { EXPERIENCE_LEDGER_PATH } from './experience-ledger.js'
 
 const REFRESH_OPTION = 'vtm5eSheetParts'
 const ACTOR_TYPES = new Set(['vampire', 'ghoul', 'mortal', 'hunter', 'werewolf'])
@@ -52,7 +53,11 @@ const SYSTEM_PARTS = {
   selectedDiscipline: ['disciplines'],
   selectedDisciplinePower: ['disciplines'],
   edges: ['edges'],
+  selectedEdge: ['edges'],
+  selectedEdgePerk: ['edges'],
   gifts: ['gifts'],
+  selectedGift: ['gifts'],
+  selectedGiftPower: ['gifts'],
   renown: ['gifts'],
   exp: ['experience'],
   experience: ['experience'],
@@ -76,17 +81,23 @@ function partsForPath (path) {
   if (root === 'system' && Object.hasOwn(SYSTEM_PARTS, key)) return SYSTEM_PARTS[key]
   if (path === 'flags.vampiro-a-mascara-v5-ptbr.compulsion') return ['header']
   if (path === 'flags.vampiro-a-mascara-v5-ptbr.currency') return ['equipment']
+  if (path === EXPERIENCE_LEDGER_PATH || path.startsWith(`${EXPERIENCE_LEDGER_PATH}.`)) return ['experience']
   if (root === '_stats') return []
   return undefined
 }
 
 function partsForEffectKeys (keys) {
-  return keys.flatMap(key => partsForPath(key) ?? [])
+  return keys.flatMap(key => {
+    if (typeof key !== 'string') return []
+    if (['physical', 'social', 'mental'].includes(key)) return SYSTEM_PARTS.attributes
+    return partsForPath(key) ?? partsForPath(`system.${key}`) ?? []
+  })
 }
 
 function partsForItem (item, changes) {
   const parts = Object.hasOwn(ITEM_PARTS, item.type) ? ITEM_PARTS[item.type] : ['stats', 'features', 'equipment']
-  const effects = [...Object.values(item.system?.effects ?? {}), ...Object.values(changes?.system?.effects ?? {})]
+  const updatedEffects = changes && foundry.utils.expandObject(changes).system?.effects
+  const effects = [...Object.values(item.system?.effects ?? {}), ...Object.values(updatedEffects ?? {})]
   const keys = effects.flatMap(effect => effect?.keys ?? []).filter(key => typeof key === 'string')
   const embeddedEffectKeys = Array.from(item.effects?.values() ?? [])
     .flatMap(effect => (effect.changes ?? []).map(change => change.key))
@@ -98,22 +109,27 @@ function actorForEmbedded (document) {
   return parent instanceof Item ? parent.parent : parent
 }
 
-function sheetForActor (actor) {
-  if (!(actor instanceof Actor) || !ACTOR_TYPES.has(actor.type)) return
-  const sheet = actor.sheet
-  if (typeof sheet?.queueLocalizedRefresh === 'function') return sheet
+function isSupportedActor (actor) {
+  return actor instanceof Actor && ACTOR_TYPES.has(actor.type)
 }
 
 function markLocalized (actor, options, parts) {
   const queued = options[REFRESH_OPTION]
-  if ((options.render === false && !queued) || !sheetForActor(actor)) return
+  if (!parts.length || !isSupportedActor(actor) || (options.render === false && !queued)) return
   options[REFRESH_OPTION] = [...new Set([...(queued ?? []), ...parts])]
   options.render = false
 }
 
 function refreshAfterOperation (actor, options) {
   const parts = options[REFRESH_OPTION]
-  if (parts?.length) sheetForActor(actor)?.queueLocalizedRefresh(parts)
+  if (!parts?.length || !isSupportedActor(actor)) return
+
+  // The pre-hook runs on the originating client. Choose how to redraw
+  // only here, using the receiving client's sheet.
+  const sheet = actor.sheet
+  if (!sheet?.rendered) return
+  if (typeof sheet.queueLocalizedRefresh === 'function') sheet.queueLocalizedRefresh(parts)
+  else sheet.render()
 }
 
 function bindDraggableItems (sheet, element) {
@@ -148,7 +164,7 @@ export function registerLocalizedSheetRefresh () {
         const isDelete = action === 'Delete'
         const options = isDelete ? data : operation
         const parts = kind === 'Item'
-          ? partsForItem(document, action === 'Update' ? data : undefined)
+          ? partsForItem(document, isDelete ? undefined : data)
           : partsForEffectKeys([...(document.changes ?? []), ...(isDelete ? [] : (data?.changes ?? []))].map(change => change.key))
         markLocalized(actorForEmbedded(document), options, parts)
       })
@@ -192,15 +208,18 @@ export function withLocalizedSheetRefresh (BaseSheet) {
               const element = this.parts[part]
               return {
                 part,
-                scrollTop: element.querySelector(SCROLL_REGIONS)?.scrollTop ?? 0,
+                scrollTop: element.scrollTop,
+                innerScrollTop: element.querySelector(SCROLL_REGIONS)?.scrollTop ?? 0,
                 expandedRows: new Set(Array.from(element.querySelectorAll('.cs-expanded[data-item-id]'), row => row.dataset.itemId))
               }
             })
             await this.render({ parts, vtm5eLocalizedRefresh: true })
-            for (const { part, scrollTop, expandedRows } of views) {
+            for (const { part, scrollTop, innerScrollTop, expandedRows } of views) {
               const element = this.parts[part]
-              const scrollRegion = element?.querySelector(SCROLL_REGIONS)
-              if (scrollRegion) scrollRegion.scrollTop = scrollTop
+              if (!element) continue
+              element.scrollTop = scrollTop
+              const scrollRegion = element.querySelector(SCROLL_REGIONS)
+              if (scrollRegion) scrollRegion.scrollTop = innerScrollTop
               for (const row of element?.querySelectorAll('.cs-expand-row[data-item-id]') ?? []) {
                 if (expandedRows.has(row.dataset.itemId)) row.classList.add('cs-expanded')
               }

@@ -1211,6 +1211,17 @@
   color: var(--vtm5e-cs-red-bright);
 }
 
+.actor.sheet.vampire:not(.spc):not(.group) .cs-sheet-icon-button {
+  width: 1.5rem;
+  min-width: 0;
+  min-height: 1.5rem;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 .actor.sheet.vampire:not(.spc):not(.group) .cs-expand-caret {
   flex-shrink: 0;
   color: var(--vtm5e-cs-text-dim);

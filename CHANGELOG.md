@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.7.13 — Atualização parcial e controles das fichas
+
+- Condições que alteram grupos de características atualizam as seções afetadas. A atualização parcial funciona também quando a alteração começa em outro cliente que usa a ficha nativa.
+- Lançamentos e compras de XP salvam cada registro separadamente, preservando o histórico e o saldo já existentes.
+- As cinco fichas voltam a oferecer o atalho de edição de Habilidades. Caçadores e Lobisomens recuperam os controles de criação e edição nas abas de Trunfos e de Dons e Ritos.
+
 ## 1.7.12 — Layout e instruções da Criação de Personagem
 
 - O assistente ocupa toda a largura da janela após a remoção do painel Registro da Criação. O cabeçalho exibe os nomes das etapas centralizados, sem números, e se reorganiza em duas linhas em larguras menores.
