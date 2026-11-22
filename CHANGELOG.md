@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.7.7 — Ajustes nos cliques das trilhas de Vampiro
+
+- **Vitalidade e Força de Vontade** — Clique direito em uma caixa vermelha remove uma caixa da trilha. Em uma caixa com dano, o clique direito cura a marca.
+- **Fome e Potência de Sangue** — O clique direito reduz o valor até zero. Os botões 0 foram removidos.
+- **Humanidade** — O clique esquerdo preenche a caixa em vermelho, depois marca uma Mácula e então limpa a caixa. O clique direito limpa direto.
+
 ## 1.7.6 — Controles da ficha e busca de Condições
 
 - **Condições** — A lupa lista itens de Condição nos compêndios acessíveis, incluindo o do wod5e. O botão de edição abre a condição aplicada. A debilitação importada e a automática não duplicam a penalidade.

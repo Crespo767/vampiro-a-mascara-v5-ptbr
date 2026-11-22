@@ -1,8 +1,6 @@
 {{!-- VtM5e Character Sheet Reskin - Header --}}
 {{#*inline "vampireHeaderDots"}}
     <div class="resource-value cs-header-dots" data-value="{{value}}" data-name="{{path}}" data-track="{{track}}">
-        <button type="button" class="cs-header-zero{{#if isHunger}} hunger-value{{/if}}"
-            data-action="dotCounterEmpty" title="{{zeroLabel}}" aria-label="{{zeroLabel}}" {{#unless editable}}disabled{{/unless}}>0</button>
         {{#numLoop max}}
             <span class="resource-value-step{{#if ../isHunger}} hunger-value{{/if}}" data-action="dotCounterChange" data-index="{{this}}"
                 data-tooltip="Clique direito para remover 1 ponto"></span>
@@ -20,10 +18,11 @@
             </button>
         {{/if}}
     </div>
-    <div class="resource-counter editable" data-states="/:superficial,x:aggravated" data-max="{{resource.max}}"
+    <div class="resource-counter editable cs-damage-track" data-track="{{track}}" data-states="/:superficial,x:aggravated" data-max="{{resource.max}}"
         data-superficial="{{resource.superficial}}" data-aggravated="{{resource.aggravated}}" data-name="{{path}}">
         {{#numLoop resource.max}}
-            <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+            <span class="resource-counter-step" data-index="{{this}}" data-state=""
+                data-tooltip="Clique direito: remove a caixa se estiver vermelha ou cura a marca se houver dano."></span>
         {{/numLoop}}
     </div>
 {{/inline}}
@@ -113,7 +112,17 @@
                     data-tooltip="Quanto da moral mortal você ainda preserva contra a Besta; Humanidade baixa aumenta o risco de Máculas e frenesi." data-tooltip-direction="DOWN">
                     {{localize "WOD5E.VTM.Humanity"}} <i class="fa-solid fa-dice-d10"></i>
                 </label>
-                {{> "systems/wod5e/display/vtm/actors/parts/humanity.hbs"}}
+                {{!-- The native square handler cycles through data-states in this order. --}}
+                <div class="humanity">
+                    <div class="resource-content">
+                        <div class="resource-counter editable" data-states="-:value,/:stains"
+                            data-value="{{humanity.value}}" data-stains="{{humanity.stains}}" data-name="system.humanity">
+                            {{#numLoop 10}}
+                                <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+                            {{/numLoop}}
+                        </div>
+                    </div>
+                </div>
                 {{#if canEditHeader}}
                     <button type="button" class="cs-humanity-edit" data-action="editHumanity" aria-label="Editar Humanidade e Máculas" title="Editar Humanidade e Máculas">
                         <i class="fa-solid fa-pen" aria-hidden="true"></i>
@@ -122,7 +131,7 @@
             </div>
             <div class="cs-stat cs-stat-potency">
                 <label class="resource-label field-header" data-tooltip="A força e a idade da sua vitae; Potência do Sangue maior fortalece as Disciplinas, mas agrava a Perdição e o custo em Fome." data-tooltip-direction="DOWN">{{localize "WOD5E.VTM.BloodPotency"}}</label>
-                {{> vampireHeaderDots value=blood.potency max=10 path="system.blood.potency" zeroLabel="Zerar Potência de Sangue" editable=canEditHeader track="potency"}}
+                {{> vampireHeaderDots value=blood.potency max=10 path="system.blood.potency" track="potency"}}
             </div>
         </div>
         <div class="cs-stat-row">
@@ -131,7 +140,7 @@
             </div>
             <div class="cs-stat cs-stat-hunger">
                 <label class="resource-label field-header" data-tooltip="O tamanho da sede de sangue da Besta; Fome maior põe mais dados de Fome nas rolagens e aumenta o risco de Falha Bestial." data-tooltip-direction="UP">{{localize "WOD5E.VTM.Hunger"}}</label>
-                {{> vampireHeaderDots value=hunger.value max=hunger.max path="system.hunger.value" zeroLabel="Zerar Fome" editable=canEditHeader isHunger=true track="hunger"}}
+                {{> vampireHeaderDots value=hunger.value max=hunger.max path="system.hunger.value" isHunger=true track="hunger"}}
             </div>
             <div class="cs-stat cs-stat-resonance">
                 <label class="resource-label field-header" data-tooltip="O sabor que a alimentação deixa em você; pode conceder um dado de bônus a uma Disciplina correspondente." data-tooltip-direction="UP">{{localize "WOD5E.VTM.BloodResonance"}}</label>

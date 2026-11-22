@@ -484,23 +484,6 @@
   margin: 0;
 }
 
-.actor.sheet.vampire:not(.spc):not(.group) .cs-header-dots button.cs-header-zero {
-  display: inline-grid;
-  place-items: center;
-  width: 17px;
-  min-width: 17px;
-  height: 17px;
-  margin: 0 3px 0 0;
-  padding: 0;
-  min-height: 0;
-  border: 1px solid var(--vtm5e-cs-border);
-  border-radius: 50%;
-  background: var(--vtm5e-cs-bg-panel);
-  line-height: 1;
-  font-size: 11px;
-  color: var(--vtm5e-cs-text);
-}
-
 .actor.sheet.vampire:not(.spc):not(.group) .cs-track-label {
   display: flex;
   align-items: center;
@@ -599,7 +582,6 @@
   text-overflow: ellipsis;
 }
 
-/* Header counters use their own visible zero control. */
 .actor.sheet.vampire:not(.spc):not(.group) .resource-value-empty {
   display: none !important;
 }

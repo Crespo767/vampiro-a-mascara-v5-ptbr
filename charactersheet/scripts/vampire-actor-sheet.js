@@ -150,16 +150,19 @@ export class CharacterSheetVampireActorSheet extends VampireActorSheet {
 
   async _onRender (context, options) {
     await super._onRender(context, options)
-    this.element?.querySelector('.cs-vampire-header')?.addEventListener('contextmenu', this.#onHeaderContextMenu)
+    this.element?.querySelector('.cs-vampire-header')?.addEventListener('contextmenu', this.#onHeaderContextMenu, { capture: true })
   }
 
   #onHeaderContextMenu = event => {
     const size = event.target.closest('.cs-track-size')
     const dots = event.target.closest('.resource-value-step')?.closest('.cs-header-dots')
-    const track = size?.dataset.track ?? dots?.dataset.track
+    const freeBox = event.target.closest('.cs-damage-track > .resource-counter-step[data-state=""]')
+    const track = size?.dataset.track ?? dots?.dataset.track ?? freeBox?.parentElement.dataset.track
     if (!track) return
 
     event.preventDefault()
+    // The wod5e listener on the square itself still handles healing marked boxes.
+    if (freeBox) event.stopPropagation()
     return this.#changeHeaderTrack(track, -1)
   }
 
