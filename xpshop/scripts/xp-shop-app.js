@@ -14,6 +14,7 @@ import { getClanKey } from '../../clans/scripts/clan-key.js'
 import { clanAppearanceBlock } from '../../chargen/scripts/grant-engine.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
+const activeCheckouts = new WeakSet()
 
 const ATTRIBUTE_GROUPS = {
   physical: ['strength', 'dexterity', 'stamina'],
@@ -205,7 +206,7 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
   }
 
   get #remainingXP () {
-    return this.actor.system.derivedXP?.remainingXP ?? 0
+    return this.actor.system.derivedXP?.remainingXP ?? this.actor.system.exp?.value ?? 0
   }
 
   // ---------- Discipline cost multiplier resolution ----------
@@ -674,8 +675,8 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
     this.render()
   }
 
-  static async #onCommitCart () {
-    if (this.cart.length === 0) return
+  static async #onCommitCart (_event, target) {
+    if (this.cart.length === 0 || activeCheckouts.has(this.actor)) return
 
     if (this.#cartTotal > this.#remainingXP) {
       ui.notifications.error(`Experiência insuficiente: o carrinho custa ${this.#cartTotal}, e restam apenas ${this.#remainingXP}.`)
@@ -702,6 +703,8 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
       }
     }
 
+    activeCheckouts.add(this.actor)
+    target.disabled = true
     try {
       await commitCart(this.actor, this.cart)
       ui.notifications.info(`${this.actor.name}: gastou ${this.#cartTotal} de Experiência em ${this.cart.length} compra${this.cart.length === 1 ? '' : 's'}.`)
@@ -710,7 +713,10 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
       this.close()
     } catch (err) {
       console.error('vtm5e-xpshop | Failed to commit cart:', err)
-      ui.notifications.error(`vtm5e-xpshop: falha ao aplicar as compras (${err.message}); consulte o console. Nada foi cobrado.`)
+      ui.notifications.error(`Não foi possível concluir as compras: ${err.message}. Confira o saldo e os itens antes de tentar novamente.`)
+    } finally {
+      activeCheckouts.delete(this.actor)
+      target.disabled = false
     }
   }
 }

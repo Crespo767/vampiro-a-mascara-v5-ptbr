@@ -7,6 +7,15 @@
       here - the category appears on its own. --}}
 <section class="tab {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}">
     <div class="cs-disc-scroll">
+        <div class="cs-disc-actions">
+            {{#if canEditDisciplines}}
+                <button type="button" data-action="showDiscipline"><i class="fas fa-plus" aria-hidden="true"></i> Adicionar Disciplina</button>
+            {{/if}}
+            <button type="button" data-action="openDisciplineCompendium"><i class="fas fa-book-open" aria-hidden="true"></i> Abrir compêndio</button>
+        </div>
+        {{#unless hasVisibleDisciplines}}
+            <p class="cs-disc-empty">Nenhuma Disciplina na ficha. Você pode adicionar uma Disciplina ou arrastar um poder do compêndio.</p>
+        {{/unless}}
         {{#each disciplines as |discipline discKey|}}
             {{#if discipline.visible}}
                 <div class="cs-disc-group">
@@ -21,6 +30,11 @@
                             </div>
                         {{/if}}
                         <div class="item-controls cs-disc-header-controls">
+                            {{#if ../canEditDisciplines}}
+                                <a class="item-control item-create" data-action="createItem" data-type="power" data-subtype="{{discKey}}" title="Criar poder">
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                            {{/if}}
                             {{#if (and (ne discKey "rituals") (ne discKey "ceremonies"))}}
                                 <a class="rollable discipline-dice" data-action="roll" title="{{localize 'WOD5E.RollList.Label'}}" data-value-paths="disciplines.{{discKey}}.value"
                                     data-discipline="{{discKey}}" data-select-dialog="true">
@@ -54,6 +68,9 @@
                                 <span class="cs-power-level">{{power.system.level}}</span>
                                 <a class="cs-row-icon" data-action="itemChat" data-item-id="{{power._id}}" title="{{localize 'WOD5E.ItemsList.ShowToChat'}}">
                                     <i class="fas fa-comment-alt"></i>
+                                </a>
+                                <a class="cs-row-icon" data-action="itemEdit" data-item-id="{{power.id}}" title="{{localize 'WOD5E.Edit'}}">
+                                    <i class="fas fa-edit"></i>
                                 </a>
                                 <a class="cs-row-icon" data-action="itemDelete" data-item-id="{{power._id}}" title="{{localize 'WOD5E.Delete'}}">
                                     <i class="fas fa-trash"></i>

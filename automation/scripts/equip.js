@@ -89,6 +89,7 @@ export async function openEquipMenu (actor, item) {
     window: { title: `Equipar ${item.name}` },
     content: `<p>${currentSlot ? `Equipado: <b>${slotLabel(item.type, currentSlot)}</b>.` : 'Não equipado.'}</p>`,
     buttons,
+    rejectClose: false,
     classes: ['wod5e']
   })
 

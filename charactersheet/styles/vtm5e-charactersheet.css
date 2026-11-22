@@ -819,7 +819,7 @@
   max-height: 100%;
 }
 
-.actor.sheet.vampire:not(.spc):not(.group) button.cs-condition-search {
+.actor.sheet.vampire:not(.spc):not(.group) button:is(.cs-compendium-search, .cs-custom-roll-button) {
   display: inline-flex;
   width: auto;
   height: auto;
@@ -897,6 +897,19 @@
 }
 
 /* ---------- Merits & Flaws (module-owned template) - 4 columns ---------- */
+.actor.sheet.vampire:not(.spc):not(.group) .cs-mf-actions {
+  padding: 12px 16px 0;
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) .cs-mf-actions button {
+  width: auto;
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) .cs-mf-empty {
+  margin: 6px 16px 0;
+  color: var(--vtm5e-cs-text-dim);
+}
+
 .actor.sheet.vampire:not(.spc):not(.group) .cs-mf-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -913,6 +926,9 @@
 }
 
 .actor.sheet.vampire:not(.spc):not(.group) .cs-mf-column-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--vtm5e-cs-font-display);
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -920,6 +936,16 @@
   font-size: 13px;
   color: var(--vtm5e-cs-text);
   margin-bottom: 2px;
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) button.cs-mf-add {
+  width: auto;
+  height: auto;
+  min-height: 0;
+  padding: 0 3px;
+  border: 0;
+  color: inherit;
+  background: none;
 }
 
 .actor.sheet.vampire:not(.spc):not(.group) .cs-mf-dots .resource-value-step,
@@ -1036,6 +1062,15 @@
   gap: 14px;
 }
 
+.actor.sheet.vampire:not(.spc):not(.group) .cs-eq-actions button {
+  width: auto;
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) .cs-eq-empty {
+  margin: 0;
+  color: var(--vtm5e-cs-text-dim);
+}
+
 .actor.sheet.vampire:not(.spc):not(.group) .cs-currency-content {
   display: flex;
   align-items: center;
@@ -1071,6 +1106,21 @@
   padding: 10px;
   height: 100%;
   overflow-y: auto;
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) .cs-disc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) .cs-disc-actions button {
+  width: auto;
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) .cs-disc-empty {
+  margin: 0;
+  color: var(--vtm5e-cs-text-dim);
 }
 
 .actor.sheet.vampire:not(.spc):not(.group) .cs-disc-group {
@@ -1110,7 +1160,7 @@
   transition: opacity 0.15s;
 }
 
-.actor.sheet.vampire:not(.spc):not(.group) .cs-disc-header:hover .cs-disc-header-controls {
+.actor.sheet.vampire:not(.spc):not(.group) .cs-disc-header:is(:hover, :focus-within) .cs-disc-header-controls {
   opacity: 0.6;
 }
 
@@ -1306,6 +1356,15 @@
 .actor.sheet.vampire:not(.spc):not(.group) .cs-exp-btn:hover {
   border-color: var(--vtm5e-cs-red-bright);
   color: var(--vtm5e-cs-text);
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) .cs-exp-legacy,
+.actor.sheet.vampire:not(.spc):not(.group) .cs-exp-empty {
+  color: var(--vtm5e-cs-text-dim);
+}
+
+.actor.sheet.vampire:not(.spc):not(.group) .cs-exp-legacy summary {
+  cursor: pointer;
 }
 
 .actor.sheet.vampire:not(.spc):not(.group) .cs-exp-history {

@@ -2,10 +2,25 @@
       Backgrounds/Boons), each item an expandable row using the same
       cs-expand-row pattern as the Disciplines tab. --}}
 <section class="tab {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}">
+    <div class="cs-mf-actions">
+        <button type="button" data-action="openMeritsFlawsCompendium"><i class="fas fa-book-open" aria-hidden="true"></i> Abrir compêndio</button>
+    </div>
+    {{#unless hasMeritsFlaws}}
+        <p class="cs-mf-empty">Nenhum item nesta aba.</p>
+    {{/unless}}
     <div class="cs-mf-grid">
         {{#each mfColumns as |col|}}
             <div class="cs-mf-column">
-                <div class="cs-mf-column-header">{{col.label}}</div>
+                <div class="cs-mf-column-header">
+                    <span>{{col.label}}</span>
+                    {{#if col.canCreate}}
+                        <button type="button" class="cs-mf-add" data-action="createItem" data-type="{{col.itemType}}"
+                            {{#if col.subtype}}data-subtype="{{col.subtype}}"{{/if}}
+                            title="Adicionar em {{col.label}}" aria-label="Adicionar em {{col.label}}">
+                            <i class="fas fa-plus" aria-hidden="true"></i>
+                        </button>
+                    {{/if}}
+                </div>
                 {{#each col.items as |item|}}
                     <div class="cs-expand-row" data-drag="true" data-item-id="{{item.id}}" data-document-uuid="{{item.uuid}}" data-type="Item">
                         <div class="cs-expand-summary" data-action="toggleExpandRow">
@@ -21,6 +36,9 @@
                             {{/ifnoteq}}
                             <a class="cs-row-icon" data-action="itemChat" data-item-id="{{item._id}}" title="{{localize 'WOD5E.ItemsList.ShowToChat'}}">
                                 <i class="fas fa-comment-alt"></i>
+                            </a>
+                            <a class="cs-row-icon" data-action="itemEdit" data-item-id="{{item.id}}" title="{{localize 'WOD5E.Edit'}}">
+                                <i class="fas fa-edit"></i>
                             </a>
                             <a class="cs-row-icon" data-action="itemDelete" data-item-id="{{item._id}}" title="{{localize 'WOD5E.Delete'}}">
                                 <i class="fas fa-trash"></i>

@@ -6,13 +6,19 @@ import {
   _setupSquareCounters
 } from '/systems/wod5e/system/actor/scripts/counters.js'
 import { ActorUX } from '/systems/wod5e/system/actor/scripts/actor-ux.js'
-import { refreshConditionRows } from './condition-picker.js'
 
 const REFRESH_OPTION = 'vtm5eSheetParts'
 const ACTOR_TYPES = new Set(['vampire', 'ghoul', 'mortal', 'hunter', 'werewolf'])
+const TEMPLATE_PATH = 'modules/vampiro-a-mascara-v5-ptbr/charactersheet/templates'
+const ITEM_LISTS = {
+  conditions: { type: 'condition', selector: '[data-condition-rows]', template: `${TEMPLATE_PATH}/condition-rows.hbs` },
+  customRolls: { type: 'customRoll', selector: '[data-custom-roll-rows]', template: `${TEMPLATE_PATH}/custom-roll-rows.hbs` }
+}
+export const SHEET_ITEM_LIST_TEMPLATES = Object.values(ITEM_LISTS).map(list => list.template)
+
 const ITEM_PARTS = {
   condition: ['conditions'],
-  customRoll: ['stats'],
+  customRoll: ['customRolls'],
   trait: ['stats'],
   feature: ['features'],
   boon: ['features'],
@@ -43,12 +49,15 @@ const SYSTEM_PARTS = {
   attributes: ['stats', 'header'],
   skills: ['stats'],
   disciplines: ['disciplines'],
+  selectedDiscipline: ['disciplines'],
+  selectedDisciplinePower: ['disciplines'],
   edges: ['edges'],
   gifts: ['gifts'],
   renown: ['gifts'],
   exp: ['experience'],
   experience: ['experience'],
   experiences: ['experience'],
+  equipment: ['equipment'],
   biography: ['biography'],
   appearance: ['biography'],
   bio: ['biography'],
@@ -107,6 +116,31 @@ function refreshAfterOperation (actor, options) {
   if (parts?.length) sheetForActor(actor)?.queueLocalizedRefresh(parts)
 }
 
+function bindDraggableItems (sheet, element) {
+  if (!sheet._canDragStart()) return
+  const dragStart = sheet._onDragStart.bind(sheet)
+  for (const row of element.querySelectorAll('[data-drag]')) {
+    row.draggable = true
+    row.addEventListener('dragstart', dragStart)
+  }
+}
+
+async function refreshItemList (sheet, key) {
+  const { selector, template, type } = ITEM_LISTS[key]
+  const list = sheet.element?.querySelector(selector)
+  if (!list) return
+
+  const items = sheet.actor.items
+    .filter(item => item.type === type)
+    .sort((a, b) => a.sort - b.sort)
+    .map(item => ({ id: item.id, uuid: item.uuid, name: item.name, img: item.img, system: { suppressed: item.system?.suppressed } }))
+  const html = await foundry.applications.handlebars.renderTemplate(template, { [key]: items })
+  if (!list.isConnected) return
+
+  list.innerHTML = html
+  bindDraggableItems(sheet, list)
+}
+
 export function registerLocalizedSheetRefresh () {
   for (const action of ['Create', 'Update', 'Delete']) {
     for (const kind of ['Item', 'ActiveEffect']) {
@@ -152,7 +186,7 @@ export function withLocalizedSheetRefresh (BaseSheet) {
         while (this.rendered && this.#pendingParts.size) {
           const pending = [...this.#pendingParts]
           this.#pendingParts.clear()
-          const parts = pending.filter(part => part !== 'conditions' && this.parts[part])
+          const parts = pending.filter(part => !Object.hasOwn(ITEM_LISTS, part) && this.parts[part])
           if (parts.length) {
             const views = parts.map(part => {
               const element = this.parts[part]
@@ -172,7 +206,9 @@ export function withLocalizedSheetRefresh (BaseSheet) {
               }
             }
           }
-          if (pending.includes('conditions') && !parts.includes('stats')) await refreshConditionRows(this)
+          if (!parts.includes('stats')) {
+            for (const key of pending.filter(key => Object.hasOwn(ITEM_LISTS, key))) await refreshItemList(this, key)
+          }
         }
       } catch (error) {
         console.error('vampiro-a-mascara-v5-ptbr | Falha ao atualizar parte da ficha', error)
@@ -198,13 +234,7 @@ export function withLocalizedSheetRefresh (BaseSheet) {
         for (const control of element.querySelectorAll('.resource-plus, .resource-minus')) {
           control.addEventListener('click', _onResourceChange.bind(this))
         }
-        if (this._canDragStart()) {
-          const dragStart = this._onDragStart.bind(this)
-          for (const row of element.querySelectorAll('[data-drag]')) {
-            row.draggable = true
-            row.addEventListener('dragstart', dragStart)
-          }
-        }
+        bindDraggableItems(this, element)
         await _setupDotCounters(element)
         await _setupSquareCounters(element)
       }

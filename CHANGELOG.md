@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 1.7.9 — Controles das abas e saldo de Experiência
+
+- **Rolagens Personalizadas** — A lupa encontra itens nos compêndios acessíveis, o lápis abre a edição e alterações atualizam apenas a lista.
+- **Disciplinas** — A aba oferece botões para adicionar uma Disciplina e abrir o compêndio, mesmo quando está vazia. Também é possível criar e editar poderes na ficha.
+- **Vantagens e Defeitos** — Atalho para o compêndio, botão de criação por categoria e edição dos itens.
+- **Equipamento** — Atalho para o compêndio, criação e edição de itens e correção dos atalhos duplicados de Equipar e Reparar. Salvar as notas atualiza somente a aba.
+- **Experiência** — A ficha mostra o saldo combinado com o XP legado e esclarece o efeito de excluir um lançamento. A Loja de XP bloqueia confirmações simultâneas no mesmo cliente e interrompe a compra antes da cobrança se o item do compêndio estiver ausente.
+
 ## 1.7.8 — Compêndio de Condições e atualização localizada da ficha
 
 - **Compêndio de Condições** — A lupa abre a janela nativa de Condições do wod5e. Arraste um item do compêndio para a ficha ou use o botão + para criar uma condição em branco.

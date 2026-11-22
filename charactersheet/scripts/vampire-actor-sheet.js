@@ -7,13 +7,15 @@ import { VampireActorSheet } from '/systems/wod5e/system/actor/vtm/vampire-actor
 import {
   prepareDisciplinesFlatContext,
   prepareMeritsFlawsContext,
-  prepareCurrencyContext,
+  prepareEquipmentSheetContext,
   decorateStatsTooltips,
-  onToggleExpandRow,
-  onSpendOrAddExperience
+  onToggleExpandRow
 } from './shared-context.js'
 import { onCreateCondition, onSearchConditions, withConditionDrop } from './condition-picker.js'
+import { onOpenEquipmentCompendium, onOpenMeritsFlawsCompendium, onSearchCustomRolls } from './compendium-picker.js'
+import { onOpenDisciplineCompendium, onShowDiscipline } from './discipline-controls.js'
 import { withLocalizedSheetRefresh } from './sheet-refresh.js'
+import { onRecordExperience, onRemoveExperienceEntry, prepareExperienceSheetContext } from './experience-controls.js'
 import { onRouseCheck, onTestFrenzy } from './vampire-quick-rolls.js'
 import { onEditResonance } from './feed.js'
 // [vtm5e-ptbr] nome em português e texto do livro das Compulsões (mesma fonte da automação)
@@ -128,10 +130,16 @@ export class CharacterSheetVampireActorSheet extends withLocalizedSheetRefresh(w
   static DEFAULT_OPTIONS = {
     position: { width: 1400, height: 900 },
     actions: {
+      addExperience: onRecordExperience,
+      removeExperience: onRemoveExperienceEntry,
       searchConditions: onSearchConditions,
+      searchCustomRolls: onSearchCustomRolls,
+      openMeritsFlawsCompendium: onOpenMeritsFlawsCompendium,
+      openEquipmentCompendium: onOpenEquipmentCompendium,
+      showDiscipline: onShowDiscipline,
+      openDisciplineCompendium: onOpenDisciplineCompendium,
       createCondition: onCreateCondition,
       toggleExpandRow: onToggleExpandRow,
-      addExperience: onSpendOrAddExperience,
       rouseCheck: onRouseCheck,
       resistFrenzy: onTestFrenzy,
       editResonance: onEditResonance,
@@ -313,13 +321,16 @@ export class CharacterSheetVampireActorSheet extends withLocalizedSheetRefresh(w
       case 'stats':
         return decorateStatsTooltips(context)
       case 'disciplines':
+        context.canEditDisciplines = this.isEditable
         return prepareDisciplinesFlatContext(context)
       case 'features':
-        return prepareMeritsFlawsContext(context)
+        return prepareMeritsFlawsContext(context, this.actor, this.isEditable)
       case 'biography':
         return this.prepareConceptLoreContext(context, this.actor)
       case 'equipment':
-        return prepareCurrencyContext(context, this.actor)
+        return prepareEquipmentSheetContext(context, this.actor, this.isEditable)
+      case 'experience':
+        return prepareExperienceSheetContext(context, this.isEditable)
     }
 
     return context

@@ -1,28 +1,8 @@
 import { getImpairmentKey } from '../../automation/scripts/impairment-conditions.js'
 import { formatDataItemId } from '/systems/wod5e/system/actor/scripts/format-data-item-id.js'
+import { openVisibleCompendium, pickCompendiumItem } from './compendium-picker.js'
 
 const CONDITIONS_PACK = 'wod5e.conditions'
-const CONDITION_LIST_SELECTOR = '[data-condition-rows]'
-export const CONDITION_ROWS_TEMPLATE = 'modules/vampiro-a-mascara-v5-ptbr/charactersheet/templates/condition-rows.hbs'
-
-export async function refreshConditionRows (sheet) {
-  const list = sheet.element?.querySelector(CONDITION_LIST_SELECTOR)
-  if (!list) return
-  const conditions = sheet.actor.items
-    .filter(item => item.type === 'condition')
-    .sort((a, b) => a.sort - b.sort)
-    .map(item => ({ id: item.id, uuid: item.uuid, name: item.name, img: item.img, system: { suppressed: item.system.suppressed } }))
-  const html = await foundry.applications.handlebars.renderTemplate(CONDITION_ROWS_TEMPLATE, { conditions })
-  if (!list.isConnected) return
-
-  list.innerHTML = html
-  if (!sheet.isEditable) return
-  const dragStart = sheet._onDragStart.bind(sheet)
-  for (const row of list.querySelectorAll('[data-drag]')) {
-    row.draggable = true
-    row.addEventListener('dragstart', dragStart)
-  }
-}
 
 async function createCondition (sheet, data) {
   if (!sheet.isEditable) return
@@ -81,58 +61,10 @@ export async function onSearchConditions (_event, target) {
 
   target.disabled = true
   try {
-    const nativePack = game.packs.get(CONDITIONS_PACK)
-    if (nativePack?.visible) {
-      const PackApplication = nativePack.applicationClass
-      const app = nativePack.apps.find(candidate => candidate instanceof PackApplication) ?? new PackApplication({ collection: nativePack })
-      await app.render({ force: true })
-      return
-    }
+    if (await openVisibleCompendium(CONDITIONS_PACK)) return
 
-    const packs = Array.from(game.packs.values()).filter(pack => pack.visible && pack.documentName === 'Item')
-    const results = await Promise.allSettled(packs.map(async pack => {
-      const index = await pack.getIndex({ fields: ['type'] })
-      return Array.from(index.values())
-        .filter(entry => entry.type === 'condition')
-        .map(entry => ({ name: entry.name, id: entry._id, pack }))
-    }))
-    const conditions = results.flatMap(result => result.status === 'fulfilled' ? result.value : [])
-    if (!conditions.length) {
-      const message = results.some(result => result.status === 'rejected')
-        ? 'Não foi possível encontrar Condições. Alguns compêndios não puderam ser consultados.'
-        : 'Nenhuma Condição encontrada nos compêndios acessíveis.'
-      ui.notifications.warn(message)
-      return
-    }
-
-    conditions.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR') || a.pack.title.localeCompare(b.pack.title, 'pt-BR'))
-    const options = conditions.map(({ name, pack }, index) =>
-      new Option(`${name} (${pack.title})`, String(index)).outerHTML
-    ).join('')
-    const selected = await foundry.applications.api.DialogV2.wait({
-      window: { title: 'Adicionar condição do compêndio' },
-      content: `<select name="condition" aria-label="Condição">
-        <option value="" selected disabled>Selecione uma Condição</option>${options}
-      </select>`,
-      modal: true,
-      rejectClose: false,
-      buttons: [
-        { action: 'add', label: 'Adicionar', default: true, callback: (_event, button) => button.form.elements.condition.value },
-        { action: 'cancel', label: 'Cancelar', callback: () => null }
-      ]
-    })
-    if (!this.isEditable || selected == null || selected === '') return
-
-    const choice = conditions[Number(selected)]
-    if (!choice || !choice.pack.visible) return
-    const condition = await choice.pack.getDocument(choice.id)
-    if (!condition || condition.type !== 'condition') {
-      ui.notifications.warn('A Condição selecionada não está mais disponível no compêndio.')
-      return
-    }
-    if (!this.isEditable) return
-
-    await importCondition(this, condition)
+    const condition = await pickCompendiumItem('condition', 'Condição')
+    if (condition && this.isEditable) await importCondition(this, condition)
   } catch (error) {
     console.error('vampiro-a-mascara-v5-ptbr | Falha ao importar Condição', error)
     ui.notifications.error('Não foi possível adicionar a Condição do compêndio.')

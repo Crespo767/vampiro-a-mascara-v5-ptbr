@@ -1,8 +1,5 @@
-// Applies a finalized cart to the actor in as few calls as possible - unlike
-// vtm5e-chargen's grant-engine.js (which applies grants incrementally over
-// time with a reversible ledger), a shop commit is atomic: nothing is
-// reversible, so there's no need for per-line actor.update() calls or entry
-// tracking. Three calls total regardless of cart size:
+// Prepare all purchased documents before writing XP or actor changes.
+// Persist the cart in up to three Foundry operations:
 //   1. one actor.update() for every scalar delta (attributes/skills/
 //      disciplines/blood potency/specialty bonuses/experience history)
 //   2. one createEmbeddedDocuments('Item') for genuinely new items
@@ -61,7 +58,7 @@ export async function commitCart (actor, cart) {
       delete data.ownership
       newItems.push(data)
     } else {
-      console.warn(`vtm5e-xpshop | Discipline Power "${entry.powerName}" (${entry.powerId}) not found in compendium at commit time - skipped.`)
+      throw new Error(`Poder não encontrado no compêndio: ${entry.powerName}`)
     }
   }
   for (const [disciplineId, level] of Object.entries(finalDisciplineLevel)) {
@@ -93,7 +90,7 @@ export async function commitCart (actor, cart) {
         data.system.points = entry.targetLevel
         newItems.push(data)
       } else {
-        console.warn(`vtm5e-xpshop | Advantage "${entry.name}" (${entry.compendiumId}) not found in compendium at commit time - skipped.`)
+        throw new Error(`Vantagem não encontrada no compêndio: ${entry.name}`)
       }
     }
   }

@@ -1,0 +1,13 @@
+{{#each customRolls as |roll|}}
+    <div class="item flexrow" data-drag="true" data-item-id="{{roll.id}}" data-document-uuid="{{roll.uuid}}" data-type="Item">
+        <button type="button" class="item-image rollable-item cs-custom-roll-button" data-action="rollItem" data-item-uuid="{{roll.uuid}}"
+            title="{{roll.name}}" aria-label="{{localize 'WOD5E.RollList.Label'}}: {{roll.name}}">
+            <img src="{{roll.img}}" width="24" height="24" alt="" />
+        </button>
+        <div class="item-name">{{roll.name}}</div>
+        <div class="item-controls">
+            <a class="item-control item-edit" data-action="itemEdit" data-item-id="{{roll.id}}" title="{{localize 'WOD5E.Edit'}}"><i class="fas fa-edit"></i></a>
+            <a class="item-control item-delete" data-action="itemDelete" data-item-id="{{roll.id}}" title="{{localize 'WOD5E.Delete'}}"><i class="fas fa-trash"></i></a>
+        </div>
+    </div>
+{{/each}}

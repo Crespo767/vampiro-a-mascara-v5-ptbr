@@ -3,8 +3,6 @@
 // classes and share the exact same Disciplines/Features/Equipment context
 // shape). Split out once a second concrete sheet needed the same logic
 // verbatim, rather than duplicated per-class.
-import { _onAddExperience } from '/systems/wod5e/system/actor/scripts/experience.js'
-
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
 const boundTraitSheets = new WeakSet()
@@ -37,23 +35,6 @@ export function bindTraitDecrement (app) {
     })
     return pending
   })
-}
-
-// Intercepts only the Experience tab's "Spend" button (data-operation=
-// "spend") to open the vtm5e-xpshop module's cart/checkout app instead of
-// wod5e's stock dumb dialog (which just logs a +/- number, never touches
-// any trait). "Add" (gaining XP) and every other splat without a shop yet
-// fall through to wod5e's own _onAddExperience unchanged. Soft dependency -
-// degrades to stock behavior if vtm5e-xpshop isn't installed/active, same
-// pattern as this project's other optional cross-module integrations (e.g.
-// the smartphone-widget hook in vtm5e-domainmap).
-export async function onSpendOrAddExperience (event, target) {
-  const isSpend = target.getAttribute('data-operation') === 'spend'
-  const shop = game.modules.get('vampiro-a-mascara-v5-ptbr')
-  if (isSpend && shop?.active) {
-    return shop.api.open(this.actor)
-  }
-  return _onAddExperience.call(this, event, target)
 }
 
 export const FEATURE_COLUMNS = [
@@ -166,6 +147,7 @@ const ROUSE_COST_WORDS = [
 // populated - this just decorates each power with display-ready cost text
 // for the flat list template.
 export function prepareDisciplinesFlatContext (context) {
+  context.hasVisibleDisciplines = Object.values(context.disciplines ?? {}).some(discipline => discipline.visible)
   for (const [discKey, discipline] of Object.entries(context.disciplines ?? {})) {
     discipline.tooltip = DISCIPLINE_TOOLTIPS[discKey] || ''
 
@@ -178,18 +160,24 @@ export function prepareDisciplinesFlatContext (context) {
   return context
 }
 
-export function prepareMeritsFlawsContext (context) {
+export function prepareMeritsFlawsContext (context, actor, canEdit) {
   context.mfColumns = FEATURE_COLUMNS.map((col) => ({
     key: col.key,
     label: col.label,
+    itemType: col.key === 'boon' ? 'boon' : 'feature',
+    subtype: col.key === 'boon' ? null : col.key,
+    canCreate: canEdit && (col.key !== 'boon' || ['vampire', 'ghoul'].includes(actor.type)),
     items: Object.values(context.features?.[col.key] ?? {})
   }))
+  context.hasMeritsFlaws = context.mfColumns.some(column => column.items.length > 0)
 
   return context
 }
 
-export function prepareCurrencyContext (context, actor) {
+export function prepareEquipmentSheetContext (context, actor, canEdit) {
   context.currency = actor.getFlag(MODULE_ID, 'currency') ?? 0
+  context.canEditEquipment = canEdit
+  context.hasEquipment = Object.values(context.equipmentItems ?? {}).some(items => items.length > 0)
 
   return context
 }

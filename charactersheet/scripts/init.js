@@ -5,8 +5,7 @@ import { CharacterSheetHunterActorSheet } from './hunter-actor-sheet.js'
 import { CharacterSheetWerewolfActorSheet } from './werewolf-actor-sheet.js'
 import { onFeed, registerResonanceExpiry } from './feed.js'
 import { bindTraitDecrement } from './shared-context.js'
-import { CONDITION_ROWS_TEMPLATE } from './condition-picker.js'
-import { registerLocalizedSheetRefresh } from './sheet-refresh.js'
+import { registerLocalizedSheetRefresh, SHEET_ITEM_LIST_TEMPLATES } from './sheet-refresh.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
@@ -45,15 +44,10 @@ Hooks.once('init', () => {
     label: 'Ficha de Personagem VtM5e (PT-BR)'
   })
 
-  // renown.hbs is only ever pulled in via a {{> "modules/..."}} inline
-  // partial include from gifts-rites.hbs, never used as a PARTS.template
-  // value directly - Foundry only auto-registers PARTS templates as
-  // partials, so anything included ONLY this way has to be preloaded by
-  // hand or the include silently fails to resolve. Same reason wod5e's own
-  // system preloads every one of its sub-partials in scripts/templates.js.
+  // Preload the partials included within a sheet part.
   foundry.applications.handlebars.loadTemplates([
     `modules/${MODULE_ID}/charactersheet/templates/renown.hbs`,
-    CONDITION_ROWS_TEMPLATE
+    ...SHEET_ITEM_LIST_TEMPLATES
   ])
 
   // Public API, same pattern vtm5e-automation uses to expose its own

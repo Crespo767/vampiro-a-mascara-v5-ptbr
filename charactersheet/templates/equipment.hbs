@@ -21,9 +21,23 @@
         </div>
 
         <div class="cs-eq-list">
+            <div class="cs-eq-actions">
+                <button type="button" data-action="openEquipmentCompendium"><i class="fas fa-book-open" aria-hidden="true"></i> Abrir compêndio</button>
+            </div>
+            {{#unless hasEquipment}}
+                <p class="cs-eq-empty">Nenhum equipamento na ficha.</p>
+            {{/unless}}
             {{#each equipmentItems as |equipment key|}}
                 <div class="cs-disc-group">
-                    <div class="cs-mf-column-header">{{localize (concat 'TYPES.Item.' key)}}</div>
+                    <div class="cs-mf-column-header">
+                        <span>{{localize (concat 'TYPES.Item.' key)}}</span>
+                        {{#if ../canEditEquipment}}
+                            <button type="button" class="cs-mf-add" data-action="createItem" data-type="{{key}}"
+                                title="Criar {{localize (concat 'TYPES.Item.' key)}}" aria-label="Criar {{localize (concat 'TYPES.Item.' key)}}">
+                                <i class="fas fa-plus" aria-hidden="true"></i>
+                            </button>
+                        {{/if}}
+                    </div>
                     {{#each equipment as |item|}}
                         <div class="cs-expand-row" data-drag="true" data-item-id="{{item.id}}" data-document-uuid="{{item.uuid}}" data-type="Item">
                             <div class="cs-expand-summary" data-action="toggleExpandRow">
@@ -52,6 +66,9 @@
                                 {{/if}}
                                 <a class="cs-row-icon" data-action="itemChat" data-item-id="{{item._id}}" title="{{localize 'WOD5E.ItemsList.ShowToChat'}}">
                                     <i class="fas fa-comment-alt"></i>
+                                </a>
+                                <a class="cs-row-icon" data-action="itemEdit" data-item-id="{{item.id}}" title="{{localize 'WOD5E.Edit'}}">
+                                    <i class="fas fa-edit"></i>
                                 </a>
                                 <a class="cs-row-icon" data-action="itemDelete" data-item-id="{{item._id}}" title="{{localize 'WOD5E.Delete'}}">
                                     <i class="fas fa-trash"></i>

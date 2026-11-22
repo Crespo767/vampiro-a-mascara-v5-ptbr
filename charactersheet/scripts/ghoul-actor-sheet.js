@@ -9,13 +9,15 @@ import { GhoulActorSheet } from '/systems/wod5e/system/actor/vtm/ghoul-actor-she
 import {
   prepareDisciplinesFlatContext,
   prepareMeritsFlawsContext,
-  prepareCurrencyContext,
+  prepareEquipmentSheetContext,
   decorateStatsTooltips,
-  onToggleExpandRow,
-  onSpendOrAddExperience
+  onToggleExpandRow
 } from './shared-context.js'
 import { onCreateCondition, onSearchConditions, withConditionDrop } from './condition-picker.js'
+import { onOpenEquipmentCompendium, onOpenMeritsFlawsCompendium, onSearchCustomRolls } from './compendium-picker.js'
+import { onOpenDisciplineCompendium, onShowDiscipline } from './discipline-controls.js'
 import { withLocalizedSheetRefresh } from './sheet-refresh.js'
+import { onRecordExperience, onRemoveExperienceEntry, prepareExperienceSheetContext } from './experience-controls.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
@@ -29,10 +31,16 @@ export class CharacterSheetGhoulActorSheet extends withLocalizedSheetRefresh(wit
     classes: ['wod5e', 'actor', 'sheet', 'vampire', 'ghoul'],
     position: { width: 1400, height: 900 },
     actions: {
+      addExperience: onRecordExperience,
+      removeExperience: onRemoveExperienceEntry,
       searchConditions: onSearchConditions,
+      searchCustomRolls: onSearchCustomRolls,
+      openMeritsFlawsCompendium: onOpenMeritsFlawsCompendium,
+      openEquipmentCompendium: onOpenEquipmentCompendium,
+      showDiscipline: onShowDiscipline,
+      openDisciplineCompendium: onOpenDisciplineCompendium,
       createCondition: onCreateCondition,
       toggleExpandRow: onToggleExpandRow,
-      addExperience: onSpendOrAddExperience
     }
   }
 
@@ -123,13 +131,16 @@ export class CharacterSheetGhoulActorSheet extends withLocalizedSheetRefresh(wit
       case 'stats':
         return decorateStatsTooltips(context)
       case 'disciplines':
+        context.canEditDisciplines = this.isEditable
         return prepareDisciplinesFlatContext(context)
       case 'features':
-        return prepareMeritsFlawsContext(context)
+        return prepareMeritsFlawsContext(context, this.actor, this.isEditable)
       case 'biography':
         return this.prepareConceptLoreContext(context, this.actor)
       case 'equipment':
-        return prepareCurrencyContext(context, this.actor)
+        return prepareEquipmentSheetContext(context, this.actor, this.isEditable)
+      case 'experience':
+        return prepareExperienceSheetContext(context, this.isEditable)
     }
 
     return context

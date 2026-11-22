@@ -324,8 +324,7 @@ function bindEquipInterception(app, html) {
     const itemId = chatButton.closest('[data-item-id]')?.dataset.itemId
     const item = itemId ? actor.items.get(itemId) : null
 
-    const existing = chatButton.previousElementSibling
-    if (existing?.dataset?.action === 'vtm5eAutomationEquip') existing.remove()
+    chatButton.parentElement.querySelector('[data-action="vtm5eAutomationEquip"]')?.remove()
 
     if (!item || (item.type !== 'weapon' && item.type !== 'armor')) return
 
@@ -372,8 +371,7 @@ function bindRepairInterception(app, html) {
     const itemId = chatButton.closest('[data-item-id]')?.dataset.itemId
     const item = itemId ? actor.items.get(itemId) : null
 
-    const existing = chatButton.previousElementSibling
-    if (existing?.dataset?.action === 'vtm5eAutomationRepair' || existing?.dataset?.vtm5eAutomationUnrepairable) existing.remove()
+    chatButton.parentElement.querySelector('[data-action="vtm5eAutomationRepair"], [data-vtm5e-automation-unrepairable]')?.remove()
 
     if (!item || (item.type !== 'weapon' && item.type !== 'armor') || !isBroken(item)) return
 

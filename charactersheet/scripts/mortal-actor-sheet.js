@@ -10,12 +10,14 @@
 import { MortalActorSheet } from '/systems/wod5e/system/actor/mortal-actor-sheet.js'
 import {
   prepareMeritsFlawsContext,
-  prepareCurrencyContext,
+  prepareEquipmentSheetContext,
   decorateStatsTooltips,
   onToggleExpandRow
 } from './shared-context.js'
 import { onCreateCondition, onSearchConditions, withConditionDrop } from './condition-picker.js'
+import { onOpenEquipmentCompendium, onOpenMeritsFlawsCompendium, onSearchCustomRolls } from './compendium-picker.js'
 import { withLocalizedSheetRefresh } from './sheet-refresh.js'
+import { onRecordExperience, onRemoveExperienceEntry, prepareExperienceSheetContext } from './experience-controls.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
@@ -24,7 +26,12 @@ export class CharacterSheetMortalActorSheet extends withLocalizedSheetRefresh(wi
     classes: ['wod5e', 'actor', 'sheet', 'mortal', 'vampire'],
     position: { width: 1400, height: 900 },
     actions: {
+      addExperience: onRecordExperience,
+      removeExperience: onRemoveExperienceEntry,
       searchConditions: onSearchConditions,
+      searchCustomRolls: onSearchCustomRolls,
+      openMeritsFlawsCompendium: onOpenMeritsFlawsCompendium,
+      openEquipmentCompendium: onOpenEquipmentCompendium,
       createCondition: onCreateCondition,
       toggleExpandRow: onToggleExpandRow
     }
@@ -106,11 +113,13 @@ export class CharacterSheetMortalActorSheet extends withLocalizedSheetRefresh(wi
       case 'stats':
         return decorateStatsTooltips(context)
       case 'features':
-        return prepareMeritsFlawsContext(context)
+        return prepareMeritsFlawsContext(context, this.actor, this.isEditable)
       case 'biography':
         return this.prepareConceptLoreContext(context, this.actor)
       case 'equipment':
-        return prepareCurrencyContext(context, this.actor)
+        return prepareEquipmentSheetContext(context, this.actor, this.isEditable)
+      case 'experience':
+        return prepareExperienceSheetContext(context, this.isEditable)
     }
 
     return context

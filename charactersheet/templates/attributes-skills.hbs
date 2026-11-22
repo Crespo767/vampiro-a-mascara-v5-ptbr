@@ -100,7 +100,7 @@
                     {{> "modules/vampiro-a-mascara-v5-ptbr/charactersheet/templates/condition-rows.hbs"}}
                 </div>
                 <div class="flex-group-center">
-                    <button type="button" class="item-control search-data-item flex-center cs-condition-search" data-action="searchConditions"
+                    <button type="button" class="item-control search-data-item flex-center cs-compendium-search" data-action="searchConditions"
                         title="Abrir compêndio de Condições" aria-label="Abrir compêndio de Condições">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -114,26 +114,14 @@
         <div class="cs-customrolls-section">
             <div class="resource-header"><span class="header-label">{{localize "WOD5E.ItemsList.CustomRolls"}}</span></div>
             <div class="stats-container cs-customrolls-list">
-                <div class="items-list flexrow">
-                    {{#each customRolls as |roll id|}}
-                        <div class="item flexrow" data-drag="true" data-item-id="{{roll.id}}" data-document-uuid="{{roll.uuid}}" data-type="Item">
-                            <div class="item-image rollable-item" data-action="rollItem" data-item-uuid="{{roll.uuid}}">
-                                <img src="{{roll.img}}" title="{{roll.name}}" width="24" height="24" alt="{{roll.name}}" />
-                            </div>
-                            <div class="item-name">{{roll.name}}</div>
-                            <div class="item-controls">
-                                <a class="item-control item-edit" data-action="itemOpen" data-item-id="{{roll._id}}" title="{{localize 'WOD5E.Edit'}}"><i
-                                    class="fas fa-edit"></i></a>
-                                <a class="item-control item-delete" data-action="itemDelete" data-item-id="{{roll._id}}" title="{{localize 'WOD5E.Delete'}}"><i
-                                    class="fas fa-trash"></i></a>
-                            </div>
-                        </div>
-                    {{/each}}
+                <div class="items-list flexrow" data-custom-roll-rows>
+                    {{> "modules/vampiro-a-mascara-v5-ptbr/charactersheet/templates/custom-roll-rows.hbs"}}
                 </div>
                 <div class="flex-group-center">
-                    <a class="item-control search-data-item flex-center" data-action="searchItem" title="Pesquisar" data-type="customRoll">
+                    <button type="button" class="item-control search-data-item flex-center cs-compendium-search" data-action="searchCustomRolls"
+                        title="Pesquisar Rolagens Personalizadas nos compêndios" aria-label="Pesquisar Rolagens Personalizadas nos compêndios">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                    </a>
+                    </button>
                     <a class="item-control item-create" data-action="createItem" title="{{localize 'WOD5E.Add'}}" data-type="customRoll">
                         <i class="fas fa-plus"></i>
                     </a>
