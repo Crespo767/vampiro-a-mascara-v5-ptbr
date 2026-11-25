@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.8.1 — Textos de Lobisomem e Caçador
+
+- **Textos das regras de Lobisomem e Caçador** nas fichas criadas automaticamente: Tribos, Augúrios, Dons, Rituais, Credos, Ímpetos, Trunfos, Distinções e Vantagens e Defeitos trazem o texto integral do livro, conferido por amostragem com as páginas. Os Dons também preenchem os campos de Custo de Fúria e de Força de Vontade.
+
 ## 1.8.0 — Criação automática para todos os tipos de ficha
 
 - **Criação automática com escolha do tipo de ficha:** a macro **Criar PJ Automático** abre um diálogo para escolher o tipo, com nome e semente opcionais.

@@ -433,9 +433,14 @@ async function loadCharacterBook (file) {
   return response.json()
 }
 
-function bookItem (book, type, { name, page }, fields = {}) {
+function bookItem (book, type, { name, page, description }, fields = {}) {
   const source = { book, page: String(page) }
-  return { type, name, system: { ...fields, source, description: `<p>Ver ${book}, p. ${page}. Texto a incluir.</p>` } }
+  if (type === 'gift' && description) {
+    // Os campos numéricos de custo da ficha saem do "Custo:" do livro (ex.: "1 checagem de Fúria").
+    const cost = description.replace(/<[^>]+>/g, '').match(/Custo:\s*([^\n]*?)(?:Ação:|$)/)?.[1] ?? ''
+    fields = { ...fields, cost: Number(cost.match(/(\d+) checagem de Fúria/)?.[1] ?? 0), willpowercost: Number(cost.match(/(\d+) de Força de Vontade/)?.[1] ?? 0) }
+  }
+  return { type, name, system: { ...fields, source, description: description || `<p>Ver ${book}, p. ${page}. Texto a incluir.</p>` } }
 }
 
 function bookFeatureAllowed (feature, selected, skills) {
