@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.8.2 — Parada de Dados dos Dons
+
+- **Parada de Dados dos Dons** nas fichas de Lobisomem criadas automaticamente: quando o livro dá uma parada fixa (por exemplo, Carisma + Honra), ela já vem no Dom e pode ser rolada. Paradas variáveis, como "Renome (qualquer um)", continuam só no texto.
+
 ## 1.8.1 — Textos de Lobisomem e Caçador
 
 - **Textos das regras de Lobisomem e Caçador** nas fichas criadas automaticamente: Tribos, Augúrios, Dons, Rituais, Credos, Ímpetos, Trunfos, Distinções e Vantagens e Defeitos trazem o texto integral do livro, conferido por amostragem com as páginas. Os Dons também preenchem os campos de Custo de Fúria e de Força de Vontade.

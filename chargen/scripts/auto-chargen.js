@@ -433,12 +433,27 @@ async function loadCharacterBook (file) {
   return response.json()
 }
 
+const POOL_TRAITS = {
+  Força: 'attributes.strength', Destreza: 'attributes.dexterity', Vigor: 'attributes.stamina',
+  Carisma: 'attributes.charisma', Manipulação: 'attributes.manipulation', Autocontrole: 'attributes.composure',
+  Inteligência: 'attributes.intelligence', Raciocínio: 'attributes.wits', Determinação: 'attributes.resolve',
+  Glória: 'renown.glory', Honra: 'renown.honor', Sabedoria: 'renown.wisdom'
+}
+
+// "Parada: Força + Glória vs. ..." vira a parada do Dom; paradas variáveis ("Renome (qualquer um)", "—") ficam vazias.
+function giftDicePool (description) {
+  const text = description.replace(/<[^>]+>/g, '\n').match(/Parada:\s*([^\n]+)/)?.[1] ?? ''
+  const skills = Object.fromEntries(Object.values(SKILL_GROUPS).flat().map(id => [displayLabel(id), `skills.${id}`]))
+  const paths = text.split(/\s+vs\.|\s+ou\s+/)[0].split('+').map(term => POOL_TRAITS[term.trim()] ?? skills[term.trim()])
+  return paths.length === 2 && paths.every(Boolean) ? Object.fromEntries(paths.map((path, i) => [`parada${i + 1}`, { path }])) : {}
+}
+
 function bookItem (book, type, { name, page, description }, fields = {}) {
   const source = { book, page: String(page) }
   if (type === 'gift' && description) {
     // Os campos numéricos de custo da ficha saem do "Custo:" do livro (ex.: "1 checagem de Fúria").
     const cost = description.replace(/<[^>]+>/g, '').match(/Custo:\s*([^\n]*?)(?:Ação:|$)/)?.[1] ?? ''
-    fields = { ...fields, cost: Number(cost.match(/(\d+) checagem de Fúria/)?.[1] ?? 0), willpowercost: Number(cost.match(/(\d+) de Força de Vontade/)?.[1] ?? 0) }
+    fields = { ...fields, cost: Number(cost.match(/(\d+) checagem de Fúria/)?.[1] ?? 0), willpowercost: Number(cost.match(/(\d+) de Força de Vontade/)?.[1] ?? 0), dicepool: giftDicePool(description) }
   }
   return { type, name, system: { ...fields, source, description: description || `<p>Ver ${book}, p. ${page}. Texto a incluir.</p>` } }
 }
