@@ -881,6 +881,16 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
   async #applyPendingClanGrants () {
     const clanItem = this.actor.items.find(i => i.type === 'clan')
     if (!clanItem) return
+    // Fichas de antes da 1.3.0 guardam 1 ponto de Disciplina de clã: refaz pela regra 2+1 (p. 136) e pelo Suspeito dos Caitiff (p. 107).
+    const grants = clanCreationGrants(clanItem)
+    const entries = this.actor.flags?.[MODULE_ID]?.grantLedger?.clan?.entries
+    const dots = (entries ?? []).filter(e => e.type === 'disciplineDot')
+    const outdated = entries && ((grants.some(g => g.type === 'clanDisciplines') && !(dots.length === 2 && dots[0].amount === 2 && dots[1].amount === 1)) ||
+      (grants.some(g => g.type === 'flaw' && g.name === 'Suspect') && !entries.some(e => e.type === 'meritFlaw' && e.name === 'Suspect')))
+    if (outdated) {
+      await clearTrackedGrants(this.actor, 'clan')
+      ui.notifications.info('Os benefícios do Clã foram refeitos pela regra atual do Manual Básico (Disciplinas 2+1).')
+    }
     await applyTrackedGrants(this.actor, {
       slot: 'clan',
       pickLabel: 'Clã',

@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.8.5 — Criar Ficha Automática
+
+- **A macro passa a se chamar "Criar Ficha Automática"**, porque cria todos os tipos de ficha, não só PJs (arquivo `chargen/macros/Criar_Ficha_Automatica.js`). Quem já importou a macro antiga pode continuar usando: ela abre o mesmo diálogo.
+- **Vampiros criados antes da 1.3.0:** ao avançar na etapa de Clã do assistente, os benefícios antigos (1 ponto de Disciplina de clã) são refeitos pela regra 2+1 do Manual Básico (p. 136), com o Suspeito dos Caitiff (p. 107). Personagens já no formato atual não mudam.
+
 ## 1.8.4 — Personagem do Narrador
 
 - **Ficha de Personagem do Narrador** com as trilhas do cabeçalho de Vampiro: Vitalidade e Força de Vontade em caixas vermelhas, clique no nome para acrescentar uma caixa, botão direito para remover ou curar.
