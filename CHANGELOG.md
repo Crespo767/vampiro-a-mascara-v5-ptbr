@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.8.4 — Personagem do Narrador
+
+- **Ficha de Personagem do Narrador** com as trilhas do cabeçalho de Vampiro: Vitalidade e Força de Vontade em caixas vermelhas, clique no nome para acrescentar uma caixa, botão direito para remover ou curar.
+- **Correção:** o Personagem do Narrador gerado pela macro passa a usar a ficha de Mortal. A ficha de PdN do wod5e só mostra o formato simplificado (Manual Básico, p. 370), então os Atributos e Habilidades dos Modelos de Mortais (p. 185) ficavam escondidos e a ficha aparecia com Paradas 1/1/1.
+
 ## 1.8.3 — Cabeçalho do Vampiro nas outras fichas
 
 - **Cabeçalho das fichas de Mortal, Carniçal, Caçador e Lobisomem** igual ao do Vampiro: Vitalidade e Força de Vontade em caixas vermelhas (sem dano), clique no nome para acrescentar uma caixa, botão direito para remover ou curar, e botão de rolar Força de Vontade. Mortal passa a mostrar a Humanidade no topo (Companion, p. 46), e Carniçal ganha o mesmo editor de Humanidade e Máculas do Vampiro.

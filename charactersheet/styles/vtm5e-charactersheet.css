@@ -321,21 +321,21 @@
   font-size: 11px;
 }
 
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) .cs-header-stats {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) .cs-header-stats {
   display: flex;
   flex-direction: column;
   gap: 4px;
   width: 100%;
 }
 
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) .cs-stat-row {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) .cs-stat-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
 }
 
 /* Hunter's tracker row uses two even columns across the header. */
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) .cs-stat-row.cs-stat-row-2col {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) .cs-stat-row.cs-stat-row-2col {
   grid-template-columns: 1fr 1fr;
 }
 
@@ -394,7 +394,7 @@
    bare header background, matching the reference exactly (that per-row
    boxed-card treatment is only for the Attributes/Skills tab body, not the
    header trackers). */
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) .cs-stat {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) .cs-stat {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -409,8 +409,8 @@
   gap: 6px;
 }
 
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) .cs-stat .resource,
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) .cs-stat .resource-content {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) .cs-stat .resource,
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) .cs-stat .resource-content {
   background: none !important;
   border: none !important;
   margin-bottom: 0 !important;
@@ -429,8 +429,8 @@
    and stay clickable, but reference's header labels read as plain text -
    mute them down so they don't compete visually with the label. */
 .actor.sheet.vampire:not(.spc):not(.group) .cs-stat .resource-control,
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) .cs-stat .system-rollable i,
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) .cs-stat .remorse-roll i {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) .cs-stat .system-rollable i,
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) .cs-stat .remorse-roll i {
   font-size: 9px;
   opacity: 0.55;
 }
@@ -453,13 +453,13 @@
 
 /* Health/Willpower read noticeably smaller than the rest of the header
    trackers at the shared 10px/9px sizing - bump just these two ~1.75x. */
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) :is(.cs-stat-health, .cs-stat-willpower) .field-header {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) :is(.cs-stat-health, .cs-stat-willpower) .field-header {
   font-size: 21px;
   font-weight: 900;
   color: var(--vtm5e-cs-text);
 }
 
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) :is(.cs-stat-health, .cs-stat-willpower, .cs-stat-humanity) .resource-counter-step,
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) :is(.cs-stat-health, .cs-stat-willpower, .cs-stat-humanity) .resource-counter-step,
 .actor.sheet.vampire:not(.spc):not(.group) .cs-stat-hunger .resource-value-step,
 .actor.sheet.vampire:not(.spc):not(.group) .cs-stat-potency .resource-value-step {
   width: 17px !important;
@@ -473,13 +473,13 @@
   margin: 0;
 }
 
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) .cs-track-label {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) .cs-track-label {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) :is(.cs-track-size, .cs-willpower-roll, .cs-humanity-edit),
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) :is(.cs-track-size, .cs-willpower-roll, .cs-humanity-edit),
 .actor.sheet.vampire:not(.spc):not(.group) .cs-resonance-value {
   height: auto;
   min-height: 0;
@@ -490,7 +490,7 @@
   box-shadow: none;
 }
 
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header) :is(.cs-track-size, .cs-humanity-edit):enabled:hover,
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header) :is(.cs-track-size, .cs-humanity-edit):enabled:hover,
 .actor.sheet.vampire:not(.spc):not(.group) .cs-resonance-value:enabled:hover {
   text-decoration: underline;
 }
@@ -508,7 +508,7 @@
 
 .actor.sheet.vampire:not(.spc):not(.group) .actor-header .field-header,
 .actor.sheet.vampire:not(.spc):not(.group) .actor-header .resource-label,
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) .actor-header:where(.cs-tracks-header) :is(.field-header, .resource-label) {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) .actor-header:where(.cs-tracks-header) :is(.field-header, .resource-label) {
   color: var(--vtm5e-cs-text-dim);
   font-family: var(--vtm5e-cs-font-display);
   font-weight: 700;
@@ -664,18 +664,18 @@
 
 /* ---------- Box trackers (Health/Willpower) - square, diagonal damage marks ---------- */
 .actor.sheet.vampire:not(.spc):not(.group) .resource-counter .resource-counter-step,
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header :is(.cs-stat-health, .cs-stat-willpower, .cs-stat-humanity)) .resource-counter .resource-counter-step {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header :is(.cs-stat-health, .cs-stat-willpower, .cs-stat-humanity)) .resource-counter .resource-counter-step {
   border: 1px solid var(--vtm5e-cs-border);
   background-color: var(--vtm5e-cs-bg-panel);
 }
 
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) .cs-tracks-header .cs-damage-track .resource-counter-step[data-state=""] {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) .cs-tracks-header .cs-damage-track .resource-counter-step[data-state=""] {
   background: var(--vtm5e-cs-red-bright) !important;
   border-color: var(--vtm5e-cs-red-bright);
 }
 
 .actor.sheet.vampire:not(.spc):not(.group) .resource-counter .resource-counter-step[data-state="/"],
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header :is(.cs-stat-health, .cs-stat-willpower, .cs-stat-humanity)) .resource-counter .resource-counter-step[data-state="/"] {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header :is(.cs-stat-health, .cs-stat-willpower, .cs-stat-humanity)) .resource-counter .resource-counter-step[data-state="/"] {
   background: linear-gradient(
     135deg,
     transparent 0%,
@@ -688,7 +688,7 @@
 }
 
 .actor.sheet.vampire:not(.spc):not(.group) .resource-counter .resource-counter-step[data-state="x"],
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header :is(.cs-stat-health, .cs-stat-willpower, .cs-stat-humanity)) .resource-counter .resource-counter-step[data-state="x"] {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header :is(.cs-stat-health, .cs-stat-willpower, .cs-stat-humanity)) .resource-counter .resource-counter-step[data-state="x"] {
   background: linear-gradient(
     45deg,
     transparent 0%,
@@ -715,7 +715,7 @@
    "vampire theme" setting is on; this rule makes it work even if that
    setting is OFF, and keeps our red consistent with the rest of this sheet. */
 .actor.sheet.vampire:not(.spc):not(.group) .resource-counter .resource-counter-step[data-state="-"],
-.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf):not(.spc):not(.group) :where(.cs-tracks-header :is(.cs-stat-health, .cs-stat-willpower, .cs-stat-humanity)) .resource-counter .resource-counter-step[data-state="-"] {
+.actor.sheet:is(.vampire, .ghoul, .mortal, .hunter, .werewolf, .spc):not(.group) :where(.cs-tracks-header :is(.cs-stat-health, .cs-stat-willpower, .cs-stat-humanity)) .resource-counter .resource-counter-step[data-state="-"] {
   background-color: var(--vtm5e-cs-red-bright) !important;
   border-color: var(--vtm5e-cs-red-bright);
 }

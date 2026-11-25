@@ -1,6 +1,7 @@
 import { CharacterSheetVampireActorSheet } from './vampire-actor-sheet.js'
 import { CharacterSheetGhoulActorSheet } from './ghoul-actor-sheet.js'
 import { CharacterSheetMortalActorSheet } from './mortal-actor-sheet.js'
+import { CharacterSheetSPCActorSheet } from './spc-actor-sheet.js'
 import { CharacterSheetHunterActorSheet } from './hunter-actor-sheet.js'
 import { CharacterSheetWerewolfActorSheet } from './werewolf-actor-sheet.js'
 import { onFeed, registerResonanceExpiry } from './feed.js'
@@ -24,6 +25,12 @@ Hooks.once('init', () => {
 
   foundry.applications.apps.DocumentSheetConfig.registerSheet(Actor, 'wod5e', CharacterSheetGhoulActorSheet, {
     types: ['ghoul'],
+    makeDefault: true,
+    label: 'Ficha de Personagem VtM5e (PT-BR)'
+  })
+
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(Actor, 'wod5e', CharacterSheetSPCActorSheet, {
+    types: ['spc'],
     makeDefault: true,
     label: 'Ficha de Personagem VtM5e (PT-BR)'
   })
