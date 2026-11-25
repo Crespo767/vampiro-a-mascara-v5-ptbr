@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.7.15 — Osíris na criação automática
+
+- **Criação automática:** o Tipo de Predador Osíris passa a ser sorteado. Os 2 pontos de Defeito do Osíris viram Inimigo e Defeitos Míticos reais do compêndio, concedidos pelo Predador e fora dos 2 Defeitos livres. No assistente manual, o jogador continua escolhendo os Defeitos Míticos.
+
 ## 1.7.14 — Macro no compêndio
 
 - **Compêndio Macros** na pasta "Vampiro a Máscara v5 PT-BR", com a macro **Criar PJ Automático**: não é mais preciso colar o código numa macro nova.

@@ -459,6 +459,22 @@ async function promptSplitDots (grant, sourceLabel, actor) {
   return result
 }
 
+// Modo automático: "Defeito Mítico" é uma categoria; sorteia Defeitos Míticos reais
+// que somem exatamente os pontos concedidos (Osíris), sem repetir item.
+async function grantRandomMythicFlaws (actor, amount, log, sourceLabel, entries) {
+  const docs = (await game.packs.get(MERITSFLAWS_PACK_ID)?.getDocuments()) ?? []
+  const mythic = docs.filter(d => d.system?.featuretype === 'flaw' && featureCategory(d) === 'mythic')
+  const picked = new Set()
+  for (let left = amount; left > 0;) {
+    const options = mythic.filter(d => !picked.has(d) && (d.system.points ?? 0) > 0 && d.system.points <= left)
+    if (!options.length) throw new Error(`${sourceLabel}: não há Defeitos Míticos que somem ${amount} pontos.`)
+    const doc = pickerFor(actor)(options)
+    picked.add(doc)
+    left -= doc.system.points
+    await grantMeritOrFlaw(actor, enName(doc), doc.system.points, log, sourceLabel, entries)
+  }
+}
+
 async function findCompendiumMeritFlaw (name) {
   const pack = game.packs.get(MERITSFLAWS_PACK_ID)
   if (!pack) return null
@@ -654,6 +670,7 @@ export async function applyGrant (actor, grant, sourceLabel, log, entries) {
         const amount = Number(amt)
         if (amount <= 0) continue
         if (grant.pool === 'background') await grantBackgroundDots(actor, key, amount, null, log, sourceLabel, entries)
+        else if (grant.pool === 'flaw' && key === 'mythicFlaw' && pickerFor(actor)) await grantRandomMythicFlaws(actor, amount, log, sourceLabel, entries)
         else if (grant.pool === 'flaw' && key === 'mythicFlaw') {
           // [vtm5e-ptbr] "Defeito Mítico" é uma categoria, não um item: o jogador escolhe
           // Defeitos Míticos específicos (pasta Qualidades e Defeitos Míticos) somando esses pontos.

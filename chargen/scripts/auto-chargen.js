@@ -129,8 +129,7 @@ export async function autoCreateCharacter ({ seed, name } = {}) {
       updates['system.headers.touchstones'] = shuffled(TOUCHSTONES, pick).slice(0, count).map(s => s + suffix).join('\n')
       await actor.update(updates)
       const candidates = predators.filter(p => allowed(actor, p))
-      const safe = candidates.filter(p => !(flags(p).grants ?? []).some(g => g.type === 'splitDots' && g.among?.includes('mythicFlaw')))
-      await addPick(actor, pick(safe.length ? safe : candidates), 'predator', log)
+      await addPick(actor, pick(candidates), 'predator', log)
       const specialties = {}
       for (const id of REQUIRED_SPECIALTY_SKILLS.filter(id => skills[id] > 0)) specialties[id] = pick(SPECIALTIES[id])
       const skill = pick(Object.keys(skills).filter(id => skills[id] > 0))
