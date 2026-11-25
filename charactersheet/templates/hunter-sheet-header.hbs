@@ -4,7 +4,7 @@
       (item references, same searchable-or-editable pattern as Clan/Predator
       on the Vampire header). No Humanity/Blood - hunters resist their own
       Despair/Desperation instead of the Beast. --}}
-<header class="actor-header cs-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
+<header class="actor-header cs-header cs-tracks-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
     <div class="cs-header-row">
         <div class="cs-header-identity">
             {{> "systems/wod5e/display/shared/actors/parts/header-profile.hbs"}}
@@ -39,10 +39,10 @@
     <div class="cs-header-stats">
         <div class="cs-stat-row cs-stat-row-2col">
             <div class="cs-stat cs-stat-health">
-                {{> "systems/wod5e/display/shared/actors/parts/health.hbs"}}
+                {{> "modules/vampiro-a-mascara-v5-ptbr/charactersheet/templates/header-damage-track.hbs" resource=health track="health" path="system.health" label=(localize "WOD5E.Health") editable=canEditHeader}}
             </div>
             <div class="cs-stat cs-stat-willpower">
-                {{> "systems/wod5e/display/shared/actors/parts/willpower.hbs"}}
+                {{> "modules/vampiro-a-mascara-v5-ptbr/charactersheet/templates/header-damage-track.hbs" resource=willpower track="willpower" path="system.willpower" label=(localize "WOD5E.Willpower") editable=canEditHeader canRoll=true}}
             </div>
         </div>
     </div>

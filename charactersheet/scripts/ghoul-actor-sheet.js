@@ -17,11 +17,12 @@ import { onCreateCondition, onSearchConditions, withConditionDrop } from './cond
 import { onOpenEquipmentCompendium, onOpenMeritsFlawsCompendium, onSearchCustomRolls } from './compendium-picker.js'
 import { onOpenDisciplineCompendium, onShowDiscipline } from './discipline-controls.js'
 import { withLocalizedSheetRefresh } from './sheet-refresh.js'
+import { onEditHumanity, withHeaderDamageTracks } from './header-tracks.js'
 import { onRecordExperience, onRemoveExperienceEntry, prepareExperienceSheetContext } from './experience-controls.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
-export class CharacterSheetGhoulActorSheet extends withLocalizedSheetRefresh(withConditionDrop(GhoulActorSheet)) {
+export class CharacterSheetGhoulActorSheet extends withHeaderDamageTracks(withLocalizedSheetRefresh(withConditionDrop(GhoulActorSheet))) {
   static DEFAULT_OPTIONS = {
     // wod5e's own GhoulActorSheet only tags itself 'vampire' (no separate
     // 'ghoul' class) - it never needed to distinguish itself from a true
@@ -31,6 +32,7 @@ export class CharacterSheetGhoulActorSheet extends withLocalizedSheetRefresh(wit
     classes: ['wod5e', 'actor', 'sheet', 'vampire', 'ghoul'],
     position: { width: 1400, height: 900 },
     actions: {
+      editHumanity: onEditHumanity,
       addExperience: onRecordExperience,
       removeExperience: onRemoveExperienceEntry,
       searchConditions: onSearchConditions,

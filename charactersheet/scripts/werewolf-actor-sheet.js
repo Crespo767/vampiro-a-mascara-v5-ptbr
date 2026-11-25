@@ -19,11 +19,12 @@ import {
 import { onCreateCondition, onSearchConditions, withConditionDrop } from './condition-picker.js'
 import { onOpenEquipmentCompendium, onOpenMeritsFlawsCompendium, onSearchCustomRolls } from './compendium-picker.js'
 import { withLocalizedSheetRefresh } from './sheet-refresh.js'
+import { withHeaderDamageTracks } from './header-tracks.js'
 import { onRecordExperience, onRemoveExperienceEntry, prepareExperienceSheetContext } from './experience-controls.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
-export class CharacterSheetWerewolfActorSheet extends withLocalizedSheetRefresh(withConditionDrop(WerewolfActorSheet)) {
+export class CharacterSheetWerewolfActorSheet extends withHeaderDamageTracks(withLocalizedSheetRefresh(withConditionDrop(WerewolfActorSheet))) {
   static DEFAULT_OPTIONS = {
     // All of this module's reskin CSS is scoped under .actor.sheet.vampire
     // (added there first, before any non-vampire-family sheet existed) -

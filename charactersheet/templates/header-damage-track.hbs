@@ -1,0 +1,17 @@
+<div class="cs-track-label">
+    <button type="button" class="resource-label field-header cs-track-size" data-action="increaseHeaderTrack" data-track="{{track}}"
+        title="Clique esquerdo para adicionar 1 caixa. Clique direito para remover 1 caixa." {{#unless editable}}disabled{{/unless}}>{{label}}</button>
+    {{#if canRoll}}
+        <button type="button" class="system-rollable willpower-roll cs-willpower-roll" data-action="willpowerRoll"
+            aria-label="{{localize 'WOD5E.Chat.RollWillpower'}}" title="{{localize 'WOD5E.Chat.RollWillpower'}}">
+            <i class="fa-solid fa-dice-d10" aria-hidden="true"></i>
+        </button>
+    {{/if}}
+</div>
+<div class="resource-counter editable cs-damage-track" data-track="{{track}}" data-states="/:superficial,x:aggravated" data-max="{{resource.max}}"
+    data-superficial="{{resource.superficial}}" data-aggravated="{{resource.aggravated}}" data-name="{{path}}">
+    {{#numLoop resource.max}}
+        <span class="resource-counter-step" data-index="{{this}}" data-state=""
+            data-tooltip="Clique direito: remove a caixa se estiver vermelha ou cura a marca se houver dano."></span>
+    {{/numLoop}}
+</div>

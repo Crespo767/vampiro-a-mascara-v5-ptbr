@@ -48,6 +48,8 @@ Hooks.once('init', () => {
 
   // Preload the partials included within a sheet part.
   foundry.applications.handlebars.loadTemplates([
+    `modules/${MODULE_ID}/charactersheet/templates/header-damage-track.hbs`,
+    `modules/${MODULE_ID}/charactersheet/templates/header-humanity.hbs`,
     `modules/${MODULE_ID}/charactersheet/templates/renown.hbs`,
     ...SHEET_ITEM_LIST_TEMPLATES
   ])

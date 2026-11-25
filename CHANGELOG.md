@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.8.3 — Cabeçalho do Vampiro nas outras fichas
+
+- **Cabeçalho das fichas de Mortal, Carniçal, Caçador e Lobisomem** igual ao do Vampiro: Vitalidade e Força de Vontade em caixas vermelhas (sem dano), clique no nome para acrescentar uma caixa, botão direito para remover ou curar, e botão de rolar Força de Vontade. Mortal passa a mostrar a Humanidade no topo (Companion, p. 46), e Carniçal ganha o mesmo editor de Humanidade e Máculas do Vampiro.
+
 ## 1.8.2 — Parada de Dados dos Dons
 
 - **Parada de Dados dos Dons** nas fichas de Lobisomem criadas automaticamente: quando o livro dá uma parada fixa (por exemplo, Carisma + Honra), ela já vem no Dom e pode ser rolada. Paradas variáveis, como "Renome (qualquer um)", continuam só no texto.

@@ -16,11 +16,12 @@ import {
 import { onCreateCondition, onSearchConditions, withConditionDrop } from './condition-picker.js'
 import { onOpenEquipmentCompendium, onOpenMeritsFlawsCompendium, onSearchCustomRolls } from './compendium-picker.js'
 import { withLocalizedSheetRefresh } from './sheet-refresh.js'
+import { withHeaderDamageTracks } from './header-tracks.js'
 import { onRecordExperience, onRemoveExperienceEntry, prepareExperienceSheetContext } from './experience-controls.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
-export class CharacterSheetHunterActorSheet extends withLocalizedSheetRefresh(withConditionDrop(HunterActorSheet)) {
+export class CharacterSheetHunterActorSheet extends withHeaderDamageTracks(withLocalizedSheetRefresh(withConditionDrop(HunterActorSheet))) {
   static DEFAULT_OPTIONS = {
     // wod5e already tags Hunter's own class 'hunter' (not 'vampire') - added
     // here explicitly anyway since this class's classes array replaces

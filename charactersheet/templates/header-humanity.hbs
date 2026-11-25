@@ -1,0 +1,20 @@
+<label class="resource-label field-header system-rollable remorse-roll" data-action="remorseRoll"
+    title="{{localize 'WOD5E.VTM.RollRemorse'}}" data-tooltip="{{tooltip}}" data-tooltip-direction="DOWN">
+    {{localize "WOD5E.VTM.Humanity"}} <i class="fa-solid fa-dice-d10"></i>
+</label>
+{{!-- The native square handler cycles through data-states in this order. --}}
+<div class="humanity">
+    <div class="resource-content">
+        <div class="resource-counter editable" data-states="-:value,/:stains"
+            data-value="{{humanity.value}}" data-stains="{{humanity.stains}}" data-name="system.humanity">
+            {{#numLoop 10}}
+                <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+            {{/numLoop}}
+        </div>
+    </div>
+</div>
+{{#if editable}}
+    <button type="button" class="cs-humanity-edit" data-action="editHumanity" aria-label="Editar Humanidade e Máculas" title="Editar Humanidade e Máculas">
+        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+    </button>
+{{/if}}

@@ -8,6 +8,7 @@
 // any of wod5e's actual vampire-splat game logic (Hunger/Blood/Disciplines),
 // which is all gated by actor type/data model elsewhere, not by this class.
 import { MortalActorSheet } from '/systems/wod5e/system/actor/mortal-actor-sheet.js'
+import { _onRemorseRoll } from '/systems/wod5e/system/actor/vtm/scripts/roll-remorse.js'
 import {
   prepareMeritsFlawsContext,
   prepareEquipmentSheetContext,
@@ -17,15 +18,18 @@ import {
 import { onCreateCondition, onSearchConditions, withConditionDrop } from './condition-picker.js'
 import { onOpenEquipmentCompendium, onOpenMeritsFlawsCompendium, onSearchCustomRolls } from './compendium-picker.js'
 import { withLocalizedSheetRefresh } from './sheet-refresh.js'
+import { onEditHumanity, withHeaderDamageTracks } from './header-tracks.js'
 import { onRecordExperience, onRemoveExperienceEntry, prepareExperienceSheetContext } from './experience-controls.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
-export class CharacterSheetMortalActorSheet extends withLocalizedSheetRefresh(withConditionDrop(MortalActorSheet)) {
+export class CharacterSheetMortalActorSheet extends withHeaderDamageTracks(withLocalizedSheetRefresh(withConditionDrop(MortalActorSheet))) {
   static DEFAULT_OPTIONS = {
     classes: ['wod5e', 'actor', 'sheet', 'mortal', 'vampire'],
     position: { width: 1400, height: 900 },
     actions: {
+      editHumanity: onEditHumanity,
+      remorseRoll: _onRemorseRoll,
       addExperience: onRecordExperience,
       removeExperience: onRemoveExperienceEntry,
       searchConditions: onSearchConditions,
@@ -110,6 +114,8 @@ export class CharacterSheetMortalActorSheet extends withLocalizedSheetRefresh(wi
     context = { ...(await super._preparePartContext(partId, context, options)) }
 
     switch (partId) {
+      case 'header':
+        return { ...context, humanity: this.actor.system.humanity }
       case 'stats':
         return decorateStatsTooltips(context, this.isEditable)
       case 'features':

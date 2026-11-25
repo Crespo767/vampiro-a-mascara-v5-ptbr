@@ -6,7 +6,7 @@
       (search/add when empty, name+edit-pencil when set) rather than
       Vampire's custom clickable-span+tooltip treatment, since Tribe/Auspice
       don't have the same hover-description content built up for them yet. --}}
-<header class="actor-header cs-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
+<header class="actor-header cs-header cs-tracks-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
     <div class="cs-header-row">
         <div class="cs-header-identity">
             {{> "systems/wod5e/display/shared/actors/parts/header-profile.hbs"}}
@@ -32,11 +32,22 @@
 
     <div class="cs-header-stats">
         <div class="cs-stat-row">
-            <div class="cs-stat cs-stat-health">
-                {{> "systems/wod5e/display/shared/actors/parts/health.hbs"}}
+            <div class="cs-stat-health">
+                <div class="cs-stat">
+                    {{> "modules/vampiro-a-mascara-v5-ptbr/charactersheet/templates/header-damage-track.hbs" resource=health track="health" path="system.health" label=(localize "WOD5E.Health") editable=canEditHeader}}
+                </div>
+                {{#ifeq activeForm "crinos"}}
+                    <div class="resource-counter editable crinos-health" data-states="/:superficial,x:aggravated" data-max="{{crinosHealth.max}}"
+                        data-superficial="{{crinosHealth.superficial}}" data-aggravated="{{crinosHealth.aggravated}}"
+                        data-name="system.crinosHealth" data-tooltip="Vitalidade em Crinos">
+                        {{#numLoop crinosHealth.max}}
+                            <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
+                        {{/numLoop}}
+                    </div>
+                {{/ifeq}}
             </div>
             <div class="cs-stat cs-stat-willpower">
-                {{> "systems/wod5e/display/shared/actors/parts/willpower.hbs"}}
+                {{> "modules/vampiro-a-mascara-v5-ptbr/charactersheet/templates/header-damage-track.hbs" resource=willpower track="willpower" path="system.willpower" label=(localize "WOD5E.Willpower") editable=canEditHeader canRoll=true}}
             </div>
             <div class="cs-stat cs-stat-rage">
                 <label class="resource-label field-header" data-tooltip="Sua fúria e seu poder sobrenatural: gaste Fúria para mudar de forma ou ativar Dons, mas, se ela cair demais, você corre o risco de perder o lobo." data-tooltip-direction="UP">

@@ -15,6 +15,7 @@ import { onCreateCondition, onSearchConditions, withConditionDrop } from './cond
 import { onOpenEquipmentCompendium, onOpenMeritsFlawsCompendium, onSearchCustomRolls } from './compendium-picker.js'
 import { onOpenDisciplineCompendium, onShowDiscipline } from './discipline-controls.js'
 import { withLocalizedSheetRefresh } from './sheet-refresh.js'
+import { onEditHumanity, withHeaderDamageTracks } from './header-tracks.js'
 import { onRecordExperience, onRemoveExperienceEntry, prepareExperienceSheetContext } from './experience-controls.js'
 import { onRouseCheck, onTestFrenzy } from './vampire-quick-rolls.js'
 import { onEditResonance } from './feed.js'
@@ -116,9 +117,8 @@ const CLAN_DESCRIPTION_TEXT = {
   tzimisce: 'Alcunhas: Dragões, O Velho Clã, Voivodes. Disciplinas do Clã: Animalismo, Dominação, Proteanismo. Uma força intimidadora em qualquer grupo social, em boa parte pela postura: um Tzimisce considera uma coterie, seis quarteirões ou uma propriedade inteira simplesmente seus. <em>(tradução não oficial)</em>'
 }
 
-export class CharacterSheetVampireActorSheet extends withLocalizedSheetRefresh(withConditionDrop(VampireActorSheet)) {
+export class CharacterSheetVampireActorSheet extends withHeaderDamageTracks(withLocalizedSheetRefresh(withConditionDrop(VampireActorSheet))) {
   #choosingHeaderItem = false
-  #headerTrackUpdate = Promise.resolve()
 
   // wod5e's base sheet defaults to a cramped 1000x800 window (WoDActorBase.
   // DEFAULT_OPTIONS) - the reference screenshots were clearly captured from
@@ -143,12 +143,7 @@ export class CharacterSheetVampireActorSheet extends withLocalizedSheetRefresh(w
       rouseCheck: onRouseCheck,
       resistFrenzy: onTestFrenzy,
       editResonance: onEditResonance,
-      increaseHeaderTrack: function (_event, target) {
-        return this.#changeHeaderTrack(target.dataset.track, 1)
-      },
-      editHumanity: function (_event, target) {
-        return this.#editHumanity(target)
-      },
+      editHumanity: onEditHumanity,
       chooseHeaderItem: function (_event, target) {
         return this.#chooseHeaderItem(target.dataset.type)
       },
@@ -160,57 +155,21 @@ export class CharacterSheetVampireActorSheet extends withLocalizedSheetRefresh(w
 
   async _onRender (context, options) {
     await super._onRender(context, options)
-    this.element?.querySelector('.cs-vampire-header')?.addEventListener('contextmenu', this.#onHeaderContextMenu, { capture: true })
+    this.element?.querySelector('.cs-tracks-header')?.addEventListener('contextmenu', this.#onHeaderDotsContextMenu, { capture: true })
   }
 
-  #onHeaderContextMenu = event => {
-    const size = event.target.closest('.cs-track-size')
+  #onHeaderDotsContextMenu = event => {
     const dots = event.target.closest('.resource-value-step')?.closest('.cs-header-dots')
-    const freeBox = event.target.closest('.cs-damage-track > .resource-counter-step[data-state=""]')
-    const track = size?.dataset.track ?? dots?.dataset.track ?? freeBox?.parentElement.dataset.track
-    if (!track) return
+    const track = dots?.dataset.track
+    if (track !== 'hunger' && track !== 'potency') return
 
     event.preventDefault()
-    // The wod5e listener on the square itself still handles healing marked boxes.
-    if (freeBox) event.stopPropagation()
-    return this.#changeHeaderTrack(track, -1)
-  }
-
-  #changeHeaderTrack (track, delta) {
-    this.#headerTrackUpdate = this.#headerTrackUpdate
-      .then(async () => {
-        const actor = this.actor
-        if (!this.isEditable) return
-        if (actor.system.locked && track !== 'hunger') {
-          ui.notifications.warn(game.i18n.format('WOD5E.Notifications.CannotModifyResourceString', { string: actor.name }))
-          return
-        }
-
-        if (track === 'hunger' || track === 'potency') {
-          const isHunger = track === 'hunger'
-          const value = isHunger ? actor.system.hunger.value : actor.system.blood.potency
-          const path = isHunger ? 'system.hunger.value' : 'system.blood.potency'
-          if (value > 0) await actor.update({ [path]: value - 1 })
-          return
-        }
-
-        if (track !== 'health' && track !== 'willpower') return
-        const { max, superficial, aggravated } = actor.system[track]
-        const nextMax = Math.max(0, max + delta)
-        if (max === nextMax) return
-        const nextSuperficial = Math.min(superficial, nextMax)
-        const nextAggravated = Math.min(aggravated, nextMax - nextSuperficial)
-        await actor.update({
-          [`system.${track}.max`]: nextMax,
-          [`system.${track}.superficial`]: nextSuperficial,
-          [`system.${track}.aggravated`]: nextAggravated
-        })
-      })
-      .catch(error => {
-        console.error(`${MODULE_ID} | Falha ao ajustar a trilha`, error)
-        ui.notifications.error('Não foi possível ajustar a trilha da ficha.')
-      })
-    return this.#headerTrackUpdate
+    const isHunger = track === 'hunger'
+    return this.queueHeaderTrackUpdate(async actor => {
+      const value = isHunger ? actor.system.hunger.value : actor.system.blood.potency
+      const path = isHunger ? 'system.hunger.value' : 'system.blood.potency'
+      if (value > 0) await actor.update({ [path]: value - 1 })
+    }, { allowLocked: isHunger })
   }
 
   _getHeaderControls () {
@@ -316,7 +275,6 @@ export class CharacterSheetVampireActorSheet extends withLocalizedSheetRefresh(w
 
     switch (partId) {
       case 'header':
-        context.canEditHeader = this.isEditable
         return this.prepareHeaderContext(context, this.actor)
       case 'stats':
         return decorateStatsTooltips(context, this.isEditable)
@@ -334,39 +292,6 @@ export class CharacterSheetVampireActorSheet extends withLocalizedSheetRefresh(w
     }
 
     return context
-  }
-
-  async #editHumanity (target) {
-    if (!this.isEditable || target.disabled) return
-    const actor = this.actor
-    const { value, stains } = actor.system.humanity
-    target.disabled = true
-    try {
-      const result = await foundry.applications.api.DialogV2.prompt({
-        window: { title: 'Humanidade e Máculas' },
-        content: `<div class="form-group"><label for="humanityValue">Humanidade</label>
-          <input id="humanityValue" type="number" name="humanity" min="0" max="10" value="${value}"></div>
-          <div class="form-group"><label for="humanityStains">Máculas</label>
-          <input id="humanityStains" type="number" name="stains" min="0" max="10" value="${stains}"></div>`,
-        rejectClose: false,
-        ok: {
-          label: 'Salvar',
-          callback: (_event, button) => ({
-            value: button.form.elements.humanity.valueAsNumber,
-            stains: button.form.elements.stains.valueAsNumber
-          })
-        }
-      })
-      if (!result || !this.isEditable) return
-      if (!Number.isInteger(result.value) || !Number.isInteger(result.stains) ||
-        result.value < 0 || result.stains < 0 || result.value + result.stains > 10) {
-        ui.notifications.warn('Preencha Humanidade e Máculas com números inteiros que juntos ocupem até 10 caixas.')
-        return
-      }
-      await actor.update({ 'system.humanity.value': result.value, 'system.humanity.stains': result.stains })
-    } finally {
-      target.disabled = false
-    }
   }
 
   async #chooseHeaderItem (type) {

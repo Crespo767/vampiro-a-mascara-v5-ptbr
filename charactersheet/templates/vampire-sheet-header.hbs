@@ -7,26 +7,7 @@
         {{/numLoop}}
     </div>
 {{/inline}}
-{{#*inline "vampireHeaderDamageTrack"}}
-    <div class="cs-track-label">
-        <button type="button" class="resource-label field-header cs-track-size" data-action="increaseHeaderTrack" data-track="{{track}}"
-            title="Clique esquerdo para adicionar 1 caixa. Clique direito para remover 1 caixa." {{#unless editable}}disabled{{/unless}}>{{label}}</button>
-        {{#if canRoll}}
-            <button type="button" class="system-rollable willpower-roll cs-willpower-roll" data-action="willpowerRoll"
-                aria-label="{{localize 'WOD5E.Chat.RollWillpower'}}" title="{{localize 'WOD5E.Chat.RollWillpower'}}">
-                <i class="fa-solid fa-dice-d10" aria-hidden="true"></i>
-            </button>
-        {{/if}}
-    </div>
-    <div class="resource-counter editable cs-damage-track" data-track="{{track}}" data-states="/:superficial,x:aggravated" data-max="{{resource.max}}"
-        data-superficial="{{resource.superficial}}" data-aggravated="{{resource.aggravated}}" data-name="{{path}}">
-        {{#numLoop resource.max}}
-            <span class="resource-counter-step" data-index="{{this}}" data-state=""
-                data-tooltip="Clique direito: remove a caixa se estiver vermelha ou cura a marca se houver dano."></span>
-        {{/numLoop}}
-    </div>
-{{/inline}}
-<header class="actor-header cs-header cs-vampire-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
+<header class="actor-header cs-header cs-tracks-header" {{#if headerbg}} style="background: url({{headerbg}}) center;"{{/if}}>
     <div class="cs-header-row">
         <div class="cs-header-identity">
             {{> "systems/wod5e/display/shared/actors/parts/header-profile.hbs"}}
@@ -104,30 +85,10 @@
     <div class="cs-header-stats">
         <div class="cs-stat-row">
             <div class="cs-stat cs-stat-health">
-                {{> vampireHeaderDamageTrack resource=health track="health" path="system.health" label=(localize "WOD5E.Health") editable=canEditHeader}}
+                {{> "modules/vampiro-a-mascara-v5-ptbr/charactersheet/templates/header-damage-track.hbs" resource=health track="health" path="system.health" label=(localize "WOD5E.Health") editable=canEditHeader}}
             </div>
             <div class="cs-stat cs-stat-humanity">
-                <label class="resource-label field-header system-rollable remorse-roll" data-action="remorseRoll"
-                    title="{{localize 'WOD5E.VTM.RollRemorse'}}"
-                    data-tooltip="Quanto da moral mortal você ainda preserva contra a Besta; Humanidade baixa aumenta o risco de Máculas e frenesi." data-tooltip-direction="DOWN">
-                    {{localize "WOD5E.VTM.Humanity"}} <i class="fa-solid fa-dice-d10"></i>
-                </label>
-                {{!-- The native square handler cycles through data-states in this order. --}}
-                <div class="humanity">
-                    <div class="resource-content">
-                        <div class="resource-counter editable" data-states="-:value,/:stains"
-                            data-value="{{humanity.value}}" data-stains="{{humanity.stains}}" data-name="system.humanity">
-                            {{#numLoop 10}}
-                                <span class="resource-counter-step" data-index="{{this}}" data-state=""></span>
-                            {{/numLoop}}
-                        </div>
-                    </div>
-                </div>
-                {{#if canEditHeader}}
-                    <button type="button" class="cs-humanity-edit" data-action="editHumanity" aria-label="Editar Humanidade e Máculas" title="Editar Humanidade e Máculas">
-                        <i class="fa-solid fa-pen" aria-hidden="true"></i>
-                    </button>
-                {{/if}}
+                {{> "modules/vampiro-a-mascara-v5-ptbr/charactersheet/templates/header-humanity.hbs" humanity=humanity editable=canEditHeader tooltip="Quanto da moral mortal você ainda preserva contra a Besta; Humanidade baixa aumenta o risco de Máculas e frenesi."}}
             </div>
             <div class="cs-stat cs-stat-potency">
                 <label class="resource-label field-header" data-tooltip="A força e a idade da sua vitae; Potência do Sangue maior fortalece as Disciplinas, mas agrava a Perdição e o custo em Fome." data-tooltip-direction="DOWN">{{localize "WOD5E.VTM.BloodPotency"}}</label>
@@ -136,7 +97,7 @@
         </div>
         <div class="cs-stat-row">
             <div class="cs-stat cs-stat-willpower">
-                {{> vampireHeaderDamageTrack resource=willpower track="willpower" path="system.willpower" label=(localize "WOD5E.Willpower") editable=canEditHeader canRoll=true}}
+                {{> "modules/vampiro-a-mascara-v5-ptbr/charactersheet/templates/header-damage-track.hbs" resource=willpower track="willpower" path="system.willpower" label=(localize "WOD5E.Willpower") editable=canEditHeader canRoll=true}}
             </div>
             <div class="cs-stat cs-stat-hunger">
                 <label class="resource-label field-header" data-tooltip="O tamanho da sede de sangue da Besta; Fome maior põe mais dados de Fome nas rolagens e aumenta o risco de Falha Bestial." data-tooltip-direction="UP">{{localize "WOD5E.VTM.Hunger"}}</label>
