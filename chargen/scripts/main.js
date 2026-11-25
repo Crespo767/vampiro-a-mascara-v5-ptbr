@@ -1,6 +1,6 @@
 import { openChargenWizard } from './chargen-app.js'
 import { registerAutoProvisioning } from './auto-provision.js'
-import { autoCreateCharacter } from './auto-chargen.js'
+import { autoCreateCharacter, autoCreate, openAutoCreateDialog } from './auto-chargen.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 
@@ -14,6 +14,8 @@ Hooks.once('init', () => {
   mod.api = Object.assign(mod.api ?? {}, {
     openChargenWizard,
     autoCreateCharacter,
+    autoCreate,
+    openAutoCreateDialog,
     // Convenience: open for the first controlled token's actor, or the
     // user's assigned character, if no actor is passed explicitly.
     openForSelectedOrAssigned () {

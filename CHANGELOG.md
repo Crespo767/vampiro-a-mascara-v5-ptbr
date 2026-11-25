@@ -1,5 +1,17 @@
 # Histórico de versões
 
+## 1.8.0 — Criação automática para todos os tipos de ficha
+
+- **Criação automática com escolha do tipo de ficha:** a macro **Criar PJ Automático** abre um diálogo para escolher o tipo, com nome e semente opcionais.
+  - **Mortal** (Companion, p. 44–46): Atributos e Habilidades como os vampiros, Especializações gratuitas, Humanidade 7, 7 pontos de Vantagens e 2 de Defeitos, sem Disciplinas nem Tipo de Predador.
+  - **Carniçal** (Companion, p. 53–54): as regras do Mortal e um poder de nível 1 de uma Disciplina do clã do domitor.
+  - **Personagem do Narrador** (Manual Básico, p. 185): os quatro Modelos de Mortais (Fraco, Comum, Talentoso e Mortal).
+  - **Grupo (Coterie)** (Manual Básico, p. 195; Guia do Jogador): um dos 21 Tipos de Coterie, com seus pré-requisitos e 1 ponto de reserva por personagem jogador; o que faltar fica registrado como contribuição das Vantagens dos personagens.
+  - **Lobisomem** (Lobisomem: O Apocalipse, p. 83): Tribo, Augúrio, Renome (2 no Espírito Padroeiro e 1 em outro), um Dom Inato, um de Augúrio e um de Tribo, um Ritual, Fúria 2, Harano e Hauglosk vazios, Vantagens e Defeitos do próprio livro.
+  - **Caçador** (Caçador: A Revanche, p. 53): Credo, Ímpeto, 2 Trunfos ou 1 Trunfo e 2 Distinções, Vantagens e Defeitos do próprio livro; Desespero e Perigo ficam com a célula.
+  - Os itens de Lobisomem e Caçador trazem nome, livro e página, ainda sem o texto das regras (os dados ficam em `chargen/data/`).
+- **Analfabeto** não é mais sorteado para quem tem Erudição ou Ciência acima de 1, nem junto com Linguística.
+
 ## 1.7.15 — Osíris na criação automática
 
 - **Criação automática:** o Tipo de Predador Osíris passa a ser sorteado. Os 2 pontos de Defeito do Osíris viram Inimigo e Defeitos Míticos reais do compêndio, concedidos pelo Predador e fora dos 2 Defeitos livres. No assistente manual, o jogador continua escolhendo os Defeitos Míticos.

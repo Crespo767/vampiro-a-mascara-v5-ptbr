@@ -1,0 +1,147 @@
+{
+  "creeds": [
+    {"name": "Empreendedor", "page": 33},
+    {"name": "Devoto", "page": 37},
+    {"name": "Inquisitivo", "page": 41},
+    {"name": "Marcial", "page": 45},
+    {"name": "Clandestino", "page": 49}
+  ],
+  "drives": [
+    {"name": "Curiosidade", "page": 129},
+    {"name": "Expiação", "page": 129},
+    {"name": "Ganância", "page": 129},
+    {"name": "Inveja", "page": 129},
+    {"name": "Juramento", "page": 129},
+    {"name": "Orgulho", "page": 129},
+    {"name": "Vingança", "page": 129}
+  ],
+  "edges": [
+    {"id": "globalaccess", "name": "Acesso Global", "page": 90, "perks": [
+      {"name": "Grande Irmão Vigilante", "page": 91},
+      {"name": "Passe Universal", "page": 91},
+      {"name": "Hack Financeiro", "page": 91},
+      {"name": "A Letra da Lei", "page": 91}
+    ]},
+    {"id": "improvisedgear", "name": "Equipamento Improvisado", "page": 91, "perks": [
+      {"name": "Frugal", "page": 91},
+      {"name": "Produção em Massa", "page": 92},
+      {"name": "Especialização", "page": 92},
+      {"name": "Criação Veloz", "page": 92}
+    ]},
+    {"id": "beastwhisperer", "name": "Encantador de Feras", "page": 92, "perks": [
+      {"name": "Incorruptível", "page": 93},
+      {"name": "Zoológico", "page": 93},
+      {"name": "Comandos Complexos", "page": 93},
+      {"name": "Incógnito", "page": 93}
+    ]},
+    {"id": "dronejockey", "name": "Jóquei de Drones", "page": 93, "perks": [
+      {"name": "Autônomo", "page": 93},
+      {"name": "Variantes", "page": 94},
+      {"name": "Habilidade Especializada", "page": 94},
+      {"name": "Armamentos", "page": 94},
+      {"name": "Carga", "page": 94}
+    ]},
+    {"id": "arsenal", "name": "Arsenal", "page": 94, "perks": [
+      {"name": "Requisição Coletiva", "page": 94},
+      {"name": "Características Especiais", "page": 94},
+      {"name": "Exóticas", "page": 95},
+      {"name": "Irrastreável", "page": 95}
+    ]},
+    {"id": "ordnance", "name": "Artilharia", "page": 95, "perks": [
+      {"name": "Cargas Múltiplas", "page": 95},
+      {"name": "Munição Não Letal", "page": 95},
+      {"name": "Exóticas", "page": 95},
+      {"name": "Entrega Disfarçada", "page": 95}
+    ]},
+    {"id": "library", "name": "Biblioteca", "page": 95, "perks": [
+      {"name": "Onde Eles Se Escondem", "page": 96},
+      {"name": "Quem Eles São", "page": 96},
+      {"name": "Como Detê-los", "page": 96},
+      {"name": "Como Feri-los", "page": 96}
+    ]},
+    {"id": "fleet", "name": "Frota", "page": 96, "perks": [
+      {"name": "Armadura", "page": 96},
+      {"name": "Desempenho", "page": 96},
+      {"name": "Vigilância", "page": 96},
+      {"name": "Irrastreável", "page": 96}
+    ]},
+    {"id": "artifact", "name": "Artefato", "page": 97, "perks": [
+      {"name": "Fortalecer", "page": 98},
+      {"name": "Atração", "page": 98},
+      {"name": "Detecção", "page": 98},
+      {"name": "Escudo", "page": 98}
+    ]},
+    {"id": "thwarttheunnatural", "name": "Frustrar o Sobrenatural", "page": 98, "perks": [
+      {"name": "Especialização em Criatura", "page": 98},
+      {"name": "Guardar", "page": 98},
+      {"name": "Reconhecimento", "page": 98},
+      {"name": "Mãos Livres", "page": 99}
+    ]},
+    {"id": "repeltheunnatural", "name": "Repelir o Sobrenatural", "page": 99, "perks": [
+      {"name": "Guardar", "page": 99},
+      {"name": "Ferir", "page": 99},
+      {"name": "Especialização em Criatura", "page": 99},
+      {"name": "Mãos Livres", "page": 99}
+    ]},
+    {"id": "sensetheunnatural", "name": "Sentir o Sobrenatural", "page": 99, "perks": [
+      {"name": "Especialização em Criatura", "page": 99},
+      {"name": "Alcance", "page": 99},
+      {"name": "Precisão", "page": 100},
+      {"name": "Mãos Livres", "page": 100}
+    ]}
+  ],
+  "features": [
+    {"name": "Dependência Grave", "featuretype": "flaw", "points": [2], "page": 70, "restrictions": "Especificar a substância."},
+    {"name": "Dependência", "featuretype": "flaw", "points": [1], "page": 70, "restrictions": "Especificar a substância."},
+    {"name": "Linguística", "featuretype": "merit", "points": [1, 2, 3, 4, 5], "page": 70, "restrictions": "Escolher um idioma adicional por ponto. Incompatível com Analfabeto."},
+    {"name": "Analfabeto", "featuretype": "flaw", "points": [2], "page": 71, "restrictions": "Erudição e Ciência até 1, sem Especializações que incorporem conhecimentos modernos."},
+    {"name": "Cozinha Para Um", "featuretype": "merit", "points": [1], "page": 71},
+    {"name": "Chef da Célula", "featuretype": "merit", "points": [2], "page": 71},
+    {"name": "Aura Inapropriada", "featuretype": "merit", "points": [2], "page": 71},
+    {"name": "Estigma", "featuretype": "flaw", "points": [1], "page": 71, "restrictions": "Escolher Vitalidade ou Força de Vontade. Pode ser adquirido uma vez para cada trilha."},
+    {"name": "Maldição da Anciã", "featuretype": "flaw", "points": [2], "page": 71, "restrictions": "Reduz a trilha de Vitalidade em 1."},
+    {"name": "Vivendo no Limite", "featuretype": "flaw", "points": [2], "page": 71},
+    {"name": "Vontade Fraca", "featuretype": "flaw", "points": [2], "page": 72},
+    {"name": "Belo", "featuretype": "merit", "points": [2], "page": 72},
+    {"name": "Deslumbrante", "featuretype": "merit", "points": [4], "page": 72},
+    {"name": "Repulsivo", "featuretype": "flaw", "points": [2], "page": 72},
+    {"name": "Feio", "featuretype": "flaw", "points": [1], "page": 72},
+    {"name": "Aliados", "featuretype": "background", "points": [1, 2, 3, 4, 5, 6], "page": 73, "restrictions": "Separar o custo em Efetividade de 1 a 4 e Confiabilidade de 0 a 3, até 6 pontos no total."},
+    {"name": "Inimigos", "featuretype": "flaw", "points": [1, 2], "page": 73, "restrictions": "Custo igual à Efetividade menos 2."},
+    {"name": "Base", "featuretype": "background", "points": [1, 2, 3], "page": 74},
+    {"name": "Sem Base", "featuretype": "flaw", "points": [1], "page": 74, "restrictions": "Incompatível com Base e seus complementos."},
+    {"name": "Arsenal Oculto", "featuretype": "merit", "points": [1, 2, 3, 4, 5], "page": 74, "restrictions": "Complemento de Base."},
+    {"name": "Sala do Pânico", "featuretype": "merit", "points": [1, 2, 3, 4, 5], "page": 74, "restrictions": "Complemento de Base média ou grande. Até 32 ocupantes em Base grande."},
+    {"name": "Vigilância", "featuretype": "merit", "points": [1, 2, 3, 4, 5], "page": 75, "restrictions": "Complemento de Base."},
+    {"name": "Laboratório", "featuretype": "merit", "points": [1, 2, 3, 4, 5], "page": 75, "restrictions": "Complemento de Base média ou grande."},
+    {"name": "Luxo", "featuretype": "merit", "points": [1], "page": 75, "restrictions": "Complemento de Base. Com Recursos abaixo de 3, a decoração tem origem ilegal."},
+    {"name": "Poterna", "featuretype": "merit", "points": [1, 2, 3, 4, 5], "page": 75, "restrictions": "Complemento de Base."},
+    {"name": "Sistema de Segurança", "featuretype": "merit", "points": [1, 2, 3, 4, 5], "page": 75, "restrictions": "Complemento de Base."},
+    {"name": "Sala de Operações", "featuretype": "merit", "points": [1], "page": 75, "restrictions": "Complemento de Base média ou grande."},
+    {"name": "Comprometida", "featuretype": "flaw", "points": [2], "page": 75, "restrictions": "Defeito de Base."},
+    {"name": "Assustadora", "featuretype": "flaw", "points": [1], "page": 75, "restrictions": "Defeito de Base."},
+    {"name": "Assombrada", "featuretype": "flaw", "points": [1], "page": 75, "restrictions": "Defeito de Base. Definir a manifestação com o Narrador."},
+    {"name": "Contatos", "featuretype": "background", "points": [1, 2, 3], "page": 75},
+    {"name": "Fama", "featuretype": "background", "points": [1, 2, 3, 4, 5], "page": 76, "restrictions": "Definir o público ou a área de atuação."},
+    {"name": "Infâmia", "featuretype": "flaw", "points": [2], "page": 76},
+    {"name": "Segredo Sombrio", "featuretype": "flaw", "points": [1], "page": 76},
+    {"name": "Parceiro Infame", "featuretype": "flaw", "points": [1], "page": 76},
+    {"name": "Influência", "featuretype": "background", "points": [1, 2, 3, 4, 5], "page": 76, "restrictions": "Escolher o grupo ou a região de atuação."},
+    {"name": "Desprezado", "featuretype": "flaw", "points": [2], "page": 77, "restrictions": "Escolher o grupo ou a região hostil."},
+    {"name": "Malquisto", "featuretype": "flaw", "points": [1], "page": 77},
+    {"name": "Lacaios", "featuretype": "background", "points": [1, 2, 3], "page": 77},
+    {"name": "Perseguidores", "featuretype": "flaw", "points": [1], "page": 77},
+    {"name": "Máscara", "featuretype": "background", "points": [1, 2], "page": 78},
+    {"name": "Zerado", "featuretype": "background", "points": [1], "page": 78, "restrictions": "Exige Máscara de 2 pontos."},
+    {"name": "Sapateiro", "featuretype": "background", "points": [1], "page": 78, "restrictions": "Exige Máscara de 2 pontos."},
+    {"name": "Pessoa de Interesse", "featuretype": "flaw", "points": [1], "page": 78},
+    {"name": "Erro de Série", "featuretype": "flaw", "points": [2], "page": 78},
+    {"name": "Mentor", "featuretype": "background", "points": [1, 2, 3, 4, 5], "page": 78, "restrictions": "Mentor em grupo custa 1 ponto a mais que um Mentor individual equivalente."},
+    {"name": "Adversário", "featuretype": "flaw", "points": [1, 2, 3], "page": 79, "restrictions": "Valor de ameaça igual ao custo do Defeito mais 2."},
+    {"name": "Recursos", "featuretype": "background", "points": [1, 2, 3, 4, 5], "page": 79, "restrictions": "Definir a fonte e a forma da renda."},
+    {"name": "Indigente", "featuretype": "flaw", "points": [1], "page": 79, "restrictions": "Incompatível com Recursos e com Base própria."},
+    {"name": "Status", "featuretype": "background", "points": [1, 2, 3, 4, 5], "page": 79, "restrictions": "Escolher uma facção de Caçadores. Sujeito ao limite ou à autorização da crônica."},
+    {"name": "Suspeito", "featuretype": "flaw", "points": [1], "page": 80, "restrictions": "Escolher a facção ofendida."},
+    {"name": "Segregado", "featuretype": "flaw", "points": [2], "page": 80, "restrictions": "Escolher a facção hostil."}
+  ]
+}
