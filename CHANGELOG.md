@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.9.1 — Alcateia e Célula
+
+- **Criação automática: Grupo (Alcateia) e Grupo (Célula).** Criam a ficha de grupo do wod5e com o tipo certo, na pasta "Grupos — Criação Automática". Os livros não trazem regras de criação desses grupos (diferente da Coterie), então nada é sorteado: a biografia registra o que o livro diz — o Espírito Padroeiro da alcateia é escolhido em jogo com o Ritual de Apadrinhamento (Lobisomem, pp. 181–182); Desespero e Perigo da célula são definidos com o Narrador (Caçador, p. 125).
+
 ## 1.9.0 — Compêndios de Lobisomem e Caçador
 
 - **Compêndios de Lobisomem e Caçador** na pasta "Vampiro a Máscara v5 PT-BR", para montar fichas à mão:
