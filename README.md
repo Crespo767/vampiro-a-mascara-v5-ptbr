@@ -6,7 +6,7 @@ O conteúdo cobre dois livros: o **Manual Básico** e o **Guia do Jogador**.
 
 ## Criação automática de PJ
 
-Crie uma macro de Script no Foundry e cole o conteúdo de `chargen/macros/Criar_PJ_Automatico.js` (vem dentro do módulo). As constantes `NOME` e `SEMENTE` são opcionais; uma semente informada reproduz as escolhas para os mesmos dados de compêndio. A macro abre a ficha e informa a semente; o resumo é enviado em mensagem privada. Requer o sistema wod5e, permissão para criar Atores e acesso à pasta de criação automática. O gerador escolhe as Disciplinas de clã e as Especializações gratuitas, respeita as restrições Caitiff e gasta 7 pontos de Vantagens, além dos pontos extras configurados pelo Narrador. Revise os textos e escolhas com o Narrador.
+A macro **Criar PJ Automático** está no compêndio **Macros**, na pasta "Vampiro a Máscara v5 PT-BR" da aba de Compêndios: arraste-a para a barra de macros ou importe-a. Para alterar nome ou semente, edite a cópia importada (o código-fonte fica em `chargen/macros/Criar_PJ_Automatico.js`). As constantes `NOME` e `SEMENTE` são opcionais; uma semente informada reproduz as escolhas para os mesmos dados de compêndio. A macro abre a ficha e informa a semente; o resumo é enviado em mensagem privada. Requer o sistema wod5e, permissão para criar Atores e acesso à pasta de criação automática. O gerador escolhe as Disciplinas de clã e as Especializações gratuitas, respeita as restrições Caitiff e gasta 7 pontos de Vantagens, além dos pontos extras configurados pelo Narrador. Revise os textos e escolhas com o Narrador.
 
 ## Requisitos
 

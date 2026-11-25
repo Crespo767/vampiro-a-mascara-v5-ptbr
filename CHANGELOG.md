@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.7.14 — Macro no compêndio
+
+- **Compêndio Macros** na pasta "Vampiro a Máscara v5 PT-BR", com a macro **Criar PJ Automático**: não é mais preciso colar o código numa macro nova.
+
 ## 1.7.13 — Atualização parcial e controles das fichas
 
 - Condições que alteram grupos de características atualizam as seções afetadas. A atualização parcial funciona também quando a alteração começa em outro cliente que usa a ficha nativa.
