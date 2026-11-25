@@ -6,7 +6,7 @@ O conteúdo cobre dois livros: o **Manual Básico** e o **Guia do Jogador**.
 
 ## Criação automática de PJ
 
-A macro **Criar Ficha Automática** abre um diálogo para escolher o tipo de ficha (Vampiro, Mortal, Carniçal, Personagem do Narrador, Grupo/Coterie, Lobisomem ou Caçador). Ela está no compêndio **Macros**, na pasta "Vampiro a Máscara v5 PT-BR" da aba de Compêndios: arraste-a para a barra de macros ou importe-a. Nome e semente são opcionais e ficam no próprio diálogo (o código-fonte fica em `chargen/macros/Criar_Ficha_Automatica.js`). As constantes `NOME` e `SEMENTE` são opcionais; uma semente informada reproduz as escolhas para os mesmos dados de compêndio. A macro abre a ficha e informa a semente; o resumo é enviado em mensagem privada. Requer o sistema wod5e, permissão para criar Atores e acesso à pasta de criação automática. O gerador escolhe as Disciplinas de clã e as Especializações gratuitas, respeita as restrições Caitiff e gasta 7 pontos de Vantagens, além dos pontos extras configurados pelo Narrador. Revise os textos e escolhas com o Narrador.
+A macro **Criar Ficha Automática** abre um diálogo para escolher o tipo de ficha (Vampiro, Mortal, Carniçal, Personagem do Narrador, Grupo/Coterie, Lobisomem ou Caçador). Ela está no compêndio **Macros**, na pasta "Vampiro a Máscara v5 PT-BR" da aba de Compêndios: arraste-a para a barra de macros ou importe-a. Nome e semente são opcionais e ficam no próprio diálogo (o código-fonte fica em `chargen/macros/Criar_Ficha_Automatica.js`). Uma semente informada reproduz as escolhas para os mesmos dados de compêndio. A macro abre a ficha e informa a semente; o resumo é enviado em mensagem privada. Requer o sistema wod5e, permissão para criar Atores e acesso à pasta de criação automática. O gerador escolhe as Disciplinas de clã e as Especializações gratuitas, respeita as restrições Caitiff e gasta 7 pontos de Vantagens, além dos pontos extras configurados pelo Narrador. Revise os textos e escolhas com o Narrador.
 
 ## Requisitos
 
@@ -56,6 +56,9 @@ Os compêndios aparecem na aba **Compêndios**, dentro da pasta *Vampiro a Másc
 | Regras do Guia do Jogador | Diário com os 21 **Tipos de Coterie**, **Carniçais**, **Mortais**, **Sistemas de Coterie**, **Memoriam e Projetos**, **Regras Opcionais do Companion**, **Convicções e Pilares**, **Crônicas e Tipos de Jogo** e **Antagonistas** |
 | Antagonistas do Guia do Jogador | 5 Atores prontos, com retratos: Szlachta, Vozhd, Cadáver sem Mente, Cadáver Agressivo e Servo Homuncular |
 | Equipamento | Armas, armaduras e equipamentos (ainda em inglês) |
+| Lobisomem: O Apocalipse | 177 itens do livro básico de Lobisomem: 11 Tribos, 5 Augúrios, 62 Dons (Inatos, por Augúrio e por Tribo), 23 Rituais e 76 Vantagens e Defeitos, com o texto das regras e a página |
+| Caçador: A Revanche | 125 itens do livro básico de Caçador: 5 Credos, 7 Ímpetos, 12 Trunfos com 49 Distinções e 52 Vantagens e Defeitos, com o texto das regras e a página |
+| Macros | A macro **Criar Ficha Automática** |
 
 ### Ferramentas
 - **Ficha de personagem**: ficha de vampiro reformulada, com Perdição e Compulsão do clã.

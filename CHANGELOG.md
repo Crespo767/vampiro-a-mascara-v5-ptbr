@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 1.9.0 — Compêndios de Lobisomem e Caçador
+
+- **Compêndios de Lobisomem e Caçador** na pasta "Vampiro a Máscara v5 PT-BR", para montar fichas à mão:
+  - **Lobisomem: O Apocalipse** (177 itens): Tribos, Augúrios, Dons separados em Inatos, por Augúrio e por Tribo, Rituais e Vantagens e Defeitos (Qualidades, Antecedentes, Defeitos e Fichas de Conhecimento).
+  - **Caçador: A Revanche** (125 itens): Credos, Ímpetos, Trunfos, Distinções separadas por Trunfo e Vantagens e Defeitos.
+  - Os itens são os mesmos da criação automática: texto integral do livro, página, e nos Dons o custo e a parada fixa. São gerados dos catálogos `chargen/data/` por `ferramentas/build-livros.mjs`.
+
 ## 1.8.5 — Criar Ficha Automática
 
 - **A macro passa a se chamar "Criar Ficha Automática"**, porque cria todos os tipos de ficha, não só PJs (arquivo `chargen/macros/Criar_Ficha_Automatica.js`). Quem já importou a macro antiga pode continuar usando: ela abre o mesmo diálogo.
