@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 1.10.1 — Folhas do Manual Básico conferidas com o inglês
+
+- **As 25 Folhas de História do Manual Básico foram conferidas frase a frase com o livro em inglês.** O texto oficial em português foi mantido; só mudaram 5 trechos em que a tradução muda a regra ou o sentido:
+  - **Descendente de Helena ••••• (Franquia do Succubus Club):** voltou a frase que faltava: Helena lhe concedeu uma licença para abrir uma franquia do clube no seu domínio.
+  - **Descendente de Tyler •• (Campeão da Causa):** são dois **pontos** de Status, não dois dados, e os rebeldes podem até acatar sua autoridade.
+  - **Alto-Clã •••• (Abraçar para Governar):** os outros Altos-Clãs cedem e votam em você (o português dizia que eles "adiam" o voto).
+  - **Ambrus Maropis ••••• (Totalmente em Outra Rede):** são duas identidades falsas, cada uma de dois pontos de Máscara.
+  - **Veterano da Guerra das Seitas:** a Camarilla recuperou domínios no sul dos Estados Unidos, não na América do Sul.
+
 ## 1.10.0 — Folhas de História do Manual Básico
 
 - **Folhas de História do Manual Básico** (pp. 382–406): as 25 que faltavam, cada uma em sua pasta, com um item por nível (125 itens). Entre elas Os Bahari, Golconda, Heresia Cainita, Theo Bell, Carna, Convenção de Thorns, A Trindade, os Descendentes (Hardestadt, Helena, Tyler, Zelios, Vasantasena, Karl Schrekt, Xaviar), Alto-Clã e Baixo-Clã. O texto é o oficial do livro em português, transcrito da imagem de cada página. O item de nível 1 traz a apresentação da Folha, e as exclusivas de clã dizem isso no início.
