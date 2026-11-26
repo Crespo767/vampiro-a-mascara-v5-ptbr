@@ -11,7 +11,32 @@
   "Heralds of Ashur": "Arautos de Ashur",
   "La Famiglia Giovanni": "La Famiglia Giovanni",
   "The Gorgons": "As Górgonas",
-  "Nasyon San An": "Nasyon San An"
+  "Nasyon San An": "Nasyon San An",
+  "The Bahari": "Os Bahari",
+  "Theo Bell": "Theo Bell",
+  "Cainite Heresy": "Heresia Cainita",
+  "Carna": "Carna",
+  "The Circulatory System": "O Sistema Circulatório",
+  "Convention of Thorns": "Convenção de Thorns",
+  "The First Inquisition": "A Primeira Inquisição",
+  "Golconda": "Golconda",
+  "Descendant of Hardestadt": "Descendente de Hardestadt",
+  "Descendant of Helena": "Descendente de Helena",
+  "Sect War Veteran": "Veterano da Guerra das Seitas",
+  "The Trinity": "A Trindade",
+  "Jeanette/Therese Voerman": "Jeanette/Therese Voerman",
+  "Week of Nightmares": "A Semana dos Pesadelos",
+  "Rudi": "Rudi",
+  "Descendant of Tyler": "Descendente de Tyler",
+  "Descendant of Zelios": "Descendente de Zelios",
+  "Descendant of Vasantasena": "Descendente de Vasantasena",
+  "High Clan": "Alto-Clã",
+  "Low Clan": "Baixo-Clã",
+  "Ambrus Maropis": "Ambrus Maropis",
+  "Carmelita Neillson": "Carmelita Neillson",
+  "Fiorenza Savona": "Fiorenza Savona",
+  "Descendant of Karl Schrekt": "Descendente de Karl Schrekt",
+  "Descendant of Xaviar": "Descendente de Xaviar"
  },
  "entries": {
   "uxlG5GqzLbty96zU": {
@@ -153,6 +178,506 @@
   "VrswgkY33NxioCqb": {
    "name": "Nasyon San An ••••• — A Cartola",
    "description": "<p>Ninguém sabe ao certo quem é o Doutor Sangrento, mas todos sabem que você goza de seu favor e é o próximo na linha de sucessão de sua prática, seja lá o que isso signifique. Você não sabe o que acontecerá se aparecer para reivindicar a cartola do Doutor: talvez seja um cargo meramente político entre os Hecata, talvez lhe conceda poderes espirituais extraordinários. Certamente também lhe trará os inimigos do Doutor. Antes de aceitar o papel, você tem os benefícios de Mawla •••••, embora a ajuda venha de formas enigmáticas e por meio de ações misteriosas.</p><p><em>Tradução não oficial — Guia do Jogador, p. 229.</em></p>"
+  },
+  "YJ1Qd1kEmQ0KXuxe": {
+   "name": "Os Bahari • — Reputação Perigosa",
+   "description": "<p>Os vampiros adeptos da Trilha de Lilith, também conhecidos como Lilin, Lilitu ou Bahari, reverenciam a vampira progenitora como a feminilidade primeva. Eles acreditam que Lilith foi a primeira vampira usurpada, a mãe que gerou o Vitae, e que todos os Membros são filhos dela. A sociedade vampírica estagnada e patriarcal, portanto, perpetuaria a mentira de Caim como progenitor.</p><p>Os Bahari buscam a iluminação via o sofrimento e o conflito, transformando esse impulso masoquista em força para perseverar e superar. Do mesmo modo como Lilith se rebelou contra as ordens de Deus e lutou contra a maldição que a afligia, seus seguidores derrotam as fraquezas e maldições que os afligem para se tornarem algo mais. Alguns Bahari conduzem outros Membros para a iluminação, outros viram predadores aperfeiçoados. Todos, no entanto, desaprovam a compaixão em favor do prazer carnal, do amor efêmero e da paternidade rigorosa sobre Membros inferiores.</p><p>Como um Bahari, você assume o papel de torturador, aluno, tutor ou amante de outros Membros. Todas as evidências que você já viu apontam Lilith como a primeira vampira usurpada. Ou, quem sabe, você tenha aderido secretamente à Igreja de Caim e mine os Bahari de dentro para fora.</p><p>Os Bahari intimidam os vampiros que não pertencem à ordem. Os vampiros que creem no mito Cainita se sentem desconfortáveis em sua presença. Uma vez por história, você pode somar dois dados a paradas de Intimidação em testes contra adoradores de Caim, presumindo que conheçam sua filiação.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 382.</em></p>"
+  },
+  "sHQzIjgNGpALps2X": {
+   "name": "Os Bahari •• — Escarificação Ritual",
+   "description": "<p>Você sabe que o sofrimento leva à iluminação. Especificamente, os Lilitu pregam que levar a própria casca física aos extremos dos sentidos concede maior compreensão. Uma vez por sessão, você pode causar em si mesmo escarificação equivalente a um ponto de dano Agravado para recuperar um nível de dano à Força de Vontade: superficial ou Agravado.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 382.</em></p>"
+  },
+  "ws7GYW45H0aZfkDk": {
+   "name": "Os Bahari ••• — Sacrifício dos Filhos",
+   "description": "<p>Os Bahari acreditam na geração e sacrifício de crianças. Bahari fiéis sabem que o sacrifício supremo é o assassinato da própria criança. Ao diablerizar sua criança, você ganha três dados extra em sua parada de dados de Humanidade + Potência de Sangue para absorver Disciplinas (veja Diablerie, pág. 234).</p><p><em>Vampiro: A Máscara — Manual Básico, p. 382.</em></p>"
+  },
+  "ZnZXSs25wGElTeu1": {
+   "name": "Os Bahari •••• — O Sangue do Útero",
+   "description": "<p>Os Bahari consideram a fertilidade e o sexo fontes de força, com algumas facções colocando ênfase especial no sangue ou Vitae do útero. Uma vez por história, após beber sangue do útero, você ganha dois pontos adicionais em Vigor ou Determinação (o que também aumenta Vitalidade ou Força de Vontade em dois) até o amanhecer.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 382.</em></p>"
+  },
+  "96uKbX1HMXpoovUc": {
+   "name": "Os Bahari ••••• — Amaldiçoada Original",
+   "description": "<p>Os adoradores de Lilith sustentam que ela foi o primeiro ser vivo amaldiçoado por Deus, antes de Adão, Eva ou Caim. Os Bahari lutam para imitar a maldição menor de Lilith e, com isso, diminuem suas fraquezas de Caim. Você ainda sofre sua Perdição de Clã, porém pode caminhar sob a primeira hora de luz do sol e a hora final do entardecer; você também pode se envolver em intercurso sem Inflamar o Sangue. No entanto, você irradia perigo: o equivalente ao Defeito Predador Manifesto (••). Todos os testes Sociais para bani-lo ou difamá-lo têm a Dificuldade reduzida em um. Finalmente, qualquer vampiro que o analise com Auspícios imediatamente sofre de enxaqueca; subtraia metade da sua Determinação (arredondando para cima) da Determinação e Força de Vontade dele durante uma cena.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 382.</em></p>"
+  },
+  "4Yzd1YBqOwS3PlrG": {
+   "name": "Theo Bell • — Célula Rebelde",
+   "description": "<p>Há muito visto como o cãozinho amestrado da Camarilla, a recente deserção de Theo para o Movimento Anarch lançou ondas de choque ainda detectáveis nos domínios da seita que criou as Tradições. Foi Theo Bell quem atendeu aos caprichos dos Ventrue Hardestadt e Jan Pieterzoon durante anos, chegando a pegar em armas a contragosto para o Lasombra Marcus Vitel em anos recentes. Também foi Theo Bell quem deu o primeiro tiro na Convenção de Praga, o que resultou nas mortes de Hardestadt e Pieterzoon.</p><p>Os rumores entre os Membros nas noites de hoje situam Theo Bell como um messias relutante entre os Anarchs. Ele não deseja nenhuma posição de liderança: apenas se cansou de se curvar perante sangues-azuis e deu um basta. Suas ações levaram centenas de Brujah a seguir seu exemplo, destronando os Príncipes que há muito os dominavam e formando bastiões Anarch ao lado dos Gangrel.</p><p>Apesar da sua notoriedade, Theo ainda age como ponte entre a Camarilla e os Anarch, pelo simples fato de não tolerar nenhuma merda nas reuniões. Ele frustra emboscadas do Sabá, sufoca levantes Anarch e acaba com extorsões e coerções da Camarilla. Como mediador, seu julgamento está além de qualquer crítica.</p><p>Você comanda um bando de mortais rebeldes e alimenta o fogo revolucionário deles com algo que os mantém na luta. Talvez você os alimente com Vitae ou, quem sabe, incorpore seus ideais. Em todo caso, eles (equivalentes a um grupo Aliado de três pontos) realizam uma tarefa ou missão perigosa para você sem sua participação, antes de debandar até a próxima história.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 383.</em></p>"
+  },
+  "Cat5Z3BuNotfv8dO": {
+   "name": "Theo Bell •• — Anarch Verdadeiro",
+   "description": "<p>Você foi um Anarch antes que Bell trouxesse um exército de Brujah da Camarilla para o Movimento, e se ressente dessas \"Marias vão com as outras\" agora que o Movimento virou modinha. Você tem registros, nomes, lugares e datas sobre quem os rebeldes foram e são, informações essas conseguidas com o Cara em si ou por meios próprios. Seja como for, você ganha dois sucessos automáticos em qualquer teste de investigação que envolva vampiros que desertaram para o Movimento Anarch.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 383.</em></p>"
+  },
+  "fU1IRMH23KAtLfhx": {
+   "name": "Theo Bell ••• — Informação de Contato",
+   "description": "<p>Seja via esconderijo, mensageiro ou envio arcano, você consegue contatar Theo. Se ele vai responder ou escutar depende da mensagem e das interações anteriores entre vocês, porém, se ele gostar do que você tem a dizer, montanhas poderão ser movidas. Os efeitos precisos de uma mensagem para Theo devem ser determinados pelo Narrador.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 383.</em></p>"
+  },
+  "QdCqvu9Q2I82AaM2": {
+   "name": "Theo Bell •••• — Círculo de Bell",
+   "description": "<p>Theo confia em você, talvez por causa das suas ações revolucionárias ou por você ter manipulado seu caminho até as graças sangrentas dele. Bell equivale a um Mawla de cinco pontos, mas sua associação com ele também tem seus problemas.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 383.</em></p>"
+  },
+  "e4p4ReoOXM0BmxiX": {
+   "name": "Theo Bell ••••• — Neutralidade de Seita",
+   "description": "<p>Seguindo o exemplo de Theo Bell, você tem um pequeno contingente de Brujah leais à sua visão, e você pode influenciá-los em qualquer direção: a Camarilla, os Anarchs ou até mesmo a formação de uma subseita menor em meio à Jyhad. Você pode estar desgostoso com eles ou orgulhoso da sua existência. Não se trata, porém, de discípulos cegos: estes Membros anotam os favores que concedem. Entretanto, até que se rebelem, você tem cinco pontos para distribuir entre Contatos, Refúgio (casas seguras), Mawla e Lacaios.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 383.</em></p>"
+  },
+  "J8AY0TouZvap7xcM": {
+   "name": "Heresia Cainita • — Que Ele tenha Compreensão",
+   "description": "<p>No início do Cristianismo, os hereges gnósticos e os Membros trocaram informações e Sangue, criando a Heresia Cainita: a crença de que Caim foi o verdadeiro messias, de que Cristo foi o Segundo Caim e os Cainitas são Seus anjos na Terra, em luta contra o cruel Demiurgo: o \"Deus\" do Antigo Testamento. A Inquisição queimou a Heresia até suas raízes no século quinze – mas raízes podem voltar a crescer, se regadas.</p><p>O antinomianismo da Revolta Anarch e o milenarismo do surgimento da Gehenna fertilizaram a Heresia no último século. Vampiros que usam a Heresia para subverter fés humanas, e Cainitas que realmente creem na sua missão divina, evangelizam a Heresia em meio aos círculos Anarch.</p><p>O Narrador lhe dará uma pista grátis para entender, investigar ou detectar as ações ou planos da Heresia, agora ou em séculos anteriores. Você pode usar esse conhecimento uma vez por história.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 384.</em></p>"
+  },
+  "PgL1tcPDqiylNMV2": {
+   "name": "Heresia Cainita •• — Mão da Heresia",
+   "description": "<p>Distribua um total de três pontos entre Aliados, Rebanho, Mawla ou Lacaios para representar seu papel no diaconato herético da cidade. Por exemplo, se você escolher Rebanho • e Mawla ••, poderá consagrar um pequeno culto de adoradores humanos e ter um estudioso da Heresia como tutor. Você também tem um Defeito Segredo Sombrio (Heresia) em alguns domínios.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 384.</em></p>"
+  },
+  "2RRKWF0P26EdhAa5": {
+   "name": "Heresia Cainita ••• — Contra-Inquisição",
+   "description": "<p>Você consegue detectar a Fé Verdadeira em um humano; se precisar realizar um teste para tanto, sua parada é Determinação + seu maior valor em Heresia Cainita. Você também pode ser contra a Heresia, neste caso usando seu dom para saber em quem confiar.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 384.</em></p>"
+  },
+  "u7XM1RNWddogP2ZA": {
+   "name": "Heresia Cainita •••• — Celebrante Vermelho",
+   "description": "<p>Você conhece os rituais e dosagens específicas para induzir Pentecostes Vermelho em uma congregação humana: uma versão religiosa extática do frenesi. Nesse estado, os humanos agem de acordo com o pior em sua natureza. Você consegue obter ervas e fungos suficientes para uma cerimônia por história; a Cerimônia Vermelha requer uma Checagem de Sangue e pode despertar frenesi em Membros participantes.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 384.</em></p>"
+  },
+  "dH6oSeaFs9tRmg1j": {
+   "name": "Heresia Cainita ••••• — O Nomeado na Profecia",
+   "description": "<p>Você é uma peça-chave nos planos da Heresia: talvez eles o considerem um avatar de Caim, talvez você possua a única cópia do Testemunho de <em>São Pantaleão</em>, ou seu Vitae seja o único sacrifício eficaz para aplacar ou distrair Ialdabaoth. Todo integrante informado da Heresia, e muitos que simplesmente querem obter os favores dos Anarchs, conhecem seu papel. Uma vez por história, você pode usar esse fato para escolher o vencedor de um conflito Social, se puder dar uma explicação plausível para esse resultado.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 384.</em></p>"
+  },
+  "MHTqYRh8HkYLlhOe": {
+   "name": "Carna • — Abraçar a Visão",
+   "description": "<p>Outrora Príncipe de Marselha e Primogênita de Milwaukee, Carna acabou formando sua própria célula cindida do Clã Tremere. A Casa Carna (como outros Tremere a denominam) defende a libertação do Laço de Sangue e se posiciona contra a tirania da Pirâmide e a misoginia arraigada nos Tremere. Por volta da época em que a cabeça da Pirâmide em Viena pretendia deixar cair o machado na cabeça de Carna e seu bando de rebeldes, a Segunda Inquisição fez uma visita à Grande Capela.</p><p>Livre da sombra da Pirâmide, a Casa Carna atrai um número crescente de Anarchs e repudiados pela Camarilla. Carna não busca seguidores, mas os reconhece por seu valor. Ela não sobreviveu 600 anos ignorando ameaças; para ela é só uma questão de tempo antes que o próprio Tremere apareça para transformá-la em cinzas. Até lá, ela se esforça ao máximo em prol da modernização e feminização do clã.</p><p>Você está plenamente comprometido com a visão de Carna para um novo Clã Tremere e é tomado por um sentido de autoconfiança maior na presença de seus companheiros de subfacção. Nessa situação, você tem um dado adicional em todos os testes de Força de Vontade.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 385.</em></p>"
+  },
+  "8TjXwHawZ8qmqXpB": {
+   "name": "Carna •• — O Rastro Rebelde",
+   "description": "<p>Você seguiu o rastro de Carna após o rompimento inicial dela com o Clã Tremere, absorvendo os sentimentos de rebelião e liberdade. Você resolveu nunca mais ser um escravo de Sangue outra vez. Sempre que correr tal risco, você pode realizar um teste de Força de Vontade (com uma Dificuldade igual à Potência de Sangue do Vitae ingerido) para ignorá-lo.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 385.</em></p>"
+  },
+  "fikvAXM166JChXHd": {
+   "name": "Carna ••• — Rituais Heterodoxos",
+   "description": "<p>Carna emprega a própria sanidade ou alma para abastecer sua magia, em vez de se despojar de seu Vitae em ortodoxia Hermética. O entendimento que você tem do processo dela o capacita a realizar rituais do mesmo modo. Uma vez por história você pode realizar um ritual do seu conhecimento sem precisar gastar Sangue, porém, se tirar um crítico bestial, também se transtorna de algum modo (geralmente ficando intensamente paranoico ou temeroso de sangue) até o final da história.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 385.</em></p>"
+  },
+  "B6BFARRwMT0L0wp1": {
+   "name": "Carna •••• — Laço Reimaginado",
+   "description": "<p>Você estudou a magia de Carna e seu método incomum de reimaginar o vinculum, e pode estender os efeitos do ritual dela para terceiros. Transar com um alvo, mortal ou não vivo, cria um Laço de Sangue entre ele, você e Carna, apesar da ausência dela. Encontros sexuais repetidos reforçam o Laço de Sangue, conforme as regras normais do Laço. Com isso você pode contornar a perdição do Clã Tremere, porém, o Laço só dura até a conclusão da história.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 385.</em></p>"
+  },
+  "7x8nGjjArnhemSHC": {
+   "name": "Carna ••••• — Livro da Guerra dos Túmulos",
+   "description": "<p>Segundo os rumores, o tomo conhecido como <em>Livro da Guerra dos Túmulos</em> permitiu que Carna rompesse o Laço dela com o Clã Tremere. Você possui uma cópia, que lhe concede um sucesso automático em todos os testes de Ocultismo relacionados à Gehenna, sua prevenção e o rompimento das correntes que prendem os vampiros aos seus Anciões. O livro o torna imune ao Laço enquanto estiver em sua posse e você seguir seus ensinamentos arcanos. No entanto, os Tremere buscam destruí-lo e ao livro; o Narrador também pode penalizá-lo com um dado em qualquer teste Social ou Mental afetado por sua paranoia constante.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 385.</em></p>"
+  },
+  "TmRjmb4pARgZF5vL": {
+   "name": "O Sistema Circulatório • — Acessar o Sistema",
+   "description": "<p>A exploração do sangue e suas Ressonâncias engendrou círculos de Membros ansiosos por conhecimento, poder e lucro. A rede internacional de tráfico humano conhecida como <em>O Sistema Circulatório</em> contrabandeia importantes bolsas entre domínios e registra os poderes das safras de sangue que movimenta.</p><p>O Sistema Circulatório pouco se importa com o bem-estar a longo prazo das suas bolsas para além da queda nos seus lucros quando uma dessas reses morre prematuramente. Muitos Membros conseguem olhar além de tais questões menores para os estudos pioneiros que o Sistema torna possíveis ao descobrir novas e valiosas características do Sangue.</p><p>Seu relacionamento com o Sistema Circulatório pode ser como traficante, cliente ou até mesmo como ex-bolsa transformada em vampiro. Você pode deplorar as práticas abusivas da facção ou enxergar o potencial dela e ansiar por uma amostra das suas operações.</p><p>Uma vez por história, você pode solicitar bolsas específicas do Sistema Circulatório para transmitir certas habilidades – ou para fornecer a um Ventrue que tenha suas preferências alimentares negligenciadas no domínio.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 386.</em></p>"
+  },
+  "qAu120DrnJcoV4UY": {
+   "name": "O Sistema Circulatório •• — Livrinho Preto",
+   "description": "<p>Você obteve a posse de um dos livrinhos pretos do sistema. Esses livros contêm registros de experimentos de sangue e teorias sobre o poder de bolsas selecionadas. O Narrador determina quão preciso o livro é em cada tópico; em geral, ele soma um dado a testes de Investigação, Alquimia, Medicina ou Ciência para encontrar ou testar uma determinada safra. Ele também corta pela metade o tempo de pesquisa de uma fórmula de Alquimia sangue-ralo de dois ou três pontos.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 386.</em></p>"
+  },
+  "KvawTziw5IfnbM1e": {
+   "name": "O Sistema Circulatório ••• — Fazenda Remota",
+   "description": "<p>Você sabe onde o Sistema mantém uma fazenda de bolsas valiosas: mortais com sangue suficientemente potente para beneficiar bebedores Membros. Você pode assaltar a fazenda, arrendar bolsas específicas pagando o devido preço ou tentar invadir o lugar à força. Essas bolsas equivalem a um Rebanho de quatro pontos, mas você só pode se alimentar delas uma vez por semana, a menos que tome abertamente o controle da fazenda.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 386.</em></p>"
+  },
+  "eo35b0QAy6d9EtUS": {
+   "name": "O Sistema Circulatório •••• — Trânsito Seguro",
+   "description": "<p>O Sistema Circulatório emprega furgões blindados e motoristas carniçais armados para transportar as bolsas. Esse modo de trânsito protegido conta com mais do que meros furgões blindados: estão armados até os dentes e, às vezes, contêm bolsas incrivelmente valiosas destinadas a compradores importantes. Você tem acesso a um desses furgões. Seja você um motorista legítimo na frente de um comboio ou tenha sequestrado um dos veículos, você pode transportar com segurança um ou mais Membros com pouco esforço.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 386.</em></p>"
+  },
+  "HUS6kseYNl2EMVo4": {
+   "name": "O Sistema Circulatório ••••• — Sommelier de Sangue",
+   "description": "<p>Você conhece os métodos secretos do Sistema Circulatório para provar, analisar e refinar sangue, e pode replicá-los. Talvez você possua um laboratório de hematologia, possa chamar um alquimista ou feiticeiro de sangue, ou simplesmente se mantém por dentro dos rumores entre os entendidos do assunto. Você pode somar dois dados a qualquer teste feito para descobrir uma Ressonância, e pode distribuir três pontos entre Contatos, Aliados ou Refúgio para explicar seu conhecimento. Uma vez por história, você pode perguntar ao Narrador quais são as propriedades do sangue da bolsa mais valiosa.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 386.</em></p>"
+  },
+  "HrdCu5aj8cMW96mM": {
+   "name": "Convenção de Thorns • — Historiador de Thorns",
+   "description": "<p>Você é um estudioso da <em>Convenção de Thorns</em>, na qual vampiros de todos os clãs conceberam a formação da Camarilla. Talvez você descenda de um dos participantes mais importantes a ter ouvida sua proposta para as novas Tradições na convenção. Talvez você estude aquele período histórico com avidez, em busca de algum sentido ou entendimento maior das leis que governam a sociedade dos Membros atualmente.</p><p>Você pode recitar os nomes dos vampiros que participaram do evento, as versões das Tradições propostas, e até conhecer algumas das propostas secretas entre os clãs que não se dignaram a se juntar à Camarilla então. Conhecimentos relacionados à Convenção de Thorns ainda podem ser usados nas noites de hoje para aplicar pressão tanto na Camarilla quanto nos Anarchs.</p><p>A Convenção de Thorns foi uma complexa e comovente fera da diplomacia. Centenas de pequenas reuniões ocorreram entre representantes deste ou daquele clã, forjando pactos que duraram anos, décadas ou séculos, em alguns casos. Você possui um conhecimento enciclopédico das reuniões menores da convenção, e pode usá-lo para aplicar pressão legal nos participantes ou seus descendentes, nos casos em que pactos porventura estejam vigentes, mas não possam ser praticados ou revogados sem o consentimento de todos os lados. Uma vez por história, você pode pedir ao Narrador uma informação sobre a convenção.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 387.</em></p>"
+  },
+  "ENMoBuNxoQKRiv2G": {
+   "name": "Convenção de Thorns •• — Mestre da Tradição",
+   "description": "<p>As seis Tradições a que a Camarilla se apega nas noites de hoje foram originalmente codificadas e aceitas na Convenção de Thorns. Seu conhecimento da convenção inclui várias Tradições apócrifas ou propostas, algumas das quais quase foram aprovadas. Uma vez por crônica, você pode aplicar leis marginais em domínios onde os clãs governantes ainda possam ter simpatia pelas Tradições rejeitadas de Thorns.</p><p><strong>Exemplos de pseudotradições podem incluir:</strong> Aos Membros neste domínio só é permitido um Abraço; é proibido se alimentar de oficiais da lei; combates no Elísio são puníveis com a Morte Final; permite-se a Diablerie contra qualquer Caitiff descoberto dentro do domínio; etc.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 387.</em></p>"
+  },
+  "s9HJ1bQcuG8VYnUm": {
+   "name": "Convenção de Thorns ••• — Segredos da Convenção",
+   "description": "<p>O Ministério declinou um convite para se juntar como o oitavo clã basilar; os Lasombra rejeitaram a Camarilla quando ela se recusou a reconhecer a existência dos Antediluvianos. Você descobriu propostas ainda mais obscuras da Convenção: a petição dos Capadócios para se juntar, o rascunho do símbolo dos Malkavianos, e mais. Você pode soltar pistas suficientes para sempre ganhar um bônus de um dado a testes Sociais que envolvam Membros que estiveram na convenção. Você também conhece alguns segredos maiores, cada qual valendo a um Favor Maior para um Cainita poderoso. Uma vez por história, você pode perguntar ao Narrador o nome de um Membro que precise dos seus conhecimentos.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 387.</em></p>"
+  },
+  "eqXnlfY6KISEVTaN": {
+   "name": "Convenção de Thorns •••• — Candidato a Justicar",
+   "description": "<p>Os Justicars da Camarilla foram nomeados pela primeira vez durante a Convenção de Thorns. Independentemente da sua filiação política, de algum modo você (ou seu Senhor, se você for jovem demais) tem apoio poderoso o bastante para se tornar o próximo Justicar do seu clã. Se seu clã não tiver representação ampla na Camarilla, talvez essa nomeação aponte uma mudança entre os clãs da seita.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 387.</em></p>"
+  },
+  "n4VvGgImTpB6Su1e": {
+   "name": "Convenção de Thorns ••••• — Novas Tradições",
+   "description": "<p>Seu conhecimento da Convenção de Thorns é tal que você pode reunir suficiente evidência e apoio para propor uma nova Tradição, ou uma emenda a uma existente, ao Círculo Interno da Camarilla. Essa Tradição pode ser aceita, caso pareça sensata e ajude a cada vez mais rigorosa Camarilla nas noites de hoje, ou pode evidenciá-lo como um perigo para a seita. Além disso, sua voz será ouvida sem julgamentos prévios.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 387.</em></p>"
+  },
+  "lCMLGm9D1LrsHNP3": {
+   "name": "A Primeira Inquisição • — Erros do Passado",
+   "description": "<p>Você sabe o que acendeu as fogueiras da Primeira Inquisição que devassou a Europa da Idade Média à Renascença. Talvez um ancestral seu lhe tenha falado com medo daquelas noites. Talvez você possua textos que narrem aqueles tempos terríveis, ou tenha planos de recriá-los virando a igreja contra seus inimigos.</p><p>Seu conhecimento da Inquisição é tal que você tem a capacidade de manipular a Segunda Inquisição das noites de hoje, embora seus métodos e algumas crenças tenham mudado. Você conhece o melhor modo de evitar o grupo e como virá-lo contra seus inimigos. Essas ações são arriscadas, no entanto, como seus ancestrais descobriram ao tentar a mesma façanha.</p><p>Você conhece a história dos Membros e pode citar com todos os detalhes os domínios e Príncipes que a Inquisição destruiu na encarnação original dela. Você pode educar qualquer vampiro sobre os perigos históricos da Inquisição. Uma vez por história, você pode pedir para o Narrador uma informação a respeito da Inquisição original.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 388.</em></p>"
+  },
+  "tKXIAs32plDQxqkj": {
+   "name": "A Primeira Inquisição •• — Os Nomes dos Culpados",
+   "description": "<p>Seus conhecimentos das relações entre vampiros e Inquisição inclui Membros manipuladores. Embora a maioria esteja morta nestas noites, muitos dos seus descendentes sobrevivem e correm o risco de ser chantageados pelas traições dos seus Senhores. Uma vez por história, você pode pedir ao Narrador o nome de um descendente desses traidores em seu domínio, caso exista um.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 388.</em></p>"
+  },
+  "kgLaXNQzpJeUVE5H": {
+   "name": "A Primeira Inquisição ••• — A Seita de Santiago",
+   "description": "<p>Você tem contatos que se consideram \"velhos Inquisidores\". O Sectus Sancti Iacomi cultiva um ressentimento profundo pela espalhafatosa contraparte moderna do grupo. O abade deles é um Contato de quatro pontos que você pode contatar uma vez por história.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 388.</em></p>"
+  },
+  "knHm977nvGXGmHks": {
+   "name": "A Primeira Inquisição •••• — O Segundo Ato",
+   "description": "<p>Você tem um Contato dentro da Segunda Inquisição ou da arquidiocese Católica local: um arquivista, exorcista, armeiro, etc. Você não tem nenhum poder sobre eles, mas sabe como obter informação deles – ou alimentá-los com desinformação – caso seja preciso.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 388.</em></p>"
+  },
+  "psRmrEJy3DUteuz9": {
+   "name": "A Primeira Inquisição ••••• — Ponto Obscuro",
+   "description": "<p>Você identificou um local dentro do seu domínio que a Segunda Inquisição teme. Uma vez por história, se você ou qualquer um alvejado pela Segunda Inquisição se esconder nesse local, os caçadores cancelarão a busca. Essa anomalia parece ser uma bênção, mas levanta a questão: o que é tão sagrado ou profano sobre esse lugar que afugenta a maior ameaça aos Membros nas noites de hoje?</p><p><em>Vampiro: A Máscara — Manual Básico, p. 388.</em></p>"
+  },
+  "mrr4EImohRi37rHF": {
+   "name": "Golconda • — Sementes da Golconda",
+   "description": "<p>A maioria dos vampiros afirma que se trata de um estado de iluminação mítico, mas uns poucos afirmam ter alcançado a <em>Golconda</em> ou conhece alguém que o fez. Supostamente descoberta por um antigo vampiro chamado Saulot, a Golconda é um estado de equilíbrio perfeito entre a Humanidade e a Besta. Um vampiro que trilhe o caminho da Golconda pode amenizar a fúria da Besta, dominar a própria Fome e até mesmo suportar a luz do sol, ou assim se diz. Os dons que acompanham a Golconda são grandes, e muitos vampiros fazem a peregrinação. Poucos são bem-sucedidos na jornada.</p><p>A rota para alcançar o estado da Golconda jamais foi registrada com precisão. De fato, os seguidores de Saulot afirmam que a jornada é diferente para cada vampiro, dependendo dos seus pecados. O que a Golconda faz a um vampiro quando ele a alcança também é controverso. Alguns dizem que ela leva a um estado de serenidade perfeita, enquanto outros que ela transforma o vampiro em um predador tão frio quanto um tubarão, não mais suscetível à fúria irracional, mas no entanto tão sedento de sangue quanto antes.</p><p>Você pode ser um discípulo da Golconda, um seguidor das palavras de Saulot, ou um Membro que deseja remover o enganoso véu da Golconda dos olhos dos demais vampiros. Um vampiro elusivo chamado Mestre dos Corvos pretende extirpar o mito da Golconda de uma vez por todas, e você pode ajudá-lo nessa missão.</p><p>Você ouviu falar da Golconda e pode ensinar outros sobre a natureza desse estado sem parecer um total amador. Uma vez por história, você pode pedir ao Narrador orientações antes de tomar uma ação, e ele dirá se essa ação comprometerá a chance de alcançar a Golconda.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 389.</em></p>"
+  },
+  "zVUvvHwHducyrN0d": {
+   "name": "Golconda •• — O Único Caminho Verdadeiro",
+   "description": "<p>Você possui uma cópia da obra <strong>\"O Caminho Verdadeiro\"</strong>: um tratado sobre as supostas realidades da Golconda, de autoria do Mestre dos Corvos. Esse panfleto lhe diz que a Golconda é um método para se tornar um predador alfa, em vez de um monstro redimido espiritualmente. Uma vez por história, o panfleto lhe confere três dados adicionais em qualquer teste Social que envolva a natureza da Golconda.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 389.</em></p>"
+  },
+  "l6LX7Gr5aWRbYZZj": {
+   "name": "Golconda ••• — Discípulo de Saulot",
+   "description": "<p>Você se apega aos ideais de Saulot: o vampiro que viajou para a Ásia e retornou portando um terceiro olho e a iluminação da Golconda. Você acredita nos ensinamentos de Saulot, segundo os quais a Golconda é o caminho supremo para um Membro sobrepujar sua maldição. Você pratica uma existência dupla, ocasionalmente permitindo à Besta e à Fome livre-reino para que você experimente a serenidade em outros momentos. Sempre que você sucumbir voluntariamente ao frenesi, tome nota; isso permitirá que obtenha sucesso automático no seu próximo teste de frenesi.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 389.</em></p>"
+  },
+  "x58U4ZeDrLODGz4A": {
+   "name": "Golconda •••• — Satisfazer a Fome",
+   "description": "<p>Você não precisa se alimentar com a mesma frequência dos outros vampiros. O foco da sua Golconda é suprimir sua Fome constante, potencialmente às custas de outras Características. Seu temperamento inspira outros vampiros. Uma vez por sessão, você pode diminuir sua Fome em um (mas não para menos de um) sem se alimentar.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 389.</em></p>"
+  },
+  "RlUYEE2KCwiWEJlD": {
+   "name": "Golconda ••••• — Saudar o Sol",
+   "description": "<p>Você conhece os segredos da Golconda. Você pode ser incapaz de percorrer a trilha indefinidamente, mas enquanto o fizer, poderá enfrentar a luz do sol direta sem sofrer dano. Entretanto, na noite seguinte, você desperta em frenesi de Fome. Você pode caminhar durante o dia uma vez por história.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 389.</em></p>"
+  },
+  "FEObuBYcwxPX1DQ6": {
+   "name": "Descendente de Hardestadt • — A Voz de Hardestadt",
+   "description": "<p><em>(Exclusivamente personagens Ventrue)</em></p><p>Se se der ouvidos a muitos Ventrue, Hardestadt foi o Ventrue mais importante de todos durante oito séculos, até sua destruição nas mãos de rebeldes Brujah liderados pelo traidor Theo Bell durante a Convenção de Praga em 2012. Hardestadt foi o fundador Ventrue da Camarilla, ao lado de seis de seus pares pertencentes a outros clãs, e os Ventrue lhe dão o crédito pela força e sobrevivência da seita desde então.</p><p>Hardestadt não Abraçou muitos mortais, e, incomum para um Ventrue, jamais confirmou sua linhagem até um matusalém da Quarta Geração. Até onde lhe diz respeito, ele é o início e o fim dos Ventrue. Ninguém antes ou depois dele estará à altura das suas realizações.</p><p>Hardestadt costumava gritar, pontuando sua fala com socos em mesas, paredes ou infelizes carniçais. Seu Sangue permite que você fale acima de qualquer barulho e atraia a atenção, seja em uma reunião repleta de falatório ou em uma rave. Algo na sua voz permite que os outros o escutem. Se prestam atenção, depende do que você diz.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 390.</em></p>"
+  },
+  "lR0tsCl2eJ7oj2MG": {
+   "name": "Descendente de Hardestadt •• — Líder Supremo",
+   "description": "<p>Em muitos sentidos, a autoconfiança de Hardestadt como líder foi sua ruína, mas, até sua Morte Final, foi ela que o levou à grandeza. Você pode ordenar a partir da retaguarda, convencer os outros a segui-lo em situações fatais ou enviar seus comandados para a perdição com o intuito de obter vantagem. Uma vez por história, você não sofre nenhuma penalidade em sua parada de dados por enviar pessoas para o perigo.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 390.</em></p>"
+  },
+  "Sf9AZPMbI1O2m2v1": {
+   "name": "Descendente de Hardestadt ••• — Esteio Ventrue",
+   "description": "<p>Graças à sua prestigiosa linhagem, outros Ventrue procuram sua orientação. Independentemente do seu Status com outros grupos, você sempre tem três pontos de Status (•••) com os Ventrue.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 390.</em></p>"
+  },
+  "gBMnWzB5LZ3AAWFW": {
+   "name": "Descendente de Hardestadt •••• — Linha Direta com os Fundadores",
+   "description": "<p>Hardestadt assegurou que toda a sua linhagem pudesse alcançá-lo quando em perigo. Ele raramente respondia, a menos que a situação fosse extrema, e punia severamente o mau uso, mas seu método ainda persiste apesar da sua morte. Uma vez por crônica, você pode ligar, escrever ou marcar uma reunião com um dos fundadores da Camarilla em nome de Hardestadt. Se eles responderão dependerá da importância da sua solicitação.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 390.</em></p>"
+  },
+  "QQ6zKU29EDooMbBY": {
+   "name": "Descendente de Hardestadt ••••• — Herdeiro de Hardestadt",
+   "description": "<p>Você tem a posse de um documento assinado em que Hardestadt o nomeia seu sucessor. Você não sabe ao certo do que é sucessor: apenas riqueza e poder, o reinado Ventrue, quem sabe do Círculo Interno da Camarilla. Quando você assumir o nome de \"Hardestadt\", o documento afirma que a Camarilla deverá marchar segundo o ritmo do seu tambor – e garante que os Anarchs se unirão para derrubá-lo.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 390.</em></p>"
+  },
+  "B5e5F9QO3nzjlisY": {
+   "name": "Descendente de Helena • — À Flor da Pele",
+   "description": "<p><em>(Exclusivamente personagens Toreador)</em></p><p>Alguns afirmam que ela reside no continente americano, em guerra constante com um rival. Outros, que ela administra a casa noturna vampírica mais popular do mundo. Uns poucos creem que ela é a amante do fundador do clã, e que se encontra em vias de despertar o Toreador Antediluviano.</p><p>Bela e talentosa, é dito que ninguém consegue desviar o olhar de Helena a não ser que ela assim deseje. Mortais morreram para serem os primeiros a testemunhar suas criações artísticas. Todos os seus descendentes demonstram um imenso nível de talento, exemplificando o papel tradicional dos Toreador. Trata-se de um estereótipo do qual poucos se ressentem; Helena é um ícone do clã. Os Toreador querem conhecer você para se aproximarem dela.</p><p>Independentemente do seu status, mencionar o nome de Helena em uma conversa com um Toreador ou qualquer vampiro que a conheça aumenta seu Status em um ponto. Você pode usar esse efeito uma vez por história, ou mais vezes para encher o saco dos outros jogadores.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 391.</em></p>"
+  },
+  "ry8RENaAL5jc7bic": {
+   "name": "Descendente de Helena •• — Talento Inato",
+   "description": "<p>Diferentemente de outros Toreador insípidos que dependem exclusivamente dos seus rostos e corpos, você foi Abraçado por seu talento. Escolha uma Habilidade entre Ofícios, Etiqueta ou Performance. Aumentar essa Habilidade custa metade dos pontos de experiência (arredondando para baixo) que custaria normalmente.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 391.</em></p>"
+  },
+  "GxTOEW05VSVBnNG2": {
+   "name": "Descendente de Helena ••• — Abrace o Estereótipo",
+   "description": "<p>No momento adequado, você pode representar o papel de Toreador superficial, cercar-se de bajuladores e dar uma festa lendária. Uma vez por história, você pode dar uma festa para aumentar seu Status e/ou Influência com o grupo de convidados em dois pontos; o aumento dura tanto quanto a festa.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 391.</em></p>"
+  },
+  "abq2zBzWQJ40u53q": {
+   "name": "Descendente de Helena •••• — Pureza Divina",
+   "description": "<p>Ao contrário de muitos na grande família de Helena, sua perfeição é mais angélica do que demoníaca. Você pode cometer qualquer pecado e sempre parecer inocente. Adicione dois dados às suas paradas de dados ao realizar testes para evitar a culpa por suas ações.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 391.</em></p>"
+  },
+  "fUUZGHvHlX00KTuj": {
+   "name": "Descendente de Helena ••••• — Franquia do Succubus Club",
+   "description": "<p>Helena sucumbiu ao Chamado nos últimos anos, abandonando uma vez mais o Succubus Club em Chicago nas mãos de um gerente. Essa honra rara garante que os Membros da cidade respondam à sua convocação, e todo vampiro Abraçado nos últimos dois séculos ouviu falar do Succubus Club. Enquanto o clube estiver aberto, o valor de Chasse do Domínio da sua coterie aumenta em dois pontos. Você também tem quatro pontos para distribuir entre Recursos, Fama e Status entre todos os Membros.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 391.</em></p>"
+  },
+  "IoYd45ipAuDpn1hG": {
+   "name": "Veterano da Guerra das Seitas • — Sobrevivente",
+   "description": "<p>O Sabá e a Camarilla sempre estiveram em desacordo, mas a guerra pela América do Norte na década de 1990 e início dos anos 2000 cimentou as seitas como eternas inimigas de sangue. Em um movimento para exterminar seus oponentes e estabelecer de vez seu domínio sobre o continente, o Sabá abriu um caminho sangrento através dos domínios da Camarilla e do Movimento Anarch, assassinando Membros impiedosamente e revelando seus poderes para o gado sem hesitar. A Camarilla percebeu que precisava agir, e formou uma defesa militante liderada por ícones como Theo Bell.</p><p>Embora mais defensiva do que ofensiva, a Camarilla recuperou alguns domínios na América do Sul, mas bolsões sob o controle do Sabá permanecem em algumas cidades importantes nas noites de hoje. Todo vampiro participante tem uma história para contar sobre seu envolvimento nos horrores aos quais sobreviveu.</p><p>Seu domínio, ou o de um vampiro próximo de você, foi devastado durante a guerra das seitas. Você pode descrever as estratégias de ambas as seitas, como elas guerrearam na cidade sem alertar os mortais e listar os nomes das vítimas vampíricas. Uma vez por história, você pode pedir ao Narrador uma informação relacionada à guerra das seitas no seu domínio.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 392.</em></p>"
+  },
+  "7j8T4AMDb8SV9UEZ": {
+   "name": "Veterano da Guerra das Seitas •• — Participante Ativo",
+   "description": "<p>Independentemente da seita, a guerra arrastou para si muitos vampiros. Até mesmo independentes serviram como mercenários ou fornecedores para um dos lados ou ambos. Você pode mostrar as cicatrizes da sua participação. Sua própria seita pode considerá-lo um herói de guerra; a outra, como um criminoso de guerra. Ganhe três pontos em Status ou Mawla para refletir sua posição ou a de um dos seus companheiros.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 392.</em></p>"
+  },
+  "ZgNLAA0Y2wAL9pVU": {
+   "name": "Veterano da Guerra das Seitas ••• — Troféu",
+   "description": "<p>Muitos vampiros notáveis foram vítimas da guerra das seitas, e se tornou uma questão de orgulho competitivo para muitos Arcontes e Templários que participaram da guerra derrubar um \"nome\" do lado inimigo. Seja por sorte ou planejamento, você é responsável pela morte de um desses vampiros. Você pode ostentar orgulhosamente tal fato ou abafar os rumores a respeito; em todo caso, suas mãos estão cobertas com aquele Vitae. Uma vez por história, você pode usar esta lenda para evitar uma disputa que ela possa ajudar, do mesmo modo como o Narrador pode usá-la para enviar inimigos atrás da sua cabeça.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 392.</em></p>"
+  },
+  "xYUR9dktTdxvWyvo": {
+   "name": "Veterano da Guerra das Seitas •••• — Terra de Nenhum Vampiro",
+   "description": "<p>Equipes de Assalto compostas por Membros de ambos os lados da guerra das seitas atacavam domínio atrás de domínio e regressavam quando os defensores se reagrupavam. Esse tipo de conflito das Grandes Guerras estilo \"mola\" levou alguns vampiros a ficarem obcecados com domínios e seus santuários, arsenais, redes de túneis e ruas laterais secretos. Você conhece os melhores recantos do seu domínio e de dois domínios adjacentes que dariam boas bases para emboscadas, esconderijos contra atacantes, locais de reabastecimento de milícias ou para se fazer contato com mercenários. Adicione dois pontos ao Portillon do seu Domínio, e adicione dois dados às paradas relevantes de Manha, Ladroagem e Furtividade em dois domínios vizinhos.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 392.</em></p>"
+  },
+  "VEtLM27SbnucTwWk": {
+   "name": "Veterano da Guerra das Seitas ••••• — Agitador de Seita",
+   "description": "<p>Alguns vampiros só existem para causar derramamentos de sangue, e você se considera parte desse grupo. Indivíduos como Lucinda da Camarilla e Francisco Domingo de Polonia do Sabá foram mimados pela guerra e acabaram sem chão quando ela terminou. Você conhece todos os gatilhos e botões a serem acionados para dar início a uma nova guerra das seitas. Tal conflito pode abranger um único domínio no começo, mas, iniciado o incêndio, você pode fazer com que se espalhe. Adicione dois dados a todas as suas paradas de testes Sociais para inflamar a tensão entre as seitas.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 392.</em></p>"
+  },
+  "S11UwnxxDWK56TP5": {
+   "name": "A Trindade • — Constantinopla",
+   "description": "<p>Vampiros de determinada idade recordam seus pares e descendentes da Idade de Ouro de Constantinopla, quando a Trindade de Michael, o Dracon e Antonius mantinham o controle. Esses três filósofos, um Toreador, um Tzimisce e um Ventrue, respectivamente, organizaram e mantiveram a utopia vampírica de Constantinopla. A combinação das Cruzadas com a obsessão de um Matusalém e a corrupção de um Setita destroçaram a coterie. Ao cabo, o Sonho de Constantinopla, em que todos os vampiros das mais diversas crenças e costumes pudessem coexistir em harmonia, se rompeu.</p><p>Alguns ainda se apegam ao sonho e têm esperanças de que a Trindade renasça. Você ainda pode acreditar que o Dracon pode ser trazido de volta ao seu antigo esclarecimento, ou que uma das novas trindades de Constantinopla ou Istambul detenha a chave para o crescimento e revitalização do domínio. Pelo contrário, talvez você estude os discípulos da Trindade com olhos atentos, preparando-se para acabar com uma ameaça colossal a todas as Tradições.</p><p>Fora da Ashirra, a tradição vampírica refere-se a Istambul como \"Constantinopla\". Você é um dos poucos que sabem o porquê. Constantinopla representou tudo o que era possível em uma cidade onde vampiros compartilhavam ideias e discutiam filosofia sem acabar em carnificina. Uma vez por história, você pode perguntar ao Narrador sobre o passado de Constantinopla e receber uma resposta precisa.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 393.</em></p>"
+  },
+  "HIYtj2FEW5HHsXQ6": {
+   "name": "A Trindade •• — A Arquitetura de Antonius",
+   "description": "<p>Renomado por suas habilidades como arquiteto político e físico, o Ventrue Antonius construiu a estrutura que sustentou Constantinopla. Para alguns, ele engendrou o ideal da Primigênie. Você estuda os métodos de Antonius; você pode adicionar dois dados a qualquer parada de dados de Política ao realizar um teste que envolva o governo de um domínio. Uma vez por história, você pode mediar e acalmar qualquer debate na corte, esmagando atitudes violentas com ações ou profundidade.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 393.</em></p>"
+  },
+  "xFlcahsE2ywe7YHM": {
+   "name": "A Trindade ••• — O Sonho",
+   "description": "<p>Por um milênio, a Trindade praticou o Sonho de Michael: uma visão da utopia vampírica. Michael encorajou todos os vampiros em Constantinopla a aprenderem e buscarem o esclarecimento, distanciarem-se da Besta e tornarem-se algo mais do que meros predadores. Você é um expoente moderno do sonho, reconhecido como um Orador do Sonho na sua cidade. Você pode adicionar um dado a qualquer parada de dados de Sagacidade ao testar para sondar a Besta de outro Membro. Você inspira e acalma almas; uma vez por história, você pode gastar um ponto de Força de Vontade para permitir que outro vampiro rerrole até três dados ao resistir a um frenesi.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 393.</em></p>"
+  },
+  "zrC3qqcDbMBmucMU": {
+   "name": "A Trindade •••• — O Dracon",
+   "description": "<p>Da Trindade, apenas o Tzimisce conhecido como Dracon sobreviveu à queda de Constantinopla. Apaixonado e sábio, amante de ambos, Antonius e Michael, e guia espiritual da Trindade, o enlutado Dracon permaneceu em silêncio por muitos séculos após o assassinato de Antonius. Segundo os rumores, Dracon ressurgiu, com intenções obscuras. Você é um dos discípulos dele, e provavelmente sabe como encontrá-lo. Ele é um Mawla de cinco pontos, auxiliando-o em questões espirituais e relacionadas às Disciplinas.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 393.</em></p>"
+  },
+  "Nd1GJ849DcTLfrq3": {
+   "name": "A Trindade ••••• — A Nova Trindade",
+   "description": "<p>Uma noite dessas, a Constantinopla de Michael se reerguerá, e você ajudará na reconstrução. Não é o frágil ego que lhe dá essa certeza, mas a infalível profecia. Você, junto de dois outros que complementam suas habilidades sem as espelhar, <em>reconstruirão</em> Constantinopla em uma nova cidade – não importando o que deva ser feito. Se você adquirir Máculas no decorrer dessa missão, poderá remover até cinco delas por história antes de realizar um teste de Remorso (pág. 239).</p><p><em>Vampiro: A Máscara — Manual Básico, p. 393.</em></p>"
+  },
+  "g9T8pQTMtGkTbryC": {
+   "name": "Jeanette/Therese Voerman • — Membro do Asylum",
+   "description": "<p>Desde seu ressurgimento, o Succubus Club de Chicago só teve um rival como casa noturna dos mortos: o Asylum, em Los Angeles. As irmãs Voerman administram o empreendimento conjunto, ou empreendimentos, já que a franquia Asylum está em regnae por toda a América, Ásia e Europa.</p><p>Famosas tanto por suas naturezas empreendedoras quanto por suas personalidades combativas, as Voerman se detestam apesar do seu sucesso. Em L.A., \"fazer uma Voerman\" é fazer de um integrante da sua própria coterie um inimigo jurado. Therese e Jeanette agora dirigem Asylums separados, um em Santa Monica e outro em Hollywood. Elas nunca aparecem no mesmo clube.</p><p>Somente os Malkavianos mais próximos das Voerman sabem que elas são uma só vampira: duas personalidades distintas que compartilham o mesmo corpo. Alguns dizem que ela já portava essa condição como mortal, enquanto outros afirmam que <em>houve</em> duas irmãs, porém uma matou a outra. Outros rumores falam sobre <em>outra</em> irmã, que age como uma escrava aprisionada para a Malkaviana. Altamente voláteis, as Voermans provam que os Malkavianos podem ser tão inspirados e prósperos como qualquer Toreador ou Ventrue, porém muitos Anarch antecipam o momento que Therese e Jeanette entrarão em guerra entre si.</p><p>Você nunca precisa esperar em uma fila para entrar no Asylum, sempre tem um dos melhores lugares da casa e, contanto que não faça merda, pode caçar ali uma ou duas vezes por sessão (Dificuldade 2), com discrição.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 394.</em></p>"
+  },
+  "mvgqwxHsoQPkLGSv": {
+   "name": "Jeanette/Therese Voerman •• — Pau Mandado",
+   "description": "<p>Jeanette e Therese o consideram um recurso confiável, sujeitando-o com frequência a missões que vão de investigações sérias a imensas viagens na maionese. Embora perigosas, elas também são generosas, e pagam todos os favores devidos.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 394.</em></p>"
+  },
+  "TJWUFDFc5CQoaFOV": {
+   "name": "Jeanette/Therese Voerman ••• — O Queridinho da Jeanette",
+   "description": "<p>Jeanette Voerman, a filha selvagem da família, o adora, paparica e paquera. Embora supostamente seja a mais instável das irmãs, ela também é a mais generosa. Você pode ficar na câmara diurna de qualquer clube Asylum, bastando pedir (se Jeanette estiver presente, ela insiste que você fique), usar o clube para dar suas próprias festas e pedir favores pequenos e grandes para o Barão Anarch. Jeanette conta como um Mawla de quatro pontos, mas somente no que diz respeito a negócios dos Malkavianos e Anarchs.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 394.</em></p>"
+  },
+  "6u3xmyAJxbYMBrVO": {
+   "name": "Jeanette/Therese Voerman •••• — O Queridinho da Therese",
+   "description": "<p>Therese Voerman, o correto e austero membro da família, o respeita e valoriza. A mente dela, orientada para os negócios, não permite que ela gaste os recursos do Asylum com seus luxos, mas ela fala em seu benefício em qualquer regnum onde o Asylum esteja presente, e pode orientá-lo em negócios e finanças se você pedir. Ela conta como um Mawla de três pontos.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 394.</em></p>"
+  },
+  "dGgVktdF6KIwlxRh": {
+   "name": "Jeanette/Therese Voerman ••••• — Gerente do Asylum",
+   "description": "<p>Jeanette ou Therese permitem que você tenha uma unidade do clube Asylum em seu domínio. Enquanto o clube estiver aberto, você terá quatro pontos para distribuir entre Refúgio, Rebanho, Recursos ou o Chasse do seu Domínio – dependendo do foco do seu clube, que pode mudar com o tempo. Se o clube é um Elísio depende de você.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 394.</em></p>"
+  },
+  "6ycXfF50qTI1rClk": {
+   "name": "A Semana dos Pesadelos • — História Oral",
+   "description": "<p>Os Membros debatem quando exatamente caiu a <em>Semana dos Pesadelos</em>, com alguns dizendo que ela caiu logo antes da virada do milênio, outros a emparelhando com o suposto início da Gehenna. Na verdade, a \"Semana\" dos Pesadelos durou anos, varrendo alguns milhares de vampiros em seu movimento. Durante a Semana, um vampiro impossivelmente antigo despertou e purgou seu próprio clã: os Ravnos. Vampiros sangue-ralo emergiram com presságios e portentos enquanto a Estrela Vermelha, Anthelios, resplandecia no céu noturno.</p><p>Você testemunhou a loucura da Semana dos Pesadelos e sobreviveu, manipulou o caos em vantagem própria, ou estudou as ações daqueles que o fizeram. Agora você vigia em busca de sinais de ruínas por vir.</p><p>Você ouviu e contou a história da Semana dos Pesadelos incontáveis vezes, e sabe exatamente o que enfeitar e quais partes ocultar. Sua versão do conto é popular nos Elísios, onde você às vezes é convidado a falar como historiador e animador. Membros importantes vêm de toda parte para ouvir sua história. Adicione três dados a paradas de dados de Performance em testes para contar a história.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 395.</em></p>"
+  },
+  "RBVKHeZ7L43PSUyj": {
+   "name": "A Semana dos Pesadelos •• — Ravnos Remanescentes",
+   "description": "<p>Antes da Semana dos Pesadelos, os Ravnos eram um clã – agora, não passam de uma linhagem de sangue. Você conhece alguns remanescentes dos Ravnos e talvez compartilhe seu rancor com os Gangrel, que os abandonaram para serem aniquilados. Você tem três pontos de Mawla, que representam esse grupo de contatos. Eles lhe trazem novidades e avisos, e talvez possam ser convencidos a lançar poderosas ilusões uma vez por crônica, embora sua associação com eles seja malvista, caso seja descoberta.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 395.</em></p>"
+  },
+  "07PYJQ51AHuBJ6WI": {
+   "name": "A Semana dos Pesadelos ••• — Eu Estive Lá",
+   "description": "<p>Você não só ouviu a respeito, você esteve na linha de frente. Sua reputação como um sobrevivente e veterano da Semana dos Pesadelos lhe concede Status entre Membros historiadores, ocultistas, Ravnos e cultistas da Gehenna. Uma vez por história, você pode usar esse Status para obter um favor menor de um daqueles grupos ou de um cortesão proeminente no domínio com um interesse repentino no assunto.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 395.</em></p>"
+  },
+  "ahNXgxZZ5k1muWF6": {
+   "name": "A Semana dos Pesadelos •••• — A Estrela Vermelha",
+   "description": "<p>Anthelios (designação da NASA: 28978 IXION), chamada Absinto, arauto da Gehenna, ainda brilha no céu – aos seus olhos, pelo menos. Você acredita que ela olha de volta, mudando quem você é de algum modo. Uma vez por história, ou você reduz sua Fome ao valor de dois ou adiciona um dado nas paradas de uma Disciplina para uma noite após encarar a estrela por 10 minutos.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 395.</em></p>"
+  },
+  "9YQWT8fj5KhVG4b1": {
+   "name": "A Semana dos Pesadelos ••••• — Sangue de Zapathasura",
+   "description": "<p>O Antediluviano Ravnos encontrou a Morte Final em julho de 1999 nas mãos de desconhecidos que empregavam armamento avançado e o poder do sol. Antes de morrer, ele drenou o Vitae de todo o seu clã, levando-os ao frenesi e canibalismo em seus estertores finais. Grossas e sencientes cordas formadas por seu Vitae mancharam o solo em Bangladesh onde ele caiu. O sol do meio-dia não destruiu tudo. Você possui um pequeno frasco contendo o Sangue do Antediluviano Ravnos. O que você fará com esse Vitae é por sua conta, e o que ele fará a quem o beber depende do Narrador.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 395.</em></p>"
+  },
+  "AOOY2A7FESVgjyCb": {
+   "name": "Rudi • — Novos Direitos",
+   "description": "<p>Uma cara nova na cena vampírica, Rudi comanda uma impressionante quantidade de seguidores como um representante Anarch das minorias oprimidas e reprimidas da sociedade dos Membros. Embora ele também se preocupe com o gado, sua recente chegada na não vida lhe mostrou que os conflitos que os mortais precisam travar por igualdade são igualmente importantes para os imortais.</p><p>A vida notívaga de Rudi não mudou muito desde o Abraço. Ele ainda se refugia em Copenhagen, ainda sai com os mesmos amigos e frequenta as mesmas casas noturnas. Ele apenas teve suas preocupações expandidas; além de defender as minorias mortais, ele agora defende os Gangrel deixados para fora de refúgios e territórios de caça, os Membros femininos em cidades governadas por Anciões tradicionalmente misóginos, e encoraja a adoção de normas progressistas no lugar das tradicionais sempre que possível. Alguns podem pensar na sua combinação de prática do islamismo e descarada atitude <em>queer</em> contraditória, mas poucos desafiam o \"Urso Gangrel\" com base nisso.</p><p>Rudi, que está rapidamente se tornando o <em>animale du jour</em>, atrai Membros descontentes com sua abordagem contra elitistas e fanáticos da Camarilla. Alguns Príncipes temem que ele venha a liderar uma cruzada nos anos vindouros, numa tentativa de derrubar a classe dirigente.</p><p>Inspirado no sucesso da independência do Clã Gangrel com relação à Camarilla, como Rudi, você acha essa liberdade revigorante. Uma vez por história, ao combater ou denunciar a classe dominante, você pode rerrolar qualquer parada de dados de um teste de Habilidade.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 396.</em></p>"
+  },
+  "UxsjYykUbGeWypUD": {
+   "name": "Rudi •• — Eles e Deles",
+   "description": "<p>Quando apoia os despossuídos ou perseguidos, você é o campeão resoluto. Talvez você acredite que os vampiros só possam resistir apoiando-se mutuamente, ou que um bando só é tão forte quanto seu integrante mais fraco, porém, a um alto custo, você defende os outros. Quando um Pilar de qualquer integrante da sua coterie é ameaçado, você fica atento e pronto para agir.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 396.</em></p>"
+  },
+  "kSl7xnsQkTO6JAkW": {
+   "name": "Rudi ••• — Advogado Gangrel",
+   "description": "<p>A exemplo de Rudi no norte da Europa, muitos creem que você defende os Gangrel no seu domínio local, para o bem ou para o mal. Os integrantes do clã reagem bem a você; adicione um dado aos testes Sociais que os envolvem. Embora essa reputação signifique que você fala em nome de muitos, ela também significa que alguns o responsabilizam pelas ações de muitos. Você pode organizar convocações e discretas reuniões de trégua entre representantes Gangrel e da Camarilla, bastando para isso que obtenha sucesso em um teste de Carisma + Política (com Dificuldade determinada pelo Narrador).</p><p><em>Vampiro: A Máscara — Manual Básico, p. 396.</em></p>"
+  },
+  "JxmZ5v5GtYlCNhZE": {
+   "name": "Rudi •••• — O Bando do Urso",
+   "description": "<p>Você é, ou foi, integrante do Bando do Urso: Membros Rudistas fanáticos que ao mesmo tempo são oradores clamorosos e combatentes ferozes. (Considere seus companheiros do Bando do Urso um Mawla grupal de três pontos que gosta de comprar brigas.) Uma vez por história, esses revolucionários modernos, incluindo você, ganham um sucesso automático sempre que tentam inflamar Anarchs e mortais despossuídos contra a elite. Integrantes do Bando do Urso são temidos nos domínios da Camarilla, o que pode ser tanto uma vantagem quanto uma desvantagem, dependendo para quem você pergunte, e desse indivíduo reconhecê-lo.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 396.</em></p>"
+  },
+  "2lK8iwjgG37bCj9Q": {
+   "name": "Rudi ••••• — O Exército de Rudi",
+   "description": "<p>O exército de Rudi inclui forasteiros de todos os clãs, raças e credos. Você controla uma brigada dessa força \"paramilitar\". Você pode ordenar que ela aja contra governos mortais ou imortais de muitas maneiras, desde a formação de protestos pacíficos na frente da casa de um governador, a comícios contra os líderes de grupos opressivos. Grande, difícil de controlar e potencialmente perigosa, sua brigada lhe confere seis pontos para distribuir entre Aliados, Influência e Contatos que podem ser direcionados, mas nunca controlados.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 396.</em></p>"
+  },
+  "N99lJLcxVQgLuev4": {
+   "name": "Descendente de Tyler • — Instigador",
+   "description": "<p><em>(Exclusivamente personagens Brujah)</em></p><p>Todo Brujah aspirante a rebelde adora Tyler – outrora conhecida como Patricia de Bollingbroke e muitos outros nomes desde então. Sua violência revolucionária contra Anciões tiranos e Matusaléns insidiosos mudou a sociedade dos Membros irrevogavelmente, e inspirou o Movimento Anarch. A própria Tyler duvida que suas ações sejam tão efetivas, porém suas crianças e companheiros de clã a comparam a várias figuras: Robin Hood, Malcom X, Che Guevara e Gavrilo Princip.</p><p>Tyler ainda existe: uma rebelde calma e estudiosa nas noites de hoje. Com séculos de reflexão, ela luta para reconciliar suas ações com os resultados das noites modernas. Seus descendentes continuam a lutar na esperança de elevá-la à grandeza à qual está destinada.</p><p>Uma vez por história, sempre que você tentar persuadir uma multidão de mortais a agir com violência, sua natureza explosiva adicionará dois dados à sua parada de dados usada para tanto.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 397.</em></p>"
+  },
+  "rZQBKbNte1AyD08L": {
+   "name": "Descendente de Tyler •• — Campeão da Causa",
+   "description": "<p>Quando os vampiros querem um líder para uma rebelião, eles o procuram em busca de conselhos ou liderança. Eles podem até escutar as suas palavras, e dar seu conselho não é de todo ridículo. Você adiciona dois dados ao seu Status com eles durante uma rebelião, e pode achar os numerosos contatos adquiridos antes de uma rebelião mais valiosos e com certeza menos perigosos.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 397.</em></p>"
+  },
+  "udeRDL7dCSTMnjkV": {
+   "name": "Descendente de Tyler ••• — A Piedade de Tyler",
+   "description": "<p>Você sabe quando parar. Tyler reconheceu quando o Sabá foi longe demais com seus ideais Anarch, e você do mesmo modo reconhece os limites da revolução violenta. Uma vez por história, ao entrar em frenesi, você pode assumir uma Compulsão Brujah (pág. 210) a qualquer momento para cessar imediatamente o surto. Você não sofre nenhuma confusão ou exaustão após um frenesi interrompido, voltando abruptamente para sua condição humana.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 397.</em></p>"
+  },
+  "fUABCzFCk6nh8ukP": {
+   "name": "Descendente de Tyler •••• — Os Furores",
+   "description": "<p>As filosofias de Tyler surgiram originalmente entre um grupo vampírico histórico conhecido como os Furores, que se dedicou à destruição de todos os Membros tiranos. Esse grupo ainda existe em segredo, e você é um dos seus integrantes. Quando chegada a hora (uma vez por crônica), os Furores o armam, fornecem santuário em um regnum onde exercem influência e acionam recursos no domínio alvo, tais como Aliados surpresa (disponíveis dentro de uma cena). Esses Aliados somam cinco pontos de Efetividade; o restante depende da sua colaboração com o Narrador. Os recursos dos Furores só podem ser usados em uma tentativa de derrubar um Príncipe, Barão ou outro vampiro de posto elevado. O uso incorreto o transforma em alvo dos Furores e seus agentes desconhecidos.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 397.</em></p>"
+  },
+  "7nWjV5ErWCBpnbgG": {
+   "name": "Descendente de Tyler ••••• — Revolução Permanente",
+   "description": "<p>Você já derrubou o líder de uma seita. Agora você lidera um exército de revolucionários na derrocada de regnae vizinhos. Enquanto você continuar lutando e não for pego se excedendo nos luxos da sua posição, os Anarchs escutarão cada palavra sua, e os Anarchs Brujah o obedecerão ao pé da letra, incluindo embarcar em missões suicidas. Nenhuma rolagem será exigida se seu discurso for forte e sua argumentação convincente.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 397.</em></p>"
+  },
+  "v9ENUp67bkJrxCA0": {
+   "name": "Descendente de Zelios • — Santuário",
+   "description": "<p><em>(Exclusivamente personagens Nosferatu)</em></p><p>Todos os integrantes do Clã Nosferatu conhecem o grande arquiteto Zelios como um mestre do planejamento, construtor e erudito do poder geomântico. Embora ele tenha desaparecido sob Nova York na década de 90, deixou para trás bibliotecas, planos e tratados sobre o poder do lugar e da sagrada geometria.</p><p>Os descendentes de Zelios continuam sua obra, introduzindo outros vampiros na construção de refúgios, masmorras, prisões e labirintos. Acredita-se que possam sentir linhas ley e, por um preço, indicar a Príncipes os melhores locais para a construção de refúgios nesses epicentros de modo a garantir tanto proteção quanto o poder da terra e das estrelas.</p><p>Seu refúgio é uma maravilha do design moderno, possuindo proteção na forma de passagens secretas, segurança eletrônica e até mesmo um botão de autodestruição, isso sem deixar de parecer elegante e confortável. Distribua dois pontos entre as Qualidades de Refúgio Poterna e Sistema de Segurança, mas alguém em algum lugar provavelmente tem acesso a todos os detalhes da configuração.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 398.</em></p>"
+  },
+  "DnZjBkqwmcAQ7B0h": {
+   "name": "Descendente de Zelios •• — Sabotador",
+   "description": "<p>Você sabe instintivamente onde ficam as fraquezas de uma construção, e nem sequer precisa de explosivos para destruí-la. Com uma marreta, pé de cabra, cabo e cinzel frio, e tantas noites no local quanto a Dificuldade que o Narrador estabelecer para a construção (ou seja, quatro para uma casa residencial, seis para um banco, oito para uma prisão, nove para um arranha-céu), você pode colocar um edifício abaixo como se fosse um castelo de cartas.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 398.</em></p>"
+  },
+  "YkC93eNpMDFJAEYS": {
+   "name": "Descendente de Zelios ••• — Em Comissão",
+   "description": "<p>Outros vampiros sabem que você descende de Zelios e pedem aconselhamento na construção de seus refúgios. Esse negócio quase sempre garante que você tenha um ou dois favores (aproximadamente um favor menor por história) para cobrar o conhecimento dos locais onde alguns vampiros poderosos dormem – o que, ao cabo, provavelmente lhe fará mais mal do que bem.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 398.</em></p>"
+  },
+  "yO9RhKiYFzP76esM": {
+   "name": "Descendente de Zelios •••• — O Labirinto",
+   "description": "<p>Você usou a obra de Zelios para construir um labirinto sob seu domínio, feito em parte de túneis de esgoto, tubos desusados, porões, adegas e túneis de manutenção. Você adicionou suas próprias câmaras, passagens sem saída e conexões para formar um verdadeiro labirinto subterrâneo. Somente aqueles para quem você o revela conhecem seu labirinto. Você não pode tratar o labirinto como um Refúgio, já que ele o aterroriza, mas se adentrá-lo em fuga, ninguém poderá persegui-lo.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 398.</em></p>"
+  },
+  "LInRt4sMWuMRiJJr": {
+   "name": "Descendente de Zelios ••••• — Sentir as Linhas Ley",
+   "description": "<p>Às vezes você vislumbra gavinhas vermelhas pulsantes serpenteando através da terra: linhas ley. Vampiros que se refugiam onde esses tentáculos convergem percebem que sua Fome aumenta mais vagarosamente (ao realizar uma Checagem de Sangue para despertar, role dois dados e use o maior resultado), caso durmam ali durante o dia. As linhas ley têm outros efeitos mágicos poderosos – segredos que você pode investigar com a aprovação do Narrador –, mas seus companheiros Ratos de Esgoto punem severamente a revelação de qualquer parte desses segredos.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 398.</em></p>"
+  },
+  "7PUG3CJExnboKHYs": {
+   "name": "Descendente de Vasantasena • — Agente do Caos",
+   "description": "<p><em>(Exclusivamente personagens Malkavianos)</em></p><p>Vasantasena e seu Senhor Malkaviano, Unmada, viajaram pelo mundo durante a Idade Média, pregando contra o Laço de Sangue. Eles rejeitaram o vinculum, a hierarquia tradicional dos Membros e toda a perda de livre-arbítrio. No final, condenaram os Antediluvianos por sua tirania cruel por meio da Jyhad, juntando-se ao Sabá durante a formação da seita.</p><p>Assim como a Camarilla, o Sabá rejeitou a causa dela, instituindo tanto uma hierarquia quanto uma escravidão ritual por meio do Vitae. Eventualmente, foi ela quem acabou rejeitando-os e formando uma facção de Malkavianos para abraçar a libertação das garras do Sabá.</p><p>Os descendentes de Vasantasena são muitos e variados, e todos a seguiram a partir do Sabá antes da recente involução bestial da seita. Alguns se juntaram à Camarilla, outros aos Anarch. Todos possuem o ardor e encanto que ela porta como uma faca. Todos lutam por algo.</p><p>Você é bem-sucedido enquanto tudo ao seu redor queima ou termina em catástrofe. Em situações turbulentas, como em um combate incomumente caótico e imprevisível, uma perseguição de carros através de uma cidade cheia ou ao fugir de uma construção prestes a explodir, uma vez por sessão, você pode rerrolar um único dado sem gastar Força de Vontade.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 399.</em></p>"
+  },
+  "Qm5jNkx83KhdDeTv": {
+   "name": "Descendente de Vasantasena •• — Ouça Minhas Palavras",
+   "description": "<p>Você herdou as habilidades de persuasão do seu ancestral, pois a sua voz fala ao Sangue de terceiros antes de alcançar suas mentes. Uma vez por história, quando você tentar dar conselhos em um ambiente caótico e alguém parar para escutá-lo, esse indivíduo poderá rerrolar uma parada de dados em um teste futuro durante a mesma situação.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 399.</em></p>"
+  },
+  "BCFTyd6kGgeHExhY": {
+   "name": "Descendente de Vasantasena ••• — Odor do Laço",
+   "description": "<p>A aversão de Vasantasena por Laços de Sangue era parte da razão que a levou a atacar os Antediluvianos e os laços que eles mantinham com sua prole. Tamanho era seu poder que ela podia detectar pelo olfato o Laço em vampiros individuais e reconhecer o mesmo odor no vampiro Enlaçado ou Enlaçador. Uma vez por história, em caso de sucesso em um teste de Determinação + Percepção (Dificuldade 4), você consegue fazer a mesma coisa.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 399.</em></p>"
+  },
+  "f537MHS0eiAYEOWW": {
+   "name": "Descendente de Vasantasena •••• — Destruir o Laço",
+   "description": "<p>O maior ato para Vasantasena é a destruição de um Laço de Sangue. Alguns dizem que ela realizou esse feito muitas vezes em anos recentes dentro do Sabá, o que, em parte, os levou à sua rápida degeneração. Uma vez por história, você também pode remover o Laço de Sangue imposto a uma vítima, bebendo um gole do Vitae dela e então entrando em frenesi.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 399.</em></p>"
+  },
+  "xVvHVh1CqqGD2jiz": {
+   "name": "Descendente de Vasantasena ••••• — O Sabá se Torna a Camarilla",
+   "description": "<p>Vasantasena realizou o impossível e mostrou aos seus descendentes como fazê-lo. Filosofias estranhas e inumanas aprisionaram muitos vampiros ao Sabá. Uma vez por história, você pode desprogramar as crenças da seita em um vampiro. Para tanto, deve isolá-lo por completo e realizar um teste estendido (pág. 293) de Inteligência ou Carisma + Sagacidade em uma atmosfera repleta de perfumes especializados. Role uma vez a cada três noites de disputa; você vence após acumular uma quantidade de sucessos igual ao dobro da Força de Vontade do alvo.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 399.</em></p>"
+  },
+  "hsWjCmZONvGFXAzh": {
+   "name": "Alto-Clã • — Pavão",
+   "description": "<p>Embora formalmente abandonada com o surgimento da Camarilla, alguns clãs ainda aplicam a si mesmos a terminologia \"Alto-Clã\", comparando-se favoravelmente aos seus pares entre os \"Baixos-Clãs\". Você é um vampiro de um Alto-Clã, convencendo-se de que tem certos direitos de abusar e comandar Membros dos Baixos-Clãs. Esses direitos têm um limite, naturalmente.</p><p>Historicamente, os Altos-Clãs eram os Lasombra, Toreador, Tzimisce e Ventrue, embora os Brujah e alguns integrantes do Clã da Morte apeguem-se ao epíteto. Em várias partes do mundo, os membros dos Altos-Clãs incluem os Banu Haquim, o Ministério e, raramente, os Tremere.</p><p>Como um vampiro de um Alto-Clã, você considera sua Perdição de Clã mais uma dádiva do que uma maldição.</p><p>Você tem orgulho do status do seu clã como Alto, e se comporta com toda a pompa e circunstância própria de um vampiro nobre. Uma vez por sessão, você pode rerrolar um único dado ao tentar ordenar que um vampiro sem título o trate com deferência dentro do seu domínio.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 400.</em></p>"
+  },
+  "lFsVhhge0svKsNMt": {
+   "name": "Alto-Clã •• — Controle de Massas",
+   "description": "<p>Os Altos-Clãs já se sentaram em tronos, ordenando que vampiros Baixos-Clãs morressem em seu nome nos campos de batalha e se submetessem na corte. Você ainda possui a habilidade de persuadir vampiros de Baixos-Clãs mais facilmente do que vampiros de Altos-Clãs. Você possui um abusado e leal séquito de vampiros Baixos-Clãs que equivale a três pontos de Mawla. Você ganha três dados adicionais em paradas que utilizem Intimidação ou Liderança contra aqueles Membros; caso role uma falha total em um desses testes ou disputas, você precisará compensá-los, ou eles se virarão contra você.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 400.</em></p>"
+  },
+  "JL84AnhfmPbLuNS8": {
+   "name": "Alto-Clã ••• — Erguer o Baixo",
+   "description": "<p>Alguma peculiaridade da sua linhagem de sangue ou antigo decreto Principesco permite que você proclame a ascendência de um Baixo-Clã na sua cidade ao status de Alto-Clã. Você pode fazer isso uma vez por crônica, mas, naturalmente, pode enrolar por um bom tempo antes de fazê-lo. Até lá, adicione um dado a testes Sociais contra Membros Baixo-Clã ao aludir a essa possibilidade.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 400.</em></p>"
+  },
+  "vCNQspjb8cpykncm": {
+   "name": "Alto-Clã •••• — Abraçar para Governar",
+   "description": "<p>Vampiros dos Altos-Clãs muitas vezes optavam por Abraçar mortais de descendência nobre ou ancestralidade poderosa. Seus ancestrais podem não ser reis e rainhas, mas você foi Abraçado para governar. Adicione um dado a paradas de testes de Liderança que envolvam vampiros Alto-Clã que conheçam sua linhagem. Uma vez por história, outros vampiros dos Altos-Clãs adiam votar em você, ou permitem que você assuma mais responsabilidade (e poder), a menos que você tenha gerado algum agravo pessoal entre vocês.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 400.</em></p>"
+  },
+  "6VQRs5GMqFu5oCeS": {
+   "name": "Alto-Clã ••••• — Abençoado, não Amaldiçoado",
+   "description": "<p>Como muitos vampiros dos Altos-Clãs, você se convenceu de que você não carrega nenhuma Maldição de Caim. Em vez disso, sua fraqueza de clã é uma dádiva que lhe revela mais da sua natureza, sua posição na Terra de Deus e as áreas da vida que deve reforçar. Uma vez por sessão, você pode gastar um ponto de Força de Vontade para ignorar os fardos da sua Perdição de Clã.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 400.</em></p>"
+  },
+  "m21UMh9Ei4VKXbq8": {
+   "name": "Baixo-Clã • — Casca-Grossa",
+   "description": "<p>Você veio de um dos clãs historicamente identificados como \"Baixos\", embora no seu domínio isso afete mais o presente do que o passado. Você vive sob o fardo de uma pesada maldição, mais pesada (você diria) do que aquele suportado por vampiros dos Altos-Clãs.</p><p>Sua região geográfica determina quais clãs os vampiros mais velhos ainda consideram Baixos, mas, de um modo geral, os Gangrel, Malkavianos e Nosferatu entram na lista, com os Brujah e Tremere também ocupando essa posição em vários domínios.</p><p>Seu status como Membro Baixo-Clã marca-o como inferior aos seus pares, embora você ainda seja uma fonte proeminente de rebelião e contracultura. Você tem acesso ao fundo do poço da sociedade, e a todos os benefícios e malefícios correspondentes.</p><p>Muitas vezes difamado por aqueles que se dizem \"Alto-Clã\", sua ambição e independência não vacilam perante afrontas e palavras esnobes. Não é fácil fazê-lo reagir a provocações simples. Uma vez por história, você pode ignorar farpas verbais por uma cena sem precisar fazer um teste.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 401.</em></p>"
+  },
+  "FbUX84L4V40nGhhb": {
+   "name": "Baixo-Clã •• — Amaldiçoado com Orgulho",
+   "description": "<p>Em alguns casos, os Baixos-Clãs se orgulham enormemente da gravidade das suas Perdições. Por exemplo, alguns Nosferatu acreditam que sua aparência hedionda é a marca de uma monstruosidade gloriosa, em vez de algo a ser escondido. Você aprendeu a usar a Perdição do seu clã como uma arma, ganhando um sucesso automático em uma rolagem por história ao incorporar sua Perdição a uma ação.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 401.</em></p>"
+  },
+  "g2YvlTkCVL50tc0h": {
+   "name": "Baixo-Clã ••• — Parentesco Misterioso",
+   "description": "<p>Por causa da constante perseguição dos Altos-Clãs, vampiros dos Baixos-Clãs sentem-se inclinados a permanecerem juntos. Frequentemente você media entre disputantes dos Baixos-Clãs, e enxerga o mérito da união dos Membros do submundo contra a hegemonia da elite. Você pode selecionar três pontos entre Mawla ou Status dentre outros Baixos-Clãs do domínio.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 401.</em></p>"
+  },
+  "d2ScoudXcJHO9TsO": {
+   "name": "Baixo-Clã •••• — Comércio entre Iguais",
+   "description": "<p>Apesar de todo o seu sofrimento, os Baixos-Clãs se beneficiaram da adversidade de um modo importante – eles compartilharam entre si seus poderes. Tal colaboração pode não ser verdadeira em todos os domínios, mas essa velha história é um fato no seu. Você pode escolher uma Disciplina de um Baixo-Clã e adquirir pontos nela, para tanto usando pontos de experiência como se se tratasse de uma Disciplina do seu clã.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 401.</em></p>"
+  },
+  "kXi8e0yDDKUmvocQ": {
+   "name": "Baixo-Clã ••••• — Incidente Crítico",
+   "description": "<p>Sua influência entre vampiros Baixo-Clã pode permitir que você inverta a balança do poder no seu domínio – caso queira. Adicione um dado a todas as suas paradas para Projetos que visem minar os Altos-Clãs do seu domínio. Uma vez por crônica, você pode sacrificar até 10 dos seus pontos de Antecedentes para derrubar a mesma quantidade de Membros Alto-Clã numa cajadada só.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 401.</em></p>"
+  },
+  "xGrz8HiMknjsMS1L": {
+   "name": "Ambrus Maropis • — Crente Sincero",
+   "description": "<p>Ambrus Maropis raramente sai de seu opulento apartamento em Chipre para encontrar o público, mesmo assim sua reputação como <em>influencer</em> e protetor se espalha amplamente pela sociedade dos Membros. Os Toreador que sabem que Ambrus é um Nosferatu abominam sua popularidade. Seus discípulos, semelhantes a superfãs, agem como intermediários entre ele e Príncipes e Barões, enquanto ele próprio permanece eternamente escondido.</p><p>Ambrus tem a reputação de ser um vampiro na vanguarda da tecnologia e da cultura. Abraçado ao final da adolescência, Ambrus é, no fundo, um introvertido fã de anime, jogos e RPGs online, com uma elaborada persona online. Ele usa essa persona para vender software e informações que ele próprio hackeia, além de orientação sobre os melhores métodos de segurança roubados de governos e corporações para o uso de Membros; ele também informa Elísios sobre músicos, artistas do entretenimento e tendências emergentes; e faz de si mesmo um recurso indispensável para a Camarilla e Anarchs que desejam parecer mais humanos do que o humano.</p><p>Se Ambrus lhe ensinou algo, foi que a Camarilla está certa e a Máscara é essencial. Você segue religiosamente o que ele diz sobre segurança e subterfúgio, o que lhe dá conhecimento dos melhores esconderijos compartilhados por Membros em uma cidade e lhe garante um bônus de um dado em testes para encontrar tais lugares. Você pode não ter acesso a esse bônus se o domínio for tipicamente contra seu posicionamento político ou filosófico.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 402.</em></p>"
+  },
+  "xwDMNuNk27cygVQO": {
+   "name": "Ambrus Maropis •• — Informação Clandestina",
+   "description": "<p>Você pode usar um esconderijo digital para solicitar um hack à comunidade de fãs de Ambrus. Uma vez por história, você pode obter uma informação armazenada online sobre a maioria dos mortais, dentro de duas a 20 horas.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 402.</em></p>"
+  },
+  "L0AU5bNhFgGOamz0": {
+   "name": "Ambrus Maropis ••• — Ensinado pelos Melhores",
+   "description": "<p>Como um dos discípulos de Ambrus, você tem acesso a um suprimento de informações sobre tópicos que vão das operações da Segunda Inquisição às mais novas tendências na moda Harajuku. Ambrus também pode reter informações na Dark Web ou lhe oferecer seu próprio hacker ucraniano a um \"preço amigável\". Considere Ambrus um Mawla de três pontos (•••).</p><p><em>Vampiro: A Máscara — Manual Básico, p. 402.</em></p>"
+  },
+  "1q9js6X8CNLgN99b": {
+   "name": "Ambrus Maropis •••• — Backdoor Panóptico",
+   "description": "<p>Ambrus o pegou com um backdoor em um software de vigilância, rastreando e classificando comunicações online (incluindo chamadas de telefones celulares) atrás de palavras-chave e nomes. Ou talvez você tenha roubado o backdoor dele ou o tenha encontrado em uma máquina em uma casa segura que um fã de Ambrus abandonou às pressas. Seja como for, você só pode logar uma vez por história por questões de segurança, mas isso lhe garante dois sucessos automáticos em qualquer teste de Investigação que envolva as atividades em celulares ou presença online de qualquer um.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 402.</em></p>"
+  },
+  "zv7CCjDAZTIekqPS": {
+   "name": "Ambrus Maropis ••••• — Totalmente em Outra Rede",
+   "description": "<p>Ambrus foi até o fim com a sua identidade falsa. Você tem identidades falsas equivalentes a dois pontos de Máscara (••) e foi Zerado (pág. 190). Você ganha três dados adicionais para resistir a tentativas de procurá-lo online ou descobrir suas atividades no mundo mortal.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 402.</em></p>"
+  },
+  "0d8HdfYf7D4BUNGO": {
+   "name": "Carmelita Neillson • — A Arte da Narrativa",
+   "description": "<p>Anciões desesperados por modos de evitar a Gehenna e o Chamado procuram cada vez mais a arqueóloga Toreador brasil-irlandesa Carmelita Neillson. Ela desenterra o passado e entrevista Membros, registrando uma ampla gama de história vampírica e conversas com vampiros tão antigos quanto dois milênios de idade. A Camarilla a proibiu de arquivar qualquer um dos seus achados eletronicamente, motivo pelo qual ela criou \"Bibliotecas Neillson\" em localidades discretas.</p><p>Seus modos amigáveis, curiosidade natural e habilidades como poliglota a tornam uma escolha natural para interrogar um Matusalém que acabou de sair do Torpor, investigar um templo em ruínas ou interpretar uma escritura capturada do Sabá. Por acreditar que a arte não precisa estar emoldurada ou exposta em um museu para ser admirada, Carmelita acredita intensamente que a maior das artes, uma há muito ignorada pelos Membros, é a narração de histórias da sua própria espécie. Uma escritora e narradora talentosa, as habilidades de Carmelita atraem muitos Toreador que desejam quebrar o estereótipo \"bonito e vazio\".</p><p>Você e Carmelita compartilham a crença de que a narração de histórias é uma das formas de arte perdidas. Sempre que você regala outros vampiros com informações históricas ou mitos e lendas, os Toreador são naturalmente atraídos para as suas palavras, independentemente do relacionamento que haja entre vocês.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 403.</em></p>"
+  },
+  "rYi3KULlUAHDukki": {
+   "name": "Carmelita Neillson •• — A Arte da Vontade",
+   "description": "<p>Uma relíquia ou <em>objet d'art</em> específico, confiado a você pela Dra. Neillson, o inspira e encanta. Se você passar uma hora meditando sobre ele (e realizar um teste de Determinação + Erudição com Dificuldade 5) antes de descansar no dia, você desperta com um ponto de Força de Vontade extra. Você pode meditar desse modo uma vez por sessão.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 403.</em></p>"
+  },
+  "WDOITFTBUgeviwqR": {
+   "name": "Carmelita Neillson ••• — Biblioteca Neillson",
+   "description": "<p>As pequenas bibliotecas de Carmelita Neillson salpicam o mundo nos domínios da Camarilla, servindo como centros de dados usados para estimular e apoiar as memórias de vampiros Anciões. Você é o curador ou guardião de uma dessas bibliotecas, que conta como um Refúgio de dois pontos (••) com uma Biblioteca de dois pontos (••). Outros vampiros e Membros historiadores também usam o local como ponto de encontro, o que tem suas vantagens e desvantagens.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 403.</em></p>"
+  },
+  "RNNpuxoTqEFIyPYB": {
+   "name": "Carmelita Neillson •••• — Entrevista com o Matusalém",
+   "description": "<p>Você obteve a gravação de Carmelita entrevistando um vampiro impossivelmente antigo que divulga segredos sobre um dos clãs no seu domínio. Uma vez por história, você pode pedir ao Narrador que lhe conte um desses segredos. Independentemente de Carmelita conhecer esse registro e tê-lo dado para você ou alguém tê-lo gravado em segredo, a informação contida lhe dá uma vantagem sobre o vampiro entrevistado e o clã discutido. Um fato interessante é que a voz que se segue à de Carmelita no final da fita menciona outras gravações.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 403.</em></p>"
+  },
+  "BVHjwZhG3bFHGmWE": {
+   "name": "Carmelita Neillson ••••• — A Tumba do Ancestral",
+   "description": "<p>Carmelita confiou em você para guardar o suposto local de descanso de um dos seus ancestrais. Enquanto você mantiver o local seguro, poderá cobrar dela um favor maior uma vez por história. Se você falhar em guardá-lo, provavelmente haverá... outras consequências.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 403.</em></p>"
+  },
+  "IPGAwibph7Y6ziy4": {
+   "name": "Fiorenza Savona • — Na Lista de Fiorenza",
+   "description": "<p>Quando os Lasombra recuperaram o controle dos seus antigos centros de poder religioso, os Ventrue responderam expandindo sua influência pela nova nobreza: o governo e as corporações multinacionais. Com tamanho poder político global, Fiorenza Savona mantém o clã relevante e perigoso – no centro do poder em escala mundial.</p><p>Determinada e capaz de mandar outros vampiros verem se ela está na esquina, Fiorenza trabalhou duro quando mortal e continua agora como membro, para assegurar que os vampiros ricos e poderosos mantenham suas posições. Ascendendo em ONGs e nas Nações Unidas, ela conhece todos que valem a pena controlar na elite de Davos. O Senhor dela a alvejou por sua lista de contatos e descobriu sua maquiavélica argúcia política e financeira.</p><p>Uma nova participante nos jogos de poder da Camarilla, muitos Anciões e Ancillae a consideram uma mera Ventrue \"nova rica\". Seus companheiros de clã mais sábios sabem que as ações dela influenciam conselhos, corporações e mortais detentores de poder real. Enquanto seus predecessores se concentram na política vampírica, Fiorenza acredita que a chave para a longevidade dos Membros está na manipulação dos vivos.</p><p>Fiorenza sabe quem você é, o que significa que ela pensa que você é útil ou um problema para o clã. Consequentemente, ela designou um Lacaio mortal Talentoso (pág. 185) – guarda-costas, motorista, mordomo, etc. – para você, embora ela continue sendo a empregadora dele. Ele não faz questão de esconder que o espia para Fiorenza, e nunca se distancia de você, mesmo quando dispensado. Se ele for ferido ou morto, Fiorenza passará a considerá-lo indigno de confiança, mas, se sua conduta for boa, você avançará nas boas graças dela.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 404.</em></p>"
+  },
+  "HCwSLPFEMSIiYvGV": {
+   "name": "Fiorenza Savona •• — Café da Manhã com Fiorenza",
+   "description": "<p>Apesar da sua posição de alto-nível, uma vez por história, Fiorenza arranjará tempo na sua agenda cheia para se encontrar com você. Talvez vocês não se deem bem ou talvez sejam amigos. Um encontro com Fiorenza pode ser lucrativo e informativo, se você fizer as perguntas certas.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 404.</em></p>"
+  },
+  "AGyfZmWhxNvhrB5R": {
+   "name": "Fiorenza Savona ••• — Benefícios da Amizade",
+   "description": "<p>Você era próximo de Fiorenza antes que ela se tornasse a \"próxima promessa\" do Clã Ventrue, e essa amizade pagou dividendos: ela pode acalmar Ventrue irritados, dar a você dicas comerciais internas, emprestar um jato particular equipado com janelas polarizadas e planos de voo pré-aprovados, etc. Caso você abuse dessa conexão, que equivale a um Mawla de três pontos (•••), ela o dispensará sem hesitar.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 404.</em></p>"
+  },
+  "9N3XswRyFtD6cDH5": {
+   "name": "Fiorenza Savona •••• — A Diretoria",
+   "description": "<p>A obscura Diretoria Ventrue o procurou. Preocupados com a ascensão meteórica de Fiorenza, eles o escolheram para abordá-la, suborná-la e subjugar sua vontade. Se aceitar, você será Enlaçado e terá suas memórias das identidades da Diretoria apagadas – mas receberá seis pontos para distribuir entre Contatos, Mawla e Recursos. Naturalmente, você pode oferecer a Fiorenza trabalhar para ela como agente duplo.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 404.</em></p>"
+  },
+  "cYRv24v0rylhYfvQ": {
+   "name": "Fiorenza Savona ••••• — Influência no Governo",
+   "description": "<p>Fiorenza lhe deve um favor – uma vez por crônica, ela concorda em influenciar um líder político mortal a seu pedido. As sugestões dela equivalem a cinco dados a serem distribuídos como você desejar entre quaisquer rolagens que envolvam ação governamental. Se você criar uma perturbação política maior ou de algum modo agir para reforçar as \"sugestões\" de Fiorenza, o Narrador poderá adicionar outro dado baseado no seu plano e seu grau de sucesso nele.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 404.</em></p>"
+  },
+  "HysqoReNvZxGmvDl": {
+   "name": "Descendente de Karl Schrekt • — Não Esqueça a Casa",
+   "description": "<p><em>(Exclusivamente personagens Tremere)</em></p><p>O Clã Tremere é um reflexo oco das suas antigas glórias. Com a Pirâmide decapitada e sua liderança espalhada, os tradicionalistas Tremere buscam a autoridade de um vampiro: o ex-Justicar Karl Schrekt.</p><p>Uma lenda dentro do seu próprio clã e da Camarilla, Schrekt caçou vampiros antes do seu Abraço em 1235. Durante séculos, agiu como a arma da Camarilla contra o Sabá, os Anarchs e ameaças ocultas. Ele suprimiu ou destruiu informações sobre os Antediluvianos, eliminou incontáveis ameaças à Máscara, sempre implacável. Ele reuniu seu quinhão de discípulos, mas poucos inimigos. Aqueles que ele pôde, matou.</p><p>Agora ele é um dos Tremere mais antigos que restam.</p><p>Seus descendentes de um modo geral seguem sua visão linha-dura do clã e das seitas: aplique as Tradições, fortaleça o clã e esconda os segredos da magia de Sangue de outros vampiros.</p><p>Uma vez por história, você pode pedir ao Narrador uma informação sobre as atividades da Casa Tremere ou do clã antes do ataque tanto o prejudicou.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 405.</em></p>"
+  },
+  "guMur9VB6dVOYR4B": {
+   "name": "Descendente de Karl Schrekt •• — Linha Dura",
+   "description": "<p>O modo de Schrekt é o único capaz de levar o clã adiante. Você segue as leis de Schrekt fanaticamente. Com a aprovação do Narrador, adicione dois dados a qualquer parada de dados ao testar para resistir a tentativas de desviá-lo dos objetivos de Schrekt.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 405.</em></p>"
+  },
+  "yGBAMfKd5LwELmPb": {
+   "name": "Descendente de Karl Schrekt ••• — Rituais Preparados",
+   "description": "<p>Alegadamente, Karl Schrekt prepara todos os rituais dele de antemão e mantém alguns deles consigo o tempo todo. Uma vez por história, você pode realizar um dos seus rituais em cinco minutos, sem preparação, pois já deixou tudo preparado.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 405.</em></p>"
+  },
+  "c2HVZQVU6Z9K2m7j": {
+   "name": "Descendente de Karl Schrekt •••• — Perdição dos Arcontes",
+   "description": "<p>Você acha os ataques de Schrekt a entidades sobrenaturais deplorável, e formou um laço estreito com um membro de outras origens sobrenaturais. Você tem um Aliado de quatro pontos: um mago, lobisomem, aparição, changeling ou algo ainda mais estranho. Você deve manter seu amigo a salvo, pois ele está sendo caçado. Uma vez por história, ele aparece para ajudá-lo dentro de uma a dez horas após ter sido chamado.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 405.</em></p>"
+  },
+  "KGzWpg7bMCjMBGji": {
+   "name": "Descendente de Karl Schrekt ••••• — Conheça o Mundo",
+   "description": "<p>Karl Schrekt acredita que conhecimento é poder e que vampiros que limitam seu aprendizado ao estudo de outros Membros são tolos. Marionete ou nêmesis de Schrekt, você concorda com essa opinião e mantém arquivos sobre lobisomens, magos, aparições, feéricos e outras entidades sobrenaturais. Essa coleção equivale a uma Biblioteca de Refúgio de três pontos (escolha três especializações adequadas de Ocultismo), embora você não possa armazenar seu material de referência em seu refúgio. Também uma vez por história, você pode pedir ao Narrador que responda a qualquer pergunta simples relacionada àquelas criaturas.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 405.</em></p>"
+  },
+  "ENLveiarVP1GTdHB": {
+   "name": "Descendente de Xaviar • — Ancestral Martirizado",
+   "description": "<p><em>(Exclusivamente personagens Gangrel)</em></p><p>Ninguém, nem mesmo outros Gangrel, escutaram Xaviar quando ele falou a primeira vez. Foi preciso marchar para dentro de uma convocação das maiores figuras da Camarilla para que outros Membros lhe dessem atenção. Ele falou sobre como, ao interagir com um Antediluviano, ele viu toda a sua coterie ser devorada viva pela criatura mitológica. Ele acusou a Camarilla de perfídia contra seus integrantes e abandonou seu posto como Justicar Gangrel.</p><p>As notícias se espalham devagar entre os Gangrel, um clã com pouca hierarquia e nenhuma rede de comunicações eficiente. Vagarosamente, os Gangrel seguiram Xaviar para fora da Camarilla, alguns se tornando Autarcas, enquanto muitos outros acabaram se juntando aos Anarchs.</p><p>Os Gangrel agora compartilham a culpa por sua descrença inicial nas declarações de Xaviar e lenta reação à sua proclamação, já que ele encontrou a Morte Final logo em seguida. São poucos os que sabem se a Camarilla ou alguma outra agência assassinou o poderoso Gangrel, mas todos concordam que seu ancestral foi injustiçado. Agora eles levantaram a tocha dele e tentam trazer o clã para dentro da vacilante luz da verdade.</p><p>Outros Gangrel o tratam com o respeito que demoraram demais para prestar a Xaviar. Apesar de quaisquer rixas pessoais, você sempre encontra refúgio com outros Gangrel, caso haja algum no domínio em que você se encontra, pelo menos até você os insultar com gravidade. Com eles, você tem dois pontos de Status (••).</p><p><em>Vampiro: A Máscara — Manual Básico, p. 406.</em></p>"
+  },
+  "1TygGxJkqNsFz0Mm": {
+   "name": "Descendente de Xaviar •• — Onde os Corpos são Enterrados",
+   "description": "<p>As experiências de Xaviar de fusão com a terra, sangue e Vitae marcaram sua linhagem. Gangrel daquela linhagem podem realizar um teste de Determinação + Percepção para detectar se um vampiro se fundiu com a terra ou jaz em Torpor sob o solo. A Dificuldade depende da área que você precisa analisar.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 406.</em></p>"
+  },
+  "1SVtwsB1JT55BUSV": {
+   "name": "Descendente de Xaviar ••• — Sabujo Leal",
+   "description": "<p>Você resistiu aos ventos da mudança, permanecendo na Camarilla apesar das ações do seu clã. Por sua lealdade, o Príncipe da Camarilla local lhe concedeu status, direitos de caça e territórios, o equivalente a quatro pontos que podem ser distribuídos entre Domínio, Rebanho e Status. Gangrel de fora da Camarilla o desprezam, e mesmo vampiros de outros clãs lamentam sua solidão, porém você conquistou para si uma voz na Primigênie, caso algum Gangrel rebelde atravesse seu domínio.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 406.</em></p>"
+  },
+  "y3TSFo0XALlk7BC8": {
+   "name": "Descendente de Xaviar •••• — Morcego Monstruoso",
+   "description": "<p>A forma bestial predileta de Xaviar era a de morcego, contudo, após seu encontro com o Antediluviano, ele se viu capaz de se transformar em um híbrido de humano e morcego. Uma vez por história, quando a lua está alinhada, você pode assumir a mesma forma. Esse morcego do tamanho de um homem possui um ponto extra em todos os Atributos Físicos e pode planar de qualquer altura. Morder nessa forma adiciona +1 ponto de dano Agravado a mortais e vampiros.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 406.</em></p>"
+  },
+  "gXpdcZx2cuC5OFh8": {
+   "name": "Descendente de Xaviar ••••• — Experiência com o Antediluviano",
+   "description": "<p>Xaviar não foi o único Gangrel a afundar na terra e se ver dentro da vasta e inumana forma do fundador do seu clã. Você também fez isso, e a experiência o transformou. Agora você está parcialmente louco, provavelmente sofrendo de paranoia ou claustrofobia. Sempre que recorda seu encontro, você sente suas veias enraizadas ao solo, conectadas a todos os Gangrel do mundo. Uma vez por história, você consegue sentir a localização de qualquer Gangrel e drenar um pequeno gole de Vitae deles para restabelecer sua Fome a 2. Você precisa estar em contato com a terra, não concreto, para usar este poder.</p><p><em>Vampiro: A Máscara — Manual Básico, p. 406.</em></p>"
   }
  }
 }

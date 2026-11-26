@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.10.0 — Folhas de História do Manual Básico
+
+- **Folhas de História do Manual Básico** (pp. 382–406): as 25 que faltavam, cada uma em sua pasta, com um item por nível (125 itens). Entre elas Os Bahari, Golconda, Heresia Cainita, Theo Bell, Carna, Convenção de Thorns, A Trindade, os Descendentes (Hardestadt, Helena, Tyler, Zelios, Vasantasena, Karl Schrekt, Xaviar), Alto-Clã e Baixo-Clã. O texto é o oficial do livro em português, transcrito da imagem de cada página. O item de nível 1 traz a apresentação da Folha, e as exclusivas de clã dizem isso no início.
+- Sacrifício dos Filhos (Os Bahari) já vem com a parada da errata 2.0 (Humanidade + Potência de Sangue), como no livro em português. Foram corrigidos erros evidentes de digitação do livro, como "Schreckt" por "Schrekt" e "Antoninus" por "Antonius".
+- Os itens novos usam por enquanto o ícone padrão de Vantagem do wod5e.
+
 ## 1.9.1 — Alcateia e Célula
 
 - **Criação automática: Grupo (Alcateia) e Grupo (Célula).** Criam a ficha de grupo do wod5e com o tipo certo, na pasta "Grupos — Criação Automática". Os livros não trazem regras de criação desses grupos (diferente da Coterie), então nada é sorteado: a biografia registra o que o livro diz — o Espírito Padroeiro da alcateia é escolhido em jogo com o Ritual de Apadrinhamento (Lobisomem, pp. 181–182); Desespero e Perigo da célula são definidos com o Narrador (Caçador, p. 125).

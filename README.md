@@ -52,7 +52,7 @@ Os compêndios aparecem na aba **Compêndios**, dentro da pasta *Vampiro a Másc
 | Tipos de Predador | 16 (10 do Básico + 6 do Guia) |
 | Potência de Sangue | 0 a 6+ |
 | Vantagens e Defeitos | 210: Antecedentes, Qualidades e Defeitos gerais, de Refúgio, de Caitiff, de Carniçal e de Sangue-Ralo; Favores e Dívidas; **Variantes da Perdição**; Qualidades e Defeitos de **Coterie**, de **Domínio** e de Coterie por clã |
-| Folhas de História | 7 Linhagens Hecata do Guia do Jogador, uma pasta por Folha e um item por nível |
+| Folhas de História | 32: as 25 do Manual Básico (Os Bahari, Golconda, Theo Bell, os Descendentes etc.) e as 7 do Guia do Jogador, uma pasta por Folha e um item por nível |
 | Regras do Guia do Jogador | Diário com os 21 **Tipos de Coterie**, **Carniçais**, **Mortais**, **Sistemas de Coterie**, **Memoriam e Projetos**, **Regras Opcionais do Companion**, **Convicções e Pilares**, **Crônicas e Tipos de Jogo** e **Antagonistas** |
 | Antagonistas do Guia do Jogador | 5 Atores prontos, com retratos: Szlachta, Vozhd, Cadáver sem Mente, Cadáver Agressivo e Servo Homuncular |
 | Equipamento | Armas, armaduras e equipamentos (ainda em inglês) |
