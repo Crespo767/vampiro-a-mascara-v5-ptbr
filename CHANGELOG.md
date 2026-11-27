@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 1.10.2 — Livro e página em todos os itens
+
+- **Campo de fonte (livro e página) preenchido nos 337 itens que estavam sem ele:** 187 Disciplinas, 141 Vantagens e Defeitos, as 7 Potências de Sangue e 2 Tipos de Predador. Agora todos os itens de Vampiro informam de onde vêm.
+  - Quando o texto já citava a página (Guia do Jogador ou Companion), ela foi usada.
+  - Para os itens do Manual Básico, a página vem do índice do livro em inglês, que tem a mesma numeração do português, e foi conferida no texto de cada página.
+- **Clãs:** Caitiff, Gangrel, Nosferatu, Toreador, Tremere e Sangues-Ralos ganharam a página que faltava (a da Perdição, como nos outros Clãs; Sangues-Ralos na p. 109).
+- As Folhas de História do Manual Básico passam a usar o mesmo nome de livro dos outros itens do Manual Básico ("V5 Core Rulebook").
+
 ## 1.10.1 — Folhas do Manual Básico conferidas com o inglês
 
 - **As 25 Folhas de História do Manual Básico foram conferidas frase a frase com o livro em inglês.** O texto oficial em português foi mantido; só mudaram 5 trechos em que a tradução muda a regra ou o sentido:
