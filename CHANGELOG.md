@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.11.0 — Sem o compêndio Caminhos
+
+- **O compêndio "Caminhos" saiu do módulo.** Ele vinha vazio desde o começo (herdado do VtM5e Tools) e o V5 não tem Caminhos de Iluminação com regras: a Golconda e Os Bahari são Folhas de História e estão em "Folhas de História" desde a 1.10.0. Se você guardou algo seu dentro de "Caminhos", exporte para um compêndio do mundo antes de atualizar, porque o pacote é apagado na atualização.
+- **README:** a linha do Equipamento descrevia o compêndio como "ainda em inglês"; os 163 itens estão em português há várias versões.
+
 ## 1.10.4 — Fonte dos itens criados na ficha
 
 - A Ressonância criada pela ficha (ao alimentar-se ou editar a Ressonância) e a condição Humanidade Debilitada criada pela automação passam a gravar a fonte como "V5 Core Rulebook", igual aos compêndios (antes "Livro Básico" e "Corebook"). As páginas não mudam (226–229 e 209). Itens que já estão nas fichas ficam como estão.

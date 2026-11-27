@@ -55,7 +55,7 @@ Os compêndios aparecem na aba **Compêndios**, dentro da pasta *Vampiro a Másc
 | Folhas de História | 32: as 25 do Manual Básico (Os Bahari, Golconda, Theo Bell, os Descendentes etc.) e as 7 do Guia do Jogador, uma pasta por Folha e um item por nível |
 | Regras do Guia do Jogador | Diário com os 21 **Tipos de Coterie**, **Carniçais**, **Mortais**, **Sistemas de Coterie**, **Memoriam e Projetos**, **Regras Opcionais do Companion**, **Convicções e Pilares**, **Crônicas e Tipos de Jogo** e **Antagonistas** |
 | Antagonistas do Guia do Jogador | 5 Atores prontos, com retratos: Szlachta, Vozhd, Cadáver sem Mente, Cadáver Agressivo e Servo Homuncular |
-| Equipamento | Armas, armaduras e equipamentos (ainda em inglês) |
+| Equipamento | 163 itens em português: armas, armaduras, munição, explosivos e equipamentos do Manual Básico e da Segunda Inquisição, mais regras da casa e itens de apoio do módulo (o campo de fonte diz qual é qual) |
 | Lobisomem: O Apocalipse | 177 itens do livro básico de Lobisomem: 11 Tribos, 5 Augúrios, 62 Dons (Inatos, por Augúrio e por Tribo), 23 Rituais e 76 Vantagens e Defeitos, com o texto das regras e a página |
 | Caçador: A Revanche | 125 itens do livro básico de Caçador: 5 Credos, 7 Ímpetos, 12 Trunfos com 49 Distinções e 52 Vantagens e Defeitos, com o texto das regras e a página |
 | Macros | A macro **Criar Ficha Automática** |
