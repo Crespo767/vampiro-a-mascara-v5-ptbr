@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 1.10.3 — Fonte do Equipamento
+
+- **Campo de fonte do Equipamento padronizado (163 itens).** Antes, 58 itens traziam como "livro" o nome de documentos internos de conferência, sem página.
+  - Itens dos livros: "V5 Core Rulebook" (Manual Básico) e "V5 Second Inquisition" (Segunda Inquisição), como nos outros compêndios, com a página de sempre.
+  - Viga de aço / marreta (p. 304), Granada de fragmentação / de fuzil (Segunda Inquisição, p. 73) e Granada incendiária (Segunda Inquisição, p. 70) passam a apontar para a parte oficial que têm.
+  - Os itens que não existem em livro dizem isso no campo de fonte: "Regra da casa (módulo PT-BR)" (20 itens, como Facão, Kukri e Revólver .38) ou "Item de apoio do módulo (por analogia)" (35 caixas e carregadores de munição), com "—" na página. O texto de cada item continua explicando a origem.
+
 ## 1.10.2 — Livro e página em todos os itens
 
 - **Campo de fonte (livro e página) preenchido nos 337 itens que estavam sem ele:** 187 Disciplinas, 141 Vantagens e Defeitos, as 7 Potências de Sangue e 2 Tipos de Predador. Agora todos os itens de Vampiro informam de onde vêm.
