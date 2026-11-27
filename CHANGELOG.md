@@ -1,5 +1,9 @@
 # Histórico de versões
 
+## 1.10.4 — Fonte dos itens criados na ficha
+
+- A Ressonância criada pela ficha (ao alimentar-se ou editar a Ressonância) e a condição Humanidade Debilitada criada pela automação passam a gravar a fonte como "V5 Core Rulebook", igual aos compêndios (antes "Livro Básico" e "Corebook"). As páginas não mudam (226–229 e 209). Itens que já estão nas fichas ficam como estão.
+
 ## 1.10.3 — Fonte do Equipamento
 
 - **Campo de fonte do Equipamento padronizado (163 itens).** Antes, 58 itens traziam como "livro" o nome de documentos internos de conferência, sem página.

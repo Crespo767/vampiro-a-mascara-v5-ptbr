@@ -204,7 +204,7 @@ async function getConditionItemData(key, def) {
           displayWhenInactive: false,
           activeWhen: { check: 'always', path: '', value: '' }
         }],
-        source: { book: 'Corebook', page: '209' },
+        source: { book: 'V5 Core Rulebook', page: '209' },
         effects: {},
         suppressed: false
       },

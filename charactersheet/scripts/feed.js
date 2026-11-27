@@ -184,7 +184,7 @@ async function applyResonance (actor, resonanceName, strength) {
         displayWhenInactive: true,
         activeWhen: { check: 'always' }
       }],
-      source: { book: 'Livro Básico', page: '226-229' }
+      source: { book: 'V5 Core Rulebook', page: '226-229' }
     },
     flags: { [RESONANCE_MODULE_ID]: { resonanceKey: resonanceName, resonanceStrength: strength } }
   }
