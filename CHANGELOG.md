@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.11.1 — Ícones das Folhas de História do Manual Básico
+
+- **25 ícones novos** para as Folhas de História do Manual Básico, no mesmo estilo pintado das 7 do Guia do Jogador (um objeto sobre fundo escuro, 512×512). Cada um usa um objeto da ilustração ou do texto da Folha: o cálice da Heresia Cainita, os óculos de Theo Bell, o sol de olhos fechados da Golconda, a máscara dividida das Voerman, o crânio de morcego de Xaviar etc. Os 125 itens deixam de usar o ícone padrão do sistema.
+- Gerados localmente com Qwen-Image-Edit 2511 (Apache 2.0), a partir de um ícone já existente do módulo para manter o mesmo fundo, luz e enquadramento.
+
 ## 1.11.0 — Sem o compêndio Caminhos
 
 - **O compêndio "Caminhos" saiu do módulo.** Ele vinha vazio desde o começo (herdado do VtM5e Tools) e o V5 não tem Caminhos de Iluminação com regras: a Golconda e Os Bahari são Folhas de História e estão em "Folhas de História" desde a 1.10.0. Se você guardou algo seu dentro de "Caminhos", exporte para um compêndio do mundo antes de atualizar, porque o pacote é apagado na atualização.
