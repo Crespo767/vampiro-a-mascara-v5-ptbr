@@ -49,6 +49,27 @@ export function extraAdvantagePoints () {
   return Math.max(0, Math.min(2, Math.floor(Number(game.settings?.get(CHARGEN_ID, 'extraAdvantagePoints')) || 0)))
 }
 
+// [vtm5e-ptbr] Configurações da crônica (definidas pelo Narrador nas configurações do mundo).
+// Princípios padrão: conjunto "Humanista" do Manual Básico, p. 172.
+export const DEFAULT_CHRONICLE_TENETS = 'Não matarás, salvo em legítima defesa.\nNão estuprarás nem torturarás.\nNão farás mal ao inocente.'
+function chronicleSetting (key, fallback) {
+  try { return game.settings.get(CHARGEN_ID, key) ?? fallback } catch { return fallback }
+}
+export function chronicleSettings () {
+  const tenets = String(chronicleSetting('chronicleTenets', '')).split(/\s*[;\n]\s*/).filter(Boolean)
+  return {
+    name: String(chronicleSetting('chronicleName', '')).trim(),
+    city: String(chronicleSetting('chronicleCity', '')).trim(),
+    year: Number(chronicleSetting('chronicleYear', 0)) || new Date().getFullYear(),
+    tenets: tenets.length ? tenets : DEFAULT_CHRONICLE_TENETS.split('\n'),
+    reservedNames: String(chronicleSetting('reservedNames', ''))
+  }
+}
+// Texto simples (um princípio por linha), usado no campo do assistente.
+export function chronicleTenetsText () {
+  return chronicleSettings().tenets.join('\n')
+}
+
 export function clanCreationGrants (clanItem) {
   const grants = clanItem?.flags?.[CHARGEN_ID]?.grants ?? []
   const name = getClanKey(clanItem)
@@ -181,6 +202,8 @@ async function promptDisciplinePowerPick (actor, disciplineId, level, sourceLabe
       return docDisciplineId === disciplineId && Number(doc.system.level) === level
     })
     .filter(doc => !ownedPowerNames.has(doc.name))
+    // Amálgamas e pré-requisitos (ex.: Vicissitude exige Dominação 2) só entram se já estiverem cumpridos.
+    .filter(doc => powerRequirementFailures(actor, doc).length === 0)
     .sort((a, b) => a.name.localeCompare(b.name))
 
   if (candidates.length === 0) return null
@@ -899,6 +922,84 @@ export function checkConflicts (actor, itemName, conflictsWith) {
   if (!conflictsWith || conflictsWith.length === 0) return []
   const heldNames = new Set(actor.items.filter(i => i.type === 'feature').flatMap(i => [i.name, enName(i)]))
   return conflictsWith.filter(name => heldNames.has(name))
+}
+
+// [vtm5e-ptbr] Vantagens e Defeitos mutuamente exclusivos (nomes originais em inglês, como no
+// Babele). Um personagem não pode ter, por exemplo, Influência e o Defeito Malquisto, nem Recursos
+// e Destituído. Mesmos grupos usados pela criação automática de Lobisomem e Caçador.
+export const FEATURE_EXCLUSION_GROUPS = [
+  ['Hopeless Addiction', 'Addiction'],
+  ['Beautiful', 'Stunning', 'Repulsive', 'Ugly'],
+  ['Resources', 'Destitute'],
+  ['Fame', 'Infamy'],
+  ['Status', 'Suspect', 'Shunned'],
+  ['Influence', 'Despised', 'Disliked'],
+  ['Illiterate', 'Linguistics'],
+  ['Base Haven', 'No Haven']
+]
+
+// Nomes dos itens da ficha que entram em conflito com a Vantagem/Defeito `name` (nome original
+// em inglês ou nome traduzido). O próprio item não conta: subir um ponto nele não é conflito.
+export function exclusionConflictsByName (actor, name) {
+  const doc = _meritsFlawsIndexCache?.find(d => d.name === name || enName(d) === name)
+  const key = doc ? enName(doc) : name
+  const groups = FEATURE_EXCLUSION_GROUPS.filter(group => group.includes(key))
+  if (!groups.length) return []
+  return actor.items
+    .filter(i => i.type === 'feature' && enName(i) !== key && groups.some(group => group.includes(enName(i))))
+    .map(i => i.name)
+}
+
+export function exclusionConflicts (actor, doc) {
+  return exclusionConflictsByName(actor, enName(doc))
+}
+
+// [vtm5e-ptbr] Amálgamas e pré-requisitos dos poderes, lidos do texto do compêndio:
+// "Amálgama: Dominação 2" e "Pré-requisito: Mensageiro Animal e Compelir ou Mesmerismo".
+const AMALGAM_DISCIPLINES = {
+  animalismo: 'animalism', 'auspícios': 'auspex', celeridade: 'celerity', 'dominação': 'dominate',
+  fortitude: 'fortitude', 'ofuscação': 'obfuscate', 'oblívio': 'oblivion', 'potência': 'potence',
+  'presença': 'presence', proteanismo: 'protean', 'feitiçaria de sangue': 'sorcery'
+}
+const STOP_WORDS = /\s{2,}|\b(Parada|Paradas|Custo|Sistema|Duração|Pré-requisito)\b/
+
+export function powerRequirements (doc) {
+  const text = String(doc?.system?.description ?? '').replace(/<[^>]+>/g, '\n').replace(/&nbsp;/g, ' ')
+  const amalgam = []
+  for (const match of text.matchAll(/Am[áa]lgama\s*:\s*([^\n]+)/gi)) {
+    const found = match[1].split(STOP_WORDS)[0].match(/^\s*([A-Za-zÀ-ÿ ]+?)\s+(\d)/)
+    const id = found && AMALGAM_DISCIPLINES[found[1].trim().toLocaleLowerCase('pt-BR')]
+    if (id) amalgam.push({ discipline: id, level: Number(found[2]) })
+  }
+  const prerequisites = []
+  const prereq = text.match(/Pr[ée]-?requisitos?\s*:\s*([^\n]+)/i)
+  if (prereq) {
+    const names = prereq[1].split(/\s{2,}|\b(?:Parada|Paradas|Custo|Sistema|Duração|Amálgama)\b/)[0].trim().replace(/[.;]\s*$/, '')
+    for (const part of names.split(/\s+e\s+/)) {
+      const options = part.split(/\s+ou\s+/).map(s => s.trim()).filter(Boolean)
+      if (options.length) prerequisites.push(options)
+    }
+  }
+  return { amalgam, prerequisites }
+}
+
+// Lista o que falta para o ator poder aprender o poder. `extra.disciplines` permite simular níveis
+// ainda não gravados (ex.: o carrinho da loja de XP) e `extra.powerNames`, poderes ainda não criados.
+export function powerRequirementFailures (actor, doc, extra = {}) {
+  const { amalgam, prerequisites } = powerRequirements(doc)
+  const failures = []
+  const rating = id => Number(extra.disciplines?.[id] ?? actor.system.disciplines?.[id]?.value ?? 0)
+  for (const req of amalgam) {
+    if (rating(req.discipline) < req.level) failures.push(`Amálgama: requer ${displayLabel(req.discipline)} ${req.level}.`)
+  }
+  const owned = new Set([
+    ...actor.items.filter(i => i.type === 'power').flatMap(i => [i.name, enName(i)]),
+    ...(extra.powerNames ?? [])
+  ])
+  for (const options of prerequisites) {
+    if (!options.some(name => owned.has(name))) failures.push(`Pré-requisito: ${options.join(' ou ')}.`)
+  }
+  return failures
 }
 
 // [vtm5e-ptbr] nome original em ingles de um item traduzido pelo Babele (ou o nome atual, se nao houver)

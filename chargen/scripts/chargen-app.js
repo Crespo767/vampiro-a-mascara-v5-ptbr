@@ -1,4 +1,4 @@
-import { applyTrackedGrants, clearTrackedGrants, checkRestrictions, checkConflicts, getRatingCap, clanCreationGrants, chargenPurchaseBlock, featureCategory, REQUIRED_SPECIALTY_SKILLS, applyFreeSpecialties, applyDerivedTrackers, extraAdvantagePoints, baseSkillValue, grantedSkillDots } from './grant-engine.js'
+import { applyTrackedGrants, clearTrackedGrants, checkRestrictions, checkConflicts, getRatingCap, clanCreationGrants, chargenPurchaseBlock, featureCategory, REQUIRED_SPECIALTY_SKILLS, applyFreeSpecialties, applyDerivedTrackers, extraAdvantagePoints, baseSkillValue, grantedSkillDots, exclusionConflicts, powerRequirementFailures, chronicleTenetsText } from './grant-engine.js'
 import { getClanKey } from '../../clans/scripts/clan-key.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
@@ -300,6 +300,10 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
     await this.#ensureTraitBaselines()
 
     const actor = this.actor
+    // Os Princípios da Crônica vêm da configuração do mundo; grava-os ao chegar à etapa, se estiverem vazios.
+    if (STEPS[this.stepIndex]?.id === 'touchstones' && !(actor.system.headers?.tenets ?? '').trim()) {
+      await actor.update({ 'system.headers.tenets': chronicleTenetsText() })
+    }
     const currentClan = actor.items.find(i => i.type === 'clan')
     const currentPredator = actor.items.find(i => i.type === 'predatorType')
 
@@ -458,7 +462,9 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       if (featuretype === 'flaw') flawsSpent += purchased
       else meritsSpent += purchased
     }
-    const extra = extraAdvantagePoints()
+    // Anciões (Mar do Tempo, Manual Básico p. 151) somam 2 pontos de Vantagens; só a criação automática grava essa idade.
+    const ancilla = this.actor.flags?.[MODULE_ID]?.seaOfTime === 'ancilla' ? 2 : 0
+    const extra = extraAdvantagePoints() + ancilla
     const poolMax = 7 + extra
     return { meritsSpent, flawsSpent, extra, poolMax, remaining: poolMax - meritsSpent }
   }
@@ -548,7 +554,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
         const missing = ['tenets', 'touchstones'].filter(key => !(headers[key] ?? '').trim())
         return missing.length === 0
           ? { complete: true }
-          : { complete: false, message: `Preencha ${missing.includes('tenets') ? 'Convicções' : ''}${missing.length === 2 ? ' e ' : ''}${missing.includes('touchstones') ? 'Pilares' : ''} antes de prosseguir.` }
+          : { complete: false, message: `Preencha ${missing.includes('touchstones') ? 'Convicções e Pilares' : ''}${missing.length === 2 ? ' e ' : ''}${missing.includes('tenets') ? 'Princípios da Crônica' : ''} antes de prosseguir.` }
       }
 
       case 'final':
@@ -599,6 +605,14 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       if (predatorEntries.some(e => e.type === 'skillDot' && predatorEntries.some(o => o.type === 'specialty' && o.skill === e.skill))) failures.push('Tipo de Predador: concedeu ponto e especialização na mesma Habilidade.')
       if (getClanKey(clan) === 'thin-blooded' && Object.values(this.actor.system.disciplines ?? {}).some(d => d.value > 0)) failures.push('Clã: Sangue-Ralo recebeu Disciplina intrínseca.')
       if (getClanKey(clan) === 'caitiff' && !clanEntries.some(e => e.type === 'meritFlaw' && e.name === 'Suspect' && e.amount === 1)) failures.push('Clã: falta o Defeito Suspeito concedido.')
+      for (const power of this.actor.items.filter(i => i.type === 'power')) {
+        for (const reason of powerRequirementFailures(this.actor, power)) failures.push(`Disciplinas: ${power.name}: ${reason}`)
+      }
+      const features = this.actor.items.filter(i => i.type === 'feature')
+      for (const [index, item] of features.entries()) {
+        const clash = exclusionConflicts(this.actor, item).filter(name => features.findIndex(f => f.name === name) > index)
+        if (clash.length) failures.push(`Vantagens e Defeitos: ${item.name} não pode ser combinado com ${clash.join(', ')}.`)
+      }
       return failures
     } finally {
       this.stepIndex = previous
@@ -649,7 +663,7 @@ export class ChargenApp extends foundry.applications.api.HandlebarsApplicationMi
       if (purchaseBlock) unavailableReasons.push(purchaseBlock)
       if (!existing) {
         unavailableReasons.push(...checkRestrictions(this.actor, doc.flags?.['vampiro-a-mascara-v5-ptbr']?.restrictions ?? []))
-        const conflicts = checkConflicts(this.actor, doc.name, doc.flags?.['vampiro-a-mascara-v5-ptbr']?.conflictsWith ?? [])
+        const conflicts = [...new Set([...checkConflicts(this.actor, doc.name, doc.flags?.['vampiro-a-mascara-v5-ptbr']?.conflictsWith ?? []), ...exclusionConflicts(this.actor, doc)])]
         if (conflicts.length > 0) unavailableReasons = [...unavailableReasons, `Entra em conflito com ${conflicts.join(', ')}, que você já possui.`]
       }
 

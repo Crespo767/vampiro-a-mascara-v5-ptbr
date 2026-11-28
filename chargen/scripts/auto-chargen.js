@@ -1,6 +1,7 @@
 import { ChargenApp, ATTRIBUTE_GROUPS, SKILL_GROUPS, ATTRIBUTE_RATING_QUOTA, SKILL_DISTRIBUTIONS, GENERATION_INFO } from './chargen-app.js'
-import { withAutoPicker, applyTrackedGrants, checkRestrictions, checkConflicts, getRatingCap, clanCreationGrants, chargenPurchaseBlock, featureCategory, REQUIRED_SPECIALTY_SKILLS, applyFreeSpecialties, applyDerivedTrackers, extraAdvantagePoints, displayLabel } from './grant-engine.js'
+import { withAutoPicker, applyTrackedGrants, checkRestrictions, checkConflicts, getRatingCap, clanCreationGrants, chargenPurchaseBlock, featureCategory, REQUIRED_SPECIALTY_SKILLS, applyFreeSpecialties, applyDerivedTrackers, extraAdvantagePoints, displayLabel, exclusionConflicts } from './grant-engine.js'
 import { getClanKey } from '../../clans/scripts/clan-key.js'
+import { autoCreateVampire, ARCHETYPE_OPTIONS, SEA_OF_TIME } from './auto-vampire.js'
 
 const ID = 'vampiro-a-mascara-v5-ptbr'
 const NAMES = ['Alex', 'Ariel', 'Cris', 'Dani', 'Jo', 'Lu', 'Neri', 'Sam']
@@ -165,7 +166,7 @@ async function buy (actor, docs, kind, budget, pick, log, { isAllowed = allowed,
       // compartilhado), Coterie (pontos da coterie), Variantes da Perdição e Míticos (regras opcionais).
       if (!kind.includes(doc.system.featuretype) || ['thinBloodMerit', 'thinBloodFlaw', 'coterie', 'baneVariant', 'mythic'].includes(featureCategory(doc))) return false
       const existing = actor.items.find(i => i.type === 'feature' && i.name === doc.name)
-      if (!isAllowed(actor, doc) || chargenPurchaseBlock(actor, doc) || illiteracyConflict(actor, doc)) return false
+      if (!isAllowed(actor, doc) || chargenPurchaseBlock(actor, doc) || illiteracyConflict(actor, doc) || (!existing && exclusionConflicts(actor, doc).length)) return false
       const current = existing?.system.points ?? 0
       const fixed = Number(doc.system.points) || 0
       const cap = getRatingCap(actor, doc) ?? 5
@@ -199,63 +200,10 @@ async function buy (actor, docs, kind, budget, pick, log, { isAllowed = allowed,
   }
 }
 
-export async function autoCreateCharacter ({ seed, name } = {}) {
-  checkCreatePermission()
-  seed = normalizeSeed(seed)
-  const pick = seededPicker(seed)
-  const log = []
-  let actor
-  try {
-    const [clans, predators, features] = await Promise.all(['clans', 'predatortypes', 'meritsflaws'].map(packDocs))
-    actor = await createActor('vampire', name?.trim() || pick(NAMES))
-    await withAutoPicker(actor, pick, async () => {
-      const clan = pick(clans)
-      await addPick(actor, clan, 'clan', log)
-      const thin = getClanKey(clan) === 'thin-blooded'
-      const generation = pick(thin ? ['14th', '15th', '16th'] : ['12th', '13th'])
-      const attrs = randomRatings(ATTRIBUTE_GROUPS, ATTRIBUTE_RATING_QUOTA, pick)
-      const distribution = pick(Object.keys(SKILL_DISTRIBUTIONS))
-      const skills = randomRatings(SKILL_GROUPS, SKILL_DISTRIBUTIONS[distribution].quota, pick)
-      const updates = {
-        'system.headers.generation': generation, 'system.blood.generation': generation,
-        'system.blood.potency': GENERATION_INFO[generation].bp, 'system.bio.dateof.death': GENERATION_INFO[generation].era,
-        ...conceptUpdates(pick),
-        'system.headers.sire': pick(['desconhecido', ...NAMES]),
-        [`flags.${ID}.skillDistribution`]: distribution, [`flags.${ID}.attributesInitialized`]: true
-      }
-      await actor.update({ ...updates, ...ratingUpdates(attrs, skills), ...touchstoneUpdates(pick) })
-      const candidates = predators.filter(p => allowed(actor, p))
-      await addPick(actor, pick(candidates), 'predator', log)
-      await addFreeSpecialties(actor, skills, pick)
-      if (thin) {
-        const count = pick([1, 2, 3])
-        for (const category of ['Merits', 'Flaws']) {
-          const candidates = shuffled(features.filter(d => featureCategory(d) === (category === 'Merits' ? 'thinBloodMerit' : 'thinBloodFlaw')), pick)
-          let taken = 0
-          for (const doc of candidates) {
-            if (taken >= count) break
-            if (!allowed(actor, doc) || actor.items.some(i => i.type === 'feature' && i.name === doc.name)) continue
-            try { const data = copy(doc); data.system.points = 0; await actor.createEmbeddedDocuments('Item', [data]); taken++; log.push(`Sangue-Ralo: ${doc.name}`) } catch (error) { log.push(`Tentativa em ${doc.name} falhou: ${error.message}`) }
-          }
-          if (taken !== count) throw new Error(`Não foi possível escolher ${count} itens de Sangue-Ralo: ${category}.`)
-        }
-      }
-      await buy(actor, features, ['flaw'], 2, pick, log)
-      await buy(actor, features, ['merit', 'background'], 7 + extraAdvantagePoints(), pick, log)
-      const failures = new ChargenApp(actor).auditAllSteps(features)
-      if (failures.length) throw new Error(`Auditoria incompleta: ${failures.join(' | ')}`)
-      await applyDerivedTrackers(actor)
-      await actor.setFlag(ID, 'wizardCompleted', true)
-      await actor.setFlag(ID, 'autoGenerated', { version: 1, seed, timestamp: new Date().toISOString(), log })
-      const formatLog = value => escape(value).replace(/&lt;(\/?)b&gt;/g, '<$1b>')
-      const disciplines = Object.entries(actor.system.disciplines ?? {}).filter(([, v]) => v.value).map(([k, v]) => `${displayLabel(k)}: ${v.value}`).join(', ') || 'nenhuma'
-      const specialties = specialtySummary(flags(actor).appliedFreeSpecialties ?? [])
-      await whisper(actor, `<p>Clã: ${escape(clan.name)}; geração: ${escape(generation.replace(/(?:st|nd|rd|th)$/, 'ª'))}; semente: ${escape(seed)}</p><p>Atributos: ${escape(traitSummary(actor, 'attributes', Object.keys(attrs)))}</p><p>Habilidades: ${escape(traitSummary(actor, 'skills', Object.keys(skills)))}</p><p>Especializações: ${escape(specialties)}</p><p>Disciplinas: ${escape(disciplines)}</p><p>Itens, predador e poderes: ${escape(itemSummary(actor))}</p><p>${log.map(formatLog).join('<br>')}</p>`)
-    })
-    return { actor, seed, log }
-  } catch (error) {
-    await rollbackActor(actor, error)
-  }
+// Vampiros: gerador por arquétipos (auto-vampire.js). Aceita também clan, age ('childe' | 'neonate' |
+// 'ancilla'), archetype, gender ('m' | 'f') e folder.
+export async function autoCreateCharacter (options = {}) {
+  return autoCreateVampire(options)
 }
 
 function isPermittedFeature (doc, type) {
@@ -775,10 +723,10 @@ async function buildOtherGroup (actor, type) {
   return paragraphs([`Tipo de ficha: ${TYPES[type]}`, rule])
 }
 
-export async function autoCreate ({ type = 'vampire', seed, name, level = 'common', players = 4 } = {}) {
+export async function autoCreate ({ type = 'vampire', seed, name, level = 'common', players = 4, clan, age, archetype, gender, folder } = {}) {
   if (!Object.hasOwn(TYPES, type)) throw new Error('Tipo de ficha inválido.')
   seed = seed == null ? '' : String(seed)
-  if (type === 'vampire') return autoCreateCharacter({ seed, name })
+  if (type === 'vampire') return autoCreateCharacter({ seed, name, clan, age, archetype, gender, folder })
   checkCreatePermission()
   if (type === 'spc' && !Object.hasOwn(NPC_LEVELS, level)) throw new Error('Nível de Personagem do Narrador inválido.')
   const group = type === 'group'
@@ -811,6 +759,10 @@ export async function openAutoCreateDialog () {
     `<option value="${value}"${value === selected ? ' selected' : ''}>${label}</option>`).join('')
   const levels = Object.fromEntries(Object.entries(NPC_LEVELS).map(([id, level]) => [id, level.label]))
   try {
+    const clanNames = (await game.packs.get(`${ID}.clans`)?.getDocuments() ?? []).filter(d => d.type === 'clan').map(d => d.name).sort((a, b) => a.localeCompare(b, 'pt-BR'))
+    const clanOptions = { '': 'Sorteado', ...Object.fromEntries(clanNames.map(n => [n, n])) }
+    const archetypeOptions = { '': 'Sorteado', ...ARCHETYPE_OPTIONS }
+    const ageOptions = Object.fromEntries(Object.entries(SEA_OF_TIME).map(([id, sea]) => [id, `${sea.label} (${sea.xp} XP)`]))
     const input = await foundry.applications.api.DialogV2.wait({
       window: { title: 'Criação automática de ficha' },
       content: `
@@ -821,6 +773,13 @@ export async function openAutoCreateDialog () {
         </div>
         <div class="form-group"><label for="auto-chargen-name">Nome (opcional)</label><input id="auto-chargen-name" name="name" type="text"></div>
         <div class="form-group"><label for="auto-chargen-seed">Semente (opcional)</label><input id="auto-chargen-seed" name="seed" type="text"></div>
+        <div data-sheet-type="vampire" hidden>
+          <div class="form-group"><label for="auto-chargen-clan">Clã</label><select id="auto-chargen-clan" name="clan">${options(clanOptions, '')}</select></div>
+          <div class="form-group"><label for="auto-chargen-archetype">Arquétipo</label><select id="auto-chargen-archetype" name="archetype">${options(archetypeOptions, '')}</select></div>
+          <div class="form-group"><label for="auto-chargen-age">Mar do Tempo</label><select id="auto-chargen-age" name="age">${options(ageOptions, 'neonate')}</select></div>
+          <div class="form-group"><label for="auto-chargen-gender">Gênero</label><select id="auto-chargen-gender" name="gender">${options({ '': 'Sorteado', f: 'Feminino', m: 'Masculino' }, '')}</select></div>
+          <div class="form-group"><label for="auto-chargen-folder">Pasta</label><input id="auto-chargen-folder" name="folder" type="text" placeholder="PJs — Criação Automática"></div>
+        </div>
         <div data-sheet-type="spc" hidden>
           <div class="form-group"><label for="auto-chargen-level">Nível</label>
             <select id="auto-chargen-level" name="level" disabled>${options(levels, 'common')}</select>
@@ -838,7 +797,7 @@ export async function openAutoCreateDialog () {
         const updateFields = () => {
           for (const field of fields) {
             field.hidden = field.dataset.sheetType !== type.value
-            field.querySelector('[name]').disabled = field.hidden
+            for (const input of field.querySelectorAll('[name]')) input.disabled = field.hidden
           }
         }
         type.addEventListener('change', updateFields)
@@ -849,7 +808,7 @@ export async function openAutoCreateDialog () {
           action: 'create', label: 'Criar ficha', default: true,
           callback: (_event, button) => {
             const fields = button.form.elements
-            return { type: fields.type.value, name: fields.name.value.trim(), seed: fields.seed.value.trim(), level: fields.level.value, players: fields.players.valueAsNumber }
+            return { type: fields.type.value, name: fields.name.value.trim(), seed: fields.seed.value.trim(), level: fields.level.value, players: fields.players.valueAsNumber, clan: fields.clan.value, archetype: fields.archetype.value, age: fields.age.value, gender: fields.gender.value, folder: fields.folder.value.trim() }
           }
         },
         { action: 'cancel', label: 'Cancelar' }

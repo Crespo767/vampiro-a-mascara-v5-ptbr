@@ -11,7 +11,7 @@ import {
 } from './cost-tables.js'
 import { commitCart } from './purchase-application.js'
 import { getClanKey } from '../../clans/scripts/clan-key.js'
-import { clanAppearanceBlock } from '../../chargen/scripts/grant-engine.js'
+import { clanAppearanceBlock, powerRequirementFailures } from '../../chargen/scripts/grant-engine.js'
 
 const MODULE_ID = 'vampiro-a-mascara-v5-ptbr'
 const activeCheckouts = new WeakSet()
@@ -322,12 +322,18 @@ export class XPShopApp extends foundry.applications.api.HandlebarsApplicationMix
     let powerPicker = null
     if (this.pendingDisciplinePick) {
       const { disciplineId, level } = this.pendingDisciplinePick
+      // Amálgamas e pré-requisitos contam o que já está no carrinho.
+      const simulated = {
+        disciplines: Object.fromEntries(Object.keys(this.actor.system.disciplines ?? {}).map(id => [id, this.#effectiveDisciplineLevel(id)])),
+        powerNames: this.cart.filter(e => e.category === 'disciplines').map(e => e.powerName)
+      }
       const powers = (this.disciplinePowerItems || [])
         .filter(doc => {
           const docDisciplineId = DISCIPLINE_ID_ALIASES[doc.system.discipline] ?? doc.system.discipline
           return docDisciplineId === disciplineId && Number(doc.system.level) === level
         })
         .filter(doc => !this.#hasPower(doc))
+        .filter(doc => powerRequirementFailures(this.actor, doc, simulated).length === 0)
         .map(doc => {
           const plainDesc = (doc.system.description || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
           const expanded = this.expandedPowerIds.has(doc.id)

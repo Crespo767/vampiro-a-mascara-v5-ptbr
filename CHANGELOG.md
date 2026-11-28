@@ -1,5 +1,23 @@
 # Histórico de versões
 
+## 1.12.0 — Criação automática de Vampiros por arquétipos
+
+O gerador de Vampiros fazia fichas válidas, mas incoerentes: tudo era sorteado de forma independente (um Brujah com Determinação 1 e Força de Vontade 3, Vantagens espalhadas em sete itens de 1 ponto) e várias abas ficavam vazias. Ele foi refeito (`chargen/scripts/auto-vampire.js`).
+
+- **12 arquétipos** (`chargen/scripts/auto-archetypes.js`): Briguento de rua, Investigador, Acadêmico do oculto, Artista boêmio, Herdeiro da elite, Hacker e explorador urbano, Profissional de saúde, Andarilho da natureza, Criminoso profissional, Jornalista, Trabalhador da noite e Místico e religioso. O arquétipo orienta a ordem dos Atributos e das Habilidades, as Disciplinas de clã preferidas, o Tipo de Predador, os pacotes de Vantagens (ex.: Refúgio Base •• + Biblioteca •), os Defeitos, as Especializações, o equipamento e os textos. A Força de Vontade nunca fica abaixo de 4.
+- **Mar do Tempo** (Manual Básico pp. 137 e 151): Cria, Neófito (15 XP) ou Ancião (35 XP, 10ª–11ª Geração, +1 de Potência do Sangue, +2 de Vantagens, +2 de Defeitos e −1 de Humanidade). O XP é gasto pela loja de XP e aparece no histórico da aba Experiência. As datas de nascimento e de Abraço e as idades real e aparente seguem o ano da crônica.
+- **Todas as abas preenchidas:** conceito, ambição, desejo, senhor, Convicções com seus Pilares (a idade do Pilar segue o parentesco), Princípios da Crônica, aparência, biografia, equipamento (itens do compêndio e itens próprios), dinheiro conforme os Recursos, notas públicas com o resumo da ficha e notas privadas com um gancho para o Narrador.
+- **Diálogo da macro:** novos campos opcionais para Clã, Arquétipo, Mar do Tempo, Gênero e Pasta. A API `autoCreate()` e `autoCreateCharacter()` aceita os mesmos campos (`clan`, `archetype`, `age`, `gender` e `folder`).
+- **Configurações da crônica** (Configurações do Mundo): nome, cidade, ano, Princípios da Crônica e nomes reservados. Os nomes dos Atores do mundo e os reservados não são usados em personagens, senhores nem Pilares, o que evita colidir com NPCs do cenário.
+- As Especializações genéricas dos Tipos de Predador ganham um rótulo concreto: "Empatia com Animais (Cães)" em vez de "(Animal Específico)".
+
+### Correções de regras (valem também para o assistente e a loja de XP)
+
+- **Amálgamas e pré-requisitos dos poderes.** Um poder só é oferecido se o Amálgama e o pré-requisito estiverem cumpridos (ex.: Vicissitude exige Dominação 2; Olhos da Serpente, Proteanismo 1). Antes, o sorteio e a lista do assistente ofereciam qualquer poder do nível. A loja de XP conta o que já está no carrinho. A auditoria da criação passou a apontar poderes sem pré-requisito.
+- **Vantagens e Defeitos exclusivos.** Influência não combina com Malquisto nem Desprezado; Status com Suspeito ou Segregado; Recursos com Destituído; Fama com Infâmia; Belo, Deslumbrante, Feio e Repulsivo entre si; Refúgio Base com Nenhum Refúgio; Analfabeto com Linguística. O assistente mostra o conflito, a auditoria o aponta e os geradores (Vampiro, Mortal, Carniçal e PdN) não o compram.
+- **Ritual gratuito de Feitiçaria de Sangue** (Manual Básico p. 271): quem começa com Feitiçaria de Sangue recebe um Ritual de nível 1.
+- **Convicções e Princípios da Crônica nos campos certos.** O assistente gravava as Convicções no campo que a ficha chama de "Princípios da Crônica". Agora a etapa de Pilares tem um campo de Convicções e Pilares (um par por linha) e outro de Princípios da Crônica, preenchido com a configuração do mundo.
+
 ## 1.11.1 — Ícones das Folhas de História do Manual Básico
 
 - **25 ícones novos** para as Folhas de História do Manual Básico, no mesmo estilo pintado das 7 do Guia do Jogador (um objeto sobre fundo escuro, 512×512). Cada um usa um objeto da ilustração ou do texto da Folha: o cálice da Heresia Cainita, os óculos de Theo Bell, o sol de olhos fechados da Golconda, a máscara dividida das Voerman, o crânio de morcego de Xaviar etc. Os 125 itens deixam de usar o ícone padrão do sistema.

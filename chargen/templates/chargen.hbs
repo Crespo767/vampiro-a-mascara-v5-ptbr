@@ -290,12 +290,13 @@
     {{#if stepFlags.isTouchstones}}
     <section class="vtm5e-chargen-step">
       <h2>Pilares e Convicções</h2>
-      <p class="vtm5e-chargen-hint">Escolha de <strong>1 a 3 Convicções</strong> que guiem seu personagem e o ajudem a preservar a Humanidade. Para cada Convicção, escolha <strong>1 Pilar</strong>, uma pessoa humana viva que represente esse princípio. Escreva uma escolha por linha e siga a mesma ordem nos dois campos.</p>
-      <p class="vtm5e-chargen-hint">Por exemplo, em <strong>Convicções</strong>, escreva “Nunca abandone quem precisa de ajuda”. Em <strong>Pilares</strong>, escreva “Lúcia, minha irmã, que sempre acolhe quem precisa de um lugar para ficar”.</p>
-      <label>Convicções</label>
-      <textarea data-field="system.headers.tenets">{{tenets}}</textarea>
-      <label>Pilares</label>
+      <p class="vtm5e-chargen-hint">Escolha de <strong>1 a 3 Convicções</strong> que guiem seu personagem e o ajudem a preservar a Humanidade. Para cada Convicção, escolha <strong>1 Pilar</strong>, uma pessoa humana viva que represente esse princípio (Manual Básico pp. 172–173). Escreva um par por linha.</p>
+      <p class="vtm5e-chargen-hint">Por exemplo: “Nunca abandone quem precisa de ajuda — Lúcia, minha irmã, que sempre acolhe quem precisa de um lugar para ficar”.</p>
+      <label>Convicções e Pilares</label>
       <textarea data-field="system.headers.touchstones">{{touchstones}}</textarea>
+      <p class="vtm5e-chargen-hint">Os <strong>Princípios da Crônica</strong> valem para todos os personagens e são definidos pelo grupo com o Narrador (Manual Básico p. 172). O campo já vem com os princípios configurados no mundo; ajuste se o Narrador pedir.</p>
+      <label>Princípios da Crônica</label>
+      <textarea data-field="system.headers.tenets">{{tenets}}</textarea>
     </section>
     {{/if}}
 
